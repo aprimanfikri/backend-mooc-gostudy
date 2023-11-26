@@ -3,7 +3,7 @@ class ApiError extends Error {
     super(message);
 
     this.statusCode = statusCode;
-    this.status = `${statusCode}`.startsWith('4') ? 'Failed' : 'Error';
+    this.status = `${statusCode}`.startsWith("4") ? "failed" : "error";
 
     Error.captureStackTrace(this, this.constructor);
   }

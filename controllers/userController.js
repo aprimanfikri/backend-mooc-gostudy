@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken");
+const imagekit = require("../lib/imagekit");
 const { User, Verified } = require("../models");
 const ApiError = require("../utils/apiError");
 const { hash, compare } = require("../utils/bcrypt");
@@ -8,7 +8,13 @@ const { generateToken } = require("../utils/jwt");
 
 const register = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { name, email, password } = req.body;
+    if (!name) {
+      throw new ApiError("Name is required", 400);
+    }
+    if (name.length < 3) {
+      throw new ApiError("Name must be at least 3 characters", 400);
+    }
     if (!email) {
       throw new ApiError("Email is required", 400);
     }
@@ -107,9 +113,13 @@ const verifyOtp = async (req, res, next) => {
     await verifiedOtp.destroy();
     await user.update({ verify: true });
     res.clearCookie("token");
+    const token = generateToken(user);
     res.status(200).json({
       status: "success",
       message: "Email verification successful",
+      data: {
+        token,
+      },
     });
   } catch (error) {
     next(error);
@@ -147,7 +157,7 @@ const forgotPassword = async (req, res, next) => {
       throw new ApiError("User not found", 404);
     }
     const token = generateToken(user);
-    const resetLink = `http://localhost:5173/reset-password?token=${token}`;
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
     const mailOptions = {
       from: process.env.NODEMAILER_EMAIL,
       to: user.email,
@@ -203,19 +213,39 @@ const resetPassword = async (req, res, next) => {
 
 const updateProfile = async (req, res, next) => {
   try {
+    const file = req.file;
     const { id } = req.user;
     const user = await User.findByPk(id);
     if (!user) {
       throw new ApiError("User not found", 404);
     }
-    await user.update({
+    let imgUrl;
+    let imgId;
+    if (file) {
+      const split = file.originalname.split(".");
+      const fileType = split[split.length - 1];
+      if (user.imageId) {
+        await imagekit.deleteFile(user.imageId);
+      }
+      const uploadImage = await imagekit.upload({
+        file: file.buffer.toString("base64"),
+        fileName: `${user.id}.${fileType}`,
+        folder: "/gostudy/profile-image",
+      });
+      console.log(uploadImage);
+      imgUrl = uploadImage.url;
+      imgId = uploadImage.fileId;
+    }
+    const updatedUser = await user.update({
       ...req.body,
+      imageUrl: imgUrl,
+      imageId: imgId,
     });
     res.status(200).json({
       status: "success",
       message: "Profile updated successfully",
       data: {
-        user,
+        updatedUser,
       },
     });
   } catch (error) {

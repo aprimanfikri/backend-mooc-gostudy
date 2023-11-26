@@ -1,12 +1,32 @@
-const router = require('express').Router();
+const router = require("express").Router();
 
-const courseController = require('../controllers/courseController');
+const courseController = require("../controllers/courseController");
 
-router.post('/', courseController.createCourse);
-router.get('/', courseController.getAllCourse);
+const { authenticate } = require("../middlewares/auth");
 
-router.patch(':id', courseController.updateCourse);
-router.get('/:id', courseController.getCourseById);
-router.delete(':/id', courseController.deleteCourse);
+const upload = require("../middlewares/uploader");
+
+const checkRole = require("../middlewares/checkRole");
+
+router
+  .route("/")
+  .get(courseController.getAllCourse)
+  .post(
+    authenticate,
+    checkRole("admin"),
+    upload.single("image"),
+    courseController.createCourse
+  );
+
+router
+  .route("/:id")
+  .get(courseController.getCourseById)
+  .patch(
+    authenticate,
+    checkRole("admin"),
+    upload.single("image"),
+    courseController.updateCourse
+  )
+  .delete(authenticate, checkRole("admin"), courseController.deleteCourse);
 
 module.exports = router;

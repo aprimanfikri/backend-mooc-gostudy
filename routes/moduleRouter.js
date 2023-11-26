@@ -1,12 +1,16 @@
-const router = require('express').Router();
+const router = require("express").Router();
 
-const moduleController = require('../controllers/moduleController');
+const moduleController = require("../controllers/moduleController");
 
-router.post('/', moduleController.createModule);
-router.get('/', moduleController.getAllModule);
+router
+  .route("/")
+  .get(moduleController.getAllModule)
+  .post(moduleController.createModule);
 
-router.patch(':id', moduleController.updateModule);
-router.get('/:id', moduleController.getModuleById);
-router.delete(':/id', moduleController.deleteModule);
+router
+  .route("/:id")
+  .get(moduleController.getModuleById)
+  .patch(moduleController.updateModule)
+  .delete(moduleController.deleteModule);
 
 module.exports = router;

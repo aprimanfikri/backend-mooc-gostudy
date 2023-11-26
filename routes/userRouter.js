@@ -8,6 +8,8 @@ const {
   setAuthCookie,
 } = require("../middlewares/auth");
 
+const upload = require("../middlewares/uploader");
+
 const checkRole = require("../middlewares/checkRole");
 
 router.post("/register", userController.register);
@@ -20,7 +22,12 @@ router.post(
   userController.resetPassword
 );
 router.post("/login", userController.login);
-router.post("/update", authenticate, userController.updateProfile);
+router.put(
+  "/update",
+  authenticate,
+  upload.single("image"),
+  userController.updateProfile
+);
 
 router.get(
   "/all",

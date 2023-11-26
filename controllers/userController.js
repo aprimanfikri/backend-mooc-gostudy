@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken");
+const imagekit = require("../lib/imagekit");
 const { User, Verified } = require("../models");
 const ApiError = require("../utils/apiError");
 const { hash, compare } = require("../utils/bcrypt");
@@ -107,9 +107,13 @@ const verifyOtp = async (req, res, next) => {
     await verifiedOtp.destroy();
     await user.update({ verify: true });
     res.clearCookie("token");
+    const token = generateToken(user);
     res.status(200).json({
       status: "success",
       message: "Email verification successful",
+      data: {
+        token,
+      },
     });
   } catch (error) {
     next(error);
@@ -203,13 +207,33 @@ const resetPassword = async (req, res, next) => {
 
 const updateProfile = async (req, res, next) => {
   try {
+    const file = req.file;
     const { id } = req.user;
     const user = await User.findByPk(id);
     if (!user) {
       throw new ApiError("User not found", 404);
     }
+    let imgUrl;
+    let imgId;
+    if (file) {
+      const split = file.originalname.split(".");
+      const fileType = split[split.length - 1];
+      if (user.imageId) {
+        await imagekit.deleteFile(user.imageId);
+      }
+      const uploadImage = await imagekit.upload({
+        file: file.buffer.toString("base64"),
+        fileName: `${user.id}.${fileType}`,
+        folder: "/gostudy/profile-image",
+      });
+      console.log(uploadImage);
+      imgUrl = uploadImage.url;
+      imgId = uploadImage.fileId;
+    }
     await user.update({
       ...req.body,
+      imageUrl: imgUrl,
+      imageId: imgId,
     });
     res.status(200).json({
       status: "success",

@@ -1,37 +1,34 @@
-const { Course } = require('../models');
-const imagekit = require('../lib/imagekit');
-const ApiError = require('../middlewares/errorHandler');
+const { Course } = require("../models");
+const imagekit = require("../lib/imagekit");
+const ApiError = require("../utils/apiError");
 
-const createCourse = async (req, res) => {
-  const {
-    name,
-    level,
-    categoryId,
-    description,
-    classCode,
-    totalModule,
-    type,
-    price,
-    totalDuration,
-    courseBy,
-  } = req.body;
-
-  const file = req.file;
-
-  // Get extension file
-  const split = file.originalname.split('.');
-  const extension = split[split.length - 1];
-
-  // Upload file to imagekit
-  const img = await imagekit.upload({
-    file: file.buffer,
-    fileName: `IMG-${Date.now()}.${extension}`,
-  });
-
+const createCourse = async (req, res, next) => {
   try {
+    const {
+      name,
+      level,
+      categoryId,
+      description,
+      classCode,
+      totalModule,
+      type,
+      price,
+      totalDuration,
+      courseBy,
+    } = req.body;
+    const course = await Course.findOne({ where: { name } });
+    const file = req.file;
+    const split = file.originalname.split(".");
+    const fileType = split[split.length - 1];
+    const uploadImage = await imagekit.upload({
+      file: file.buffer.toString("base64"),
+      fileName: `${name}.${fileType}`,
+      folder: "/gostudy/course-image",
+    });
     const newCourse = await Course.create({
       name,
-      imageUrl: img.url,
+      imageUrl: uploadImage.url,
+      imageId: uploadImage.fileId,
       level,
       categoryId,
       description,
@@ -44,125 +41,133 @@ const createCourse = async (req, res) => {
       createdBy: req.user.id,
     });
     res.status(201).json({
-      status: 'success',
+      status: "success",
+      message: "Course created successfully",
       data: {
         newCourse,
       },
     });
   } catch (error) {
-    return next(new ApiError(error.message, 400));
+    next(error);
   }
 };
 
-const updateCourse = async (req, res) => {
-  const {
-    name,
-    level,
-    categoryId,
-    description,
-    classCode,
-    totalModule,
-    type,
-    price,
-    totalDuration,
-    courseBy,
-  } = req.body;
-
-  const file = req.file;
-  let img;
-
+const updateCourse = async (req, res, next) => {
   try {
-    const courseId = req.params.id;
-    if (!courseId) {
-      return next(new ApiError('ID not found!', 404));
+    const {
+      name,
+      level,
+      categoryId,
+      description,
+      classCode,
+      totalModule,
+      type,
+      price,
+      totalDuration,
+      courseBy,
+    } = req.body;
+    const file = req.file;
+    const { id } = req.params;
+    const course = await Course.findByPk(id);
+    if (!course) {
+      throw new ApiError("Course not found", 404);
     }
+    let imgUrl;
+    let imgId;
     if (file) {
-      // Get extension file
-      const split = file.originalname.split('.');
-      const extension = split[split.length - 1];
-
-      // Upload file to imagekit
-      img = await imagekit.upload({
-        file: file.buffer,
-        fileName: `IMG-${Date.now()}.${extension}`,
+      console.log("masuk if file");
+      const split = file.originalname.split(".");
+      const fileType = split[split.length - 1];
+      if (course.imageId) {
+        await imagekit.deleteFile(course.imageId);
+      }
+      console.log("masuk if course.imageId");
+      const uploadImage = await imagekit.upload({
+        file: file.buffer.toString("base64"),
+        fileName: `${course.name}.${fileType}`,
+        folder: "/gostudy/course-image",
       });
+      console.log(uploadImage);
+      imgUrl = uploadImage.url;
+      imgId = uploadImage.fileId;
     }
-    const newCourse = await Course.update(
-      {
-        name,
-        imageUrl: img.url,
-        level,
-        categoryId,
-        description,
-        classCode,
-        totalModule,
-        type,
-        price,
-        totalDuration,
-        courseBy,
-        createdBy: req.user.id,
-      },
-      { where: { id: courseId } }
-    );
+    const updatedCourse = await course.update({
+      name,
+      imageUrl: imgUrl,
+      imageId: imgId,
+      level,
+      categoryId,
+      description,
+      classCode,
+      totalModule,
+      type,
+      price,
+      totalDuration,
+      courseBy,
+      createdBy: req.user.id,
+    });
     res.status(200).json({
-      status: 'success',
-      message: 'Course Updated',
+      status: "success",
+      message: "Course updated successfully",
+      data: {
+        updatedCourse,
+      },
     });
   } catch (error) {
-    return next(new ApiError(error.message, 400));
+    next(error);
   }
 };
 
 const deleteCourse = async (req, res, next) => {
   try {
-    const courseId = req.params.id;
-    if (!courseId) {
-      return next(new ApiError('ID not found!', 404));
+    const { id } = req.params;
+    const course = await Course.findByPk(id);
+    if (!course) {
+      throw new ApiError("Course not found", 404);
     }
-
-    await Course.destroy({ where: { id: courseId } });
-
+    if (course.imageId) {
+      await imagekit.deleteFile(course.imageId);
+    }
+    await course.destroy();
     res.status(200).json({
-      status: 'success',
-      message: 'Course deleted',
+      status: "success",
+      message: "Course deleted",
     });
   } catch (error) {
-    return next(new ApiError(error.message, 400));
+    next(error);
   }
 };
 
-const getAllCourse = async (req, res) => {
+const getAllCourse = async (req, res, next) => {
   try {
-    const courses = await Course.findAll({ where: searchCriteria });
-
+    const courses = await Course.findAll();
     res.status(200).json({
-      status: 'success',
+      status: "success",
+      message: "All courses fetched successfully",
       data: {
         courses,
       },
     });
   } catch (error) {
-    return next(new ApiError(error.message, 400));
+    next(error);
   }
 };
 
-const getCourseById = async (req, res) => {
+const getCourseById = async (req, res, next) => {
   try {
-    const courseId = req.params.id;
-    const course = await Course.findOne({
-      where: {
-        id: courseId,
-      },
-    });
-
+    const { id } = req.params;
+    const course = await Course.findByPk(id);
+    if (!course) {
+      throw new ApiError("Course not found", 404);
+    }
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: {
         course,
       },
     });
   } catch (error) {
-    return next(new ApiError(error.message, 400));
+    next(error);
   }
 };
 

@@ -8,7 +8,13 @@ const { generateToken } = require("../utils/jwt");
 
 const register = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { name, email, password } = req.body;
+    if (!name) {
+      throw new ApiError("Name is required", 400);
+    }
+    if (name.length < 3) {
+      throw new ApiError("Name must be at least 3 characters", 400);
+    }
     if (!email) {
       throw new ApiError("Email is required", 400);
     }
@@ -151,7 +157,7 @@ const forgotPassword = async (req, res, next) => {
       throw new ApiError("User not found", 404);
     }
     const token = generateToken(user);
-    const resetLink = `http://localhost:5173/reset-password?token=${token}`;
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
     const mailOptions = {
       from: process.env.NODEMAILER_EMAIL,
       to: user.email,
@@ -230,7 +236,7 @@ const updateProfile = async (req, res, next) => {
       imgUrl = uploadImage.url;
       imgId = uploadImage.fileId;
     }
-    await user.update({
+    const updatedUser = await user.update({
       ...req.body,
       imageUrl: imgUrl,
       imageId: imgId,
@@ -239,7 +245,7 @@ const updateProfile = async (req, res, next) => {
       status: "success",
       message: "Profile updated successfully",
       data: {
-        user,
+        updatedUser,
       },
     });
   } catch (error) {

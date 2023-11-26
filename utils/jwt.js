@@ -9,7 +9,7 @@ const generateToken = (user) => {
     role: user.role,
   };
   return jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: "1d",
+    expiresIn: "1m",
   });
 };
 
@@ -17,7 +17,10 @@ const verifyToken = (token) => {
   try {
     return jwt.verify(token, process.env.JWT_SECRET);
   } catch (error) {
-    throw new ApiError(401, "Invalid or expired token");
+    if (error) {
+      throw new ApiError("Authorization token has expired", 401);
+    }
+    throw new ApiError("Invalid authorization token", 401);
   }
 };
 

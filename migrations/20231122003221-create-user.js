@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable("Users", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -30,11 +30,12 @@ module.exports = {
       imageUrl: {
         type: Sequelize.TEXT,
         defaultValue:
-          'https://st3.depositphotos.com/6672868/13701/v/450/depositphotos_137014128-stock-illustration-user-profile-icon.jpg',
+          "https://st3.depositphotos.com/6672868/13701/v/450/depositphotos_137014128-stock-illustration-user-profile-icon.jpg",
       },
       role: {
-        type: Sequelize.STRING,
-        defaultValue: 'Member',
+        type: Sequelize.ENUM,
+        values: ["superadmin", "admin", "user"],
+        defaultValue: "user",
       },
       verify: {
         type: Sequelize.BOOLEAN,
@@ -51,6 +52,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Users');
+    await queryInterface.dropTable("Users");
   },
 };

@@ -1,5 +1,5 @@
-'use strict';
-const { Model } = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -12,37 +12,37 @@ module.exports = (sequelize, DataTypes) => {
 
       User.hasOne(models.Verified, {
         foreignKey: {
-          name: 'userId',
+          name: "userId",
         },
       });
 
       User.hasMany(models.UserCourse, {
         foreignKey: {
-          name: 'userId',
+          name: "userId",
         },
       });
 
       User.hasMany(models.UserModule, {
         foreignKey: {
-          name: 'userId',
+          name: "userId",
         },
       });
 
       User.hasMany(models.Course, {
         foreignKey: {
-          name: 'createdBy',
+          name: "createdBy",
         },
       });
 
       User.hasMany(models.Module, {
         foreignKey: {
-          name: 'createdBy',
+          name: "createdBy",
         },
       });
 
       User.hasMany(models.Purchase, {
         foreignKey: {
-          name: 'userId',
+          name: "userId",
         },
       });
     }
@@ -58,14 +58,21 @@ module.exports = (sequelize, DataTypes) => {
       imageUrl: {
         type: DataTypes.TEXT,
         defaultValue:
-          'https://st3.depositphotos.com/6672868/13701/v/450/depositphotos_137014128-stock-illustration-user-profile-icon.jpg',
+          "https://st3.depositphotos.com/6672868/13701/v/450/depositphotos_137014128-stock-illustration-user-profile-icon.jpg",
       },
-      role: { type: DataTypes.STRING, defaultValue: 'Member' },
-      verify: { type: DataTypes.BOOLEAN, defaultValue: false },
+      role: {
+        type: DataTypes.ENUM,
+        values: ["superadmin", "admin", "user"],
+        defaultValue: "user",
+      },
+      verify: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
     },
     {
       sequelize,
-      modelName: 'User',
+      modelName: "User",
     }
   );
   return User;

@@ -128,7 +128,7 @@ const getAllModule = async (req, res) => {
 const getModuleById = async (req, res) => {
   try {
     const moduleId = req.params.id;
-    const module = await Course.findOne({
+    const module = await Module.findOne({
       where: {
         id: moduleId,
       },

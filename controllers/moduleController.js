@@ -1,147 +1,158 @@
-const { Module } = require('../models');
-const imagekit = require('../lib/imagekit');
-const ApiError = require('../middlewares/errorHandler');
+const { Module } = require("../models");
+const imagekit = require("../lib/imagekit");
+const ApiError = require("../utils/apiError");
 
-const createModule = async (req, res) => {
-  const { no, name, description, chapterId } = req.body;
-
-  const files = req.files;
-  let video;
+const createModule = async (req, res, next) => {
   try {
-    if (files) {
-      files.map(async (file) => {
-        // Get extension file
-        const split = file.originalname.split('.');
-        const extension = split[split.length - 1];
-
-        // Upload file to imagekit
-        video = await imagekit.upload({
-          file: file.buffer,
-          fileName: `VID-${Date.now()}.${extension}`,
-        });
-      });
+    const { no, name, description, chapterId, videoUrl } = req.body;
+    const file = req.file;
+    if (!file && !videoUrl) {
+      throw new ApiError(
+        "Please provide either a video file or a video URL.",
+        400
+      );
     }
-
+    let video;
+    if (file) {
+      const split = file.originalname.split(".");
+      const fileType = split[split.length - 1];
+      const uploadVideo = await imagekit.upload({
+        file: file.buffer.toString("base64"),
+        fileName: `VID-${name}.${fileType}`,
+        folder: "/gostudy/module-video",
+      });
+      video = uploadVideo;
+    } else {
+      video = {
+        url: videoUrl,
+        fileId: null,
+        duration: null,
+      };
+    }
     const newModule = await Module.create({
       no,
       name,
       description,
       chapterId,
       videoUrl: video.url,
+      videoId: video.fileId,
       duration: video.duration,
       createdBy: req.user.id,
     });
-
     res.status(201).json({
-      status: 'success',
+      status: "success",
       data: {
         newModule,
       },
     });
   } catch (error) {
-    return next(new ApiError(error.message, 400));
+    next(error);
   }
 };
 
-const updateModule = async (req, res) => {
-  const { no, name, description, chapterId } = req.body;
-
-  const files = req.files;
-  let video;
+const updateModule = async (req, res, next) => {
   try {
-    const moduleId = req.params.id;
-    if (!moduleId) {
-      return next(new ApiError('ID not found!', 404));
+    const { no, name, description, chapterId, videoUrl } = req.body;
+    const { id } = req.params;
+    const file = req.file;
+    const module = await Module.findByPk(id);
+    if (!module) {
+      throw new ApiError("Module not found!", 404);
     }
-
-    if (files) {
-      files.map(async (file) => {
-        // Get extension file
-        const split = file.originalname.split('.');
-        const extension = split[split.length - 1];
-
-        // Upload file to imagekit
-        video = await imagekit.upload({
-          file: file.buffer,
-          fileName: `VID-${Date.now()}.${extension}`,
-        });
-      });
-    }
-
-    const newModule = await Module.update(
-      {
-        no,
-        name,
-        description,
-        chapterId,
-        videoUrl: video.url,
-        duration: video.duration,
-        createdBy: req.user.id,
-      },
-      {
-        where: { id: moduleId },
+    let video;
+    if (file) {
+      const split = file.originalname.split(".");
+      const fileType = split[split.length - 1];
+      if (module.videoId) {
+        await imagekit.deleteFile(module.videoId);
       }
-    );
-
-    res.status(200).json({
-      status: 'success',
-      message: 'Module updated!',
-    });
-  } catch (error) {
-    return next(new ApiError(error.message, 400));
-  }
-};
-
-const deleteModule = async (req, res) => {
-  try {
-    const moduleId = req.params.id;
-    if (!moduleId) {
-      return next(new ApiError('ID not found!', 404));
+      const uploadVideo = await imagekit.upload({
+        file: file.buffer,
+        fileName: `VID-${Date.now()}.${fileType}`,
+        folder: "/gostudy/module-video",
+      });
+      video = uploadVideo;
+    } else {
+      video = {
+        url: videoUrl,
+        fileId: null,
+        duration: null,
+      };
     }
-
-    await Module.destroy({ where: { id: moduleId } });
+    const updatedModule = await module.update({
+      no,
+      name,
+      description,
+      chapterId,
+      videoUrl: video.url,
+      videoId: video.fileId,
+      duration: video.duration,
+      createdBy: req.user.id,
+    });
 
     res.status(200).json({
-      status: 'success',
-      message: 'Module deleted',
+      status: "success",
+      message: "Module updated!",
+      data: {
+        updatedModule,
+      },
     });
   } catch (error) {
-    return next(new ApiError(error.message, 400));
+    next(error);
   }
 };
 
-const getAllModule = async (req, res) => {
+const deleteModule = async (req, res, next) => {
   try {
-    const modules = await Module.findAll({ where: searchCriteria });
-
+    const { id } = req.params;
+    const module = await Module.findByPk(id);
+    if (!module) {
+      throw new ApiError("Module not found!", 404);
+    }
+    if (module.videoId) {
+      await imagekit.deleteFile(module.videoId);
+    }
+    await module.destroy();
     res.status(200).json({
-      status: 'success',
+      status: "success",
+      message: "Module deleted",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getAllModule = async (req, res, next) => {
+  try {
+    const modules = await Module.findAll();
+    res.status(200).json({
+      status: "success",
+      message: "Get all modules successfully",
       data: {
         modules,
       },
     });
   } catch (error) {
-    return next(new ApiError(error.message, 400));
+    next(error);
   }
 };
 
-const getModuleById = async (req, res) => {
+const getModuleById = async (req, res, next) => {
   try {
-    const moduleId = req.params.id;
-    const module = await Module.findOne({
-      where: {
-        id: moduleId,
-      },
-    });
-
+    const { id } = req.params;
+    const module = await Module.findByPk(id);
+    if (!module) {
+      throw new ApiError("Module not found!", 404);
+    }
     res.status(200).json({
-      status: 'success',
+      status: "success",
+      message: "Get module by id successfully",
       data: {
         module,
       },
     });
   } catch (error) {
-    return next(new ApiError(error.message, 400));
+    next(error);
   }
 };
 

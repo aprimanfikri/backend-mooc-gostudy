@@ -268,6 +268,25 @@ const getAllUsers = async (req, res, next) => {
   }
 };
 
+const whoAmI = async (req, res, next) => {
+  try {
+    const { id } = req.user;
+    const user = await User.findByPk(id);
+    if (!user) {
+      throw new ApiError("User not found", 404);
+    }
+    res.status(200).json({
+      status: "success",
+      message: "User fetched successfully",
+      data: {
+        user,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -277,4 +296,5 @@ module.exports = {
   resetPassword,
   updateProfile,
   getAllUsers,
+  whoAmI,
 };

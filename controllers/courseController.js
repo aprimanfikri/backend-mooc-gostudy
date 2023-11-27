@@ -22,7 +22,7 @@ const createCourse = async (req, res, next) => {
     const fileType = split[split.length - 1];
     const uploadImage = await imagekit.upload({
       file: file.buffer.toString("base64"),
-      fileName: `${name}.${fileType}`,
+      fileName: `IMG-${name}.${fileType}`,
       folder: "/gostudy/course-image",
     });
     const newCourse = await Course.create({
@@ -72,29 +72,24 @@ const updateCourse = async (req, res, next) => {
     if (!course) {
       throw new ApiError("Course not found", 404);
     }
-    let imgUrl;
-    let imgId;
+    let image;
     if (file) {
-      console.log("masuk if file");
       const split = file.originalname.split(".");
       const fileType = split[split.length - 1];
       if (course.imageId) {
         await imagekit.deleteFile(course.imageId);
       }
-      console.log("masuk if course.imageId");
       const uploadImage = await imagekit.upload({
         file: file.buffer.toString("base64"),
         fileName: `${course.name}.${fileType}`,
         folder: "/gostudy/course-image",
       });
-      console.log(uploadImage);
-      imgUrl = uploadImage.url;
-      imgId = uploadImage.fileId;
+      image = uploadImage;
     }
     const updatedCourse = await course.update({
       name,
-      imageUrl: imgUrl,
-      imageId: imgId,
+      imageUrl: image.url,
+      imageId: image.fileId,
       level,
       categoryId,
       description,

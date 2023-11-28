@@ -43,6 +43,11 @@
                     "type": "string",
                     "description": "Password of the user",
                     "example": "12345678"
+                  },
+                  "phoneNumber": {
+                    "type": "string",
+                    "description": "Phone Number of the user",
+                    "example": "081958883820"
                   }
                 }
               }

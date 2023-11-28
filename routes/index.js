@@ -20,6 +20,6 @@ router.all("*", (req, res, next) => {
   res.render("error", {
     title: "Error Page",
   });
-
+});
 
 module.exports = router;

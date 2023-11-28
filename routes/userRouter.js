@@ -36,4 +36,6 @@ router.get(
   userController.getAllUsers
 );
 
+router.get("/me", authenticate, userController.whoAmI);
+
 module.exports = router;

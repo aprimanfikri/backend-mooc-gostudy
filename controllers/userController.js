@@ -162,8 +162,8 @@ const forgotPassword = async (req, res, next) => {
     if (!user) {
       throw new ApiError('User not found', 404);
     }
-    const token = generateToken(user);
-    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
+    const token = generateToken(user, "1m");
+    const resetLink = `${process.env.BACKEND_URL}/reset-password?token=${token}`;
     const mailOptions = {
       from: process.env.NODEMAILER_EMAIL,
       to: user.email,
@@ -238,7 +238,6 @@ const updateProfile = async (req, res, next) => {
         fileName: `${user.id}.${fileType}`,
         folder: '/gostudy/profile-image',
       });
-      console.log(uploadImage);
       imgUrl = uploadImage.url;
       imgId = uploadImage.fileId;
     }
@@ -274,6 +273,25 @@ const getAllUsers = async (req, res, next) => {
   }
 };
 
+const whoAmI = async (req, res, next) => {
+  try {
+    const { id } = req.user;
+    const user = await User.findByPk(id);
+    if (!user) {
+      throw new ApiError("User not found", 404);
+    }
+    res.status(200).json({
+      status: "success",
+      message: "User fetched successfully",
+      data: {
+        user,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -283,4 +301,5 @@ module.exports = {
   resetPassword,
   updateProfile,
   getAllUsers,
+  whoAmI,
 };

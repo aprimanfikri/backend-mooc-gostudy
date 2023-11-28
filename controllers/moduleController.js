@@ -8,6 +8,9 @@ const createModule = async (req, res) => {
   const files = req.files;
   let video;
   try {
+    if (!no || !name || !description || !chapterId) {
+      throw new ApiError('All value fields are required', 400);
+    }
     if (files) {
       files.map(async (file) => {
         // Get extension file
@@ -49,6 +52,10 @@ const updateModule = async (req, res) => {
   const files = req.files;
   let video;
   try {
+    if (!no || !name || !description || !chapterId) {
+      throw new ApiError('All value fields are required', 400);
+    }
+
     const moduleId = req.params.id;
     if (!moduleId) {
       return next(new ApiError('ID not found!', 404));

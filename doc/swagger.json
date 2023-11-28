@@ -1,29 +1,29 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "API",
-    "description": "API",
+    "title": "Binar Final Project Massive Open Online Course (MOOC) API - GoStudy (C9)",
+    "description": "Ini merupakan API Collection dari Final Project Tim C9. Saat ini API yang tersedia yaitu untuk tag Users dan untuk tag lainnya akan ditambahkan secara berkala.",
     "version": "1.0.0"
   },
   "tags": [
     {
       "name": "Users",
-      "description": "Users"
+      "description": " Ini adalah API untuk USERS resources yang di dalamya terdiri dari beberapa endpoint"
     }
   ],
   "servers": [
     {
-      "url": "http://localhost:5000/api/v1"
+      "url": "http://localhost:8000/api/v1"
     }
   ],
   "paths": {
     "/auth/register": {
       "post": {
         "tags": ["Users"],
-        "summary": "Register a user",
-        "description": "Register a user",
+        "summary": "Register user",
+        "description": "Ini adalah API endpoint yang digunakan untuk register new user",
         "requestBody": {
-          "description": "Request body for Registration",
+          "description": "Request body untuk sukses registration",
           "content": {
             "application/json": {
               "schema": {
@@ -31,12 +31,12 @@
                 "properties": {
                   "name": {
                     "type": "string",
-                    "description": "Name of the user",
+                    "description": " Full name of the user",
                     "example": "John Doe"
                   },
                   "email": {
                     "type": "string",
-                    "description": "Email of the user",
+                    "description": "Email address of the user",
                     "example": "johndoe@mail.com"
                   },
                   "password": {
@@ -81,7 +81,7 @@
             }
           },
           "4xx": {
-            "description": "Failed",
+            "description": "Failed Register New User",
             "content": {
               "application/json": {
                 "schema": {
@@ -95,7 +95,7 @@
                     "message": {
                       "type": "string",
                       "description": "Message of the request",
-                      "example": "User already exists"
+                      "example": "email already registered or password less than 8 characters"
                     }
                   }
                 }
@@ -103,7 +103,7 @@
             }
           },
           "5xx": {
-            "description": "Error",
+            "description": "Error User Registration",
             "content": {
               "application/json": {
                 "schema": {
@@ -117,7 +117,7 @@
                     "message": {
                       "type": "string",
                       "description": "Message of the request",
-                      "example": "Error"
+                      "example": "Error occured during user registration  "
                     }
                   }
                 }
@@ -130,11 +130,10 @@
     "/auth/resend": {
       "post": {
         "tags": ["Users"],
-        "summary": "Resend Otp",
-        "description": "Resend Otp",
+        "summary": "Ini adalah endpoint API yang digunakan untuk Resend OTP",
         "responses": {
           "200": {
-            "description": "Otp Successfully Sent",
+            "description": "OTP Successfully Sent",
             "headers": {
               "Set-Cookie": {
                 "description": "Cookie containing user authentication information",
@@ -156,7 +155,7 @@
                     "message": {
                       "type": "string",
                       "description": "Message of the request",
-                      "example": "Otp Successfully Sent"
+                      "example": "OTP Successfully Sent"
                     }
                   }
                 }
@@ -164,7 +163,7 @@
             }
           },
           "4xx": {
-            "description": "Failed",
+            "description": "Failed to resend OTP",
             "content": {
               "application/json": {
                 "schema": {
@@ -178,7 +177,7 @@
                     "message": {
                       "type": "string",
                       "description": "Message of the request",
-                      "example": "Otp request failed"
+                      "example": "failed to send otp"
                     }
                   }
                 }
@@ -186,7 +185,7 @@
             }
           },
           "5xx": {
-            "description": "Error",
+            "description": "Error to resend the OTP",
             "content": {
               "application/json": {
                 "schema": {
@@ -200,7 +199,7 @@
                     "message": {
                       "type": "string",
                       "description": "Message of the request",
-                      "example": "Error"
+                      "example": "Error occured during the resend otp process"
                     }
                   }
                 }
@@ -214,9 +213,9 @@
       "post": {
         "tags": ["Users"],
         "summary": "Verify a user",
-        "description": "Verify a user",
+        "description": "Ini adalah API endpoint yang digunakan untuk verify a user berdasarkan OTP yang disediakan. User harus mengirimkan OTP yang diterima saat proses registrasi untuk menyelesaikan verifikasi",
         "requestBody": {
-          "description": "Request body for Verification",
+          "description": "Request body untuk sukses verification",
           "content": {
             "application/json": {
               "schema": {
@@ -224,7 +223,7 @@
                 "properties": {
                   "otp": {
                     "type": "string",
-                    "description": "Otp of the user",
+                    "description": "OTP yang telah dikirimkan kepada user",
                     "example": "9898"
                   }
                 }
@@ -278,7 +277,7 @@
                     "message": {
                       "type": "string",
                       "description": "Message of the request",
-                      "example": "User already exists"
+                      "example": "User verification failed, OTP is incorrect"
                     }
                   }
                 }
@@ -300,7 +299,7 @@
                     "message": {
                       "type": "string",
                       "description": "Message of the request",
-                      "example": "Error"
+                      "example": "Error occured during user verification"
                     }
                   }
                 }
@@ -314,9 +313,9 @@
       "post": {
         "tags": ["Users"],
         "summary": "Forgot Password",
-        "description": "Forgot Password",
+        "description": "Ini adalah API endpoint yang digunakan untuk mengirim request link reset password",
         "requestBody": {
-          "description": "Request body for Forgot Password",
+          "description": "Request body untuk Forgot Password (request reset password)",
           "content": {
             "application/json": {
               "schema": {
@@ -324,7 +323,7 @@
                 "properties": {
                   "email": {
                     "type": "string",
-                    "description": "Email of the user",
+                    "description": "Email dari user yang melakukan request link reset password",
                     "example": "johndoe@mail.com"
                   }
                 }
@@ -334,7 +333,7 @@
         },
         "responses": {
           "200": {
-            "description": "Link was successfully sent to your email",
+            "description": "Link reset password berhasil dikirimkan ke email user",
             "content": {
               "application/json": {
                 "schema": {
@@ -348,7 +347,7 @@
                     "message": {
                       "type": "string",
                       "description": "Message of the request",
-                      "example": "Link was successfully sent to your email"
+                      "example": "An email contain the password reset link has been sent to your email"
                     }
                   }
                 }
@@ -356,7 +355,7 @@
             }
           },
           "4xx": {
-            "description": "Failed",
+            "description": "Failed to send password reset link",
             "content": {
               "application/json": {
                 "schema": {
@@ -370,7 +369,7 @@
                     "message": {
                       "type": "string",
                       "description": "Message of the request",
-                      "example": "Email is required"
+                      "example": "Email is required or Email does not exist"
                     }
                   }
                 }
@@ -392,7 +391,7 @@
                     "message": {
                       "type": "string",
                       "description": "Message of the request",
-                      "example": "Error"
+                      "example": "Unable to send password reset link due to an unknown error"
                     }
                   }
                 }
@@ -406,7 +405,7 @@
       "post": {
         "tags": ["Users"],
         "summary": "Reset Password",
-        "description": "Reset Password",
+        "description": "Ini adalah API endpoint yang digunakan untuk reset password menggunakan token yang telah disediakan",
         "parameters": [
           {
             "name": "token",
@@ -419,7 +418,7 @@
           }
         ],
         "requestBody": {
-          "description": "Request body for Reset Password",
+          "description": "Request body untuk sukses Reset Password",
           "content": {
             "application/json": {
               "schema": {
@@ -456,7 +455,7 @@
                     "message": {
                       "type": "string",
                       "description": "Message of the request",
-                      "example": "Password successfully reset"
+                      "example": "Your password has been changed successfully"
                     }
                   }
                 }
@@ -478,7 +477,7 @@
                     "message": {
                       "type": "string",
                       "description": "Message of the request",
-                      "example": "Password must be at least 8 characters"
+                      "example": "Password must be at least 8 characters or password does not match or password reset link no longer valid"
                     }
                   }
                 }
@@ -500,7 +499,7 @@
                     "message": {
                       "type": "string",
                       "description": "Message of the request",
-                      "example": "Error"
+                      "example": "Error occured during the password reset process"
                     }
                   }
                 }
@@ -514,9 +513,9 @@
       "post": {
         "tags": ["Users"],
         "summary": "Login a user",
-        "description": "Login a user",
+        "description": "ini adalah API endpoint untuk autentikasi dan login user menggunakan email dan password",
         "requestBody": {
-          "description": "Request body for Login",
+          "description": "Request body untuk success login",
           "content": {
             "application/json": {
               "schema": {
@@ -524,7 +523,7 @@
                 "properties": {
                   "email": {
                     "type": "string",
-                    "description": "Email of the user",
+                    "description": "Email address of the user",
                     "example": "johndoe@mail.com"
                   },
                   "password": {
@@ -553,7 +552,7 @@
                     "message": {
                       "type": "string",
                       "description": "Message of the request",
-                      "example": "User Login successfully"
+                      "example": "Login success!"
                     },
                     "data": {
                       "tipe": "object",
@@ -570,7 +569,7 @@
             }
           },
           "4xx": {
-            "description": "Failed",
+            "description": "Failed to Login User",
             "content": {
               "application/json": {
                 "schema": {
@@ -584,7 +583,7 @@
                     "message": {
                       "type": "string",
                       "description": "Message of the request",
-                      "example": "Password wrong"
+                      "example": " Email or password incorrect"
                     }
                   }
                 }
@@ -606,7 +605,7 @@
                     "message": {
                       "type": "string",
                       "description": "Message of the request",
-                      "example": "Error"
+                      "example": "An unexpected error occured during the login process "
                     }
                   }
                 }
@@ -624,10 +623,10 @@
             "bearerToken": []
           }
         ],
-        "summary": "Upadate a user",
-        "description": "Upadate a user",
+        "summary": "Update a user",
+        "description": "Ini adalah API endpoint untuk melakukan update informasi user pada kolom informasi yang tertera",
         "requestBody": {
-          "description": "Request body for Upadate",
+          "description": "Request body for User Update",
           "content": {
             "multipart/form-data": {
               "schema": {
@@ -656,7 +655,7 @@
                   "image": {
                     "type": "string",
                     "format": "binary",
-                    "description": "Image of the user"
+                    "description": "Profile Image of the user"
                   }
                 }
               }
@@ -665,7 +664,7 @@
         },
         "responses": {
           "201": {
-            "description": "User Updated successfully",
+            "description": "User account information updated successfully",
             "content": {
               "application/json": {
                 "schema": {
@@ -679,7 +678,7 @@
                     "message": {
                       "type": "string",
                       "description": "Message of the request",
-                      "example": "User Updated successfully"
+                      "example": "Your Profile Updated successfully"
                     },
                     "data": {
                       "tipe": "object",
@@ -703,7 +702,7 @@
             }
           },
           "4xx": {
-            "description": "Failed",
+            "description": "Failed to Update User Account Information",
             "content": {
               "application/json": {
                 "schema": {
@@ -739,7 +738,7 @@
                     "message": {
                       "type": "string",
                       "description": "Message of the request",
-                      "example": "Error"
+                      "example": "Error occured during the user update process"
                     }
                   }
                 }
@@ -757,11 +756,11 @@
             "bearerToken": []
           }
         ],
-        "summary": "Get a user",
-        "description": "Get a user",
+        "summary": "Get user details",
+        "description": "Ini adalah API endpoint untuk mendapatkan detail dari user yang terautentikasi",
         "responses": {
           "200": {
-            "description": "User Get successfully",
+            "description": "User details successfully retrieved",
             "content": {
               "application/json": {
                 "schema": {
@@ -800,7 +799,7 @@
             }
           },
           "4xx": {
-            "description": "Failed",
+            "description": "Failed to retrieve user details",
             "content": {
               "application/json": {
                 "schema": {
@@ -836,7 +835,7 @@
                     "message": {
                       "type": "string",
                       "description": "Message of the request",
-                      "example": "Error"
+                      "example": "Error occured during the retrieving process of user details"
                     }
                   }
                 }

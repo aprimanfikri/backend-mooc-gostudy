@@ -7,14 +7,23 @@ const forgotPasswordView = (req, res) => {
 };
 
 const resetPasswordView = (req, res) => {
-  const token = req.query.token;
-  if (!token) {
-    return res.redirect("/404");
+  try {
+    const token = req.query.token;
+    if (!token) {
+      return res.redirect("/404");
+    }
+    verifyToken(token);
+    res.render("resetPassword", {
+      title: "Reset Password",
+      token,
+      message: null,
+    });
+  } catch (error) {
+    res.render("resetPassword", {
+      title: "Reset Password",
+      message: error.message,
+    });
   }
-  res.render("resetPassword", {
-    title: "Reset Password",
-    token,
-  });
 };
 
 module.exports = { forgotPasswordView, resetPasswordView };

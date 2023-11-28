@@ -13,7 +13,7 @@
   ],
   "servers": [
     {
-      "url": "http://localhost:8000/api/v1"
+      "url": "http://localhost:5000/api/v1"
     }
   ],
   "paths": {
@@ -57,14 +57,6 @@
         "responses": {
           "201": {
             "description": "User registered successfully",
-            "headers": {
-              "Set-Cookie": {
-                "description": "Cookie containing user authentication information",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -135,18 +127,15 @@
     "/auth/resend": {
       "post": {
         "tags": ["Users"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
         "summary": "Ini adalah endpoint API yang digunakan untuk Resend OTP",
         "responses": {
           "200": {
             "description": "OTP Successfully Sent",
-            "headers": {
-              "Set-Cookie": {
-                "description": "Cookie containing user authentication information",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -217,6 +206,11 @@
     "/auth/verify": {
       "post": {
         "tags": ["Users"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
         "summary": "Verify a user",
         "description": "Ini adalah API endpoint yang digunakan untuk verify a user berdasarkan OTP yang disediakan. User harus mengirimkan OTP yang diterima saat proses registrasi untuk menyelesaikan verifikasi",
         "requestBody": {
@@ -239,14 +233,6 @@
         "responses": {
           "200": {
             "description": "User verified successfully",
-            "headers": {
-              "Set-Cookie": {
-                "description": "Cookie containing user authentication information",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -406,22 +392,17 @@
         }
       }
     },
-    "/auth/reset-password/{token}": {
+    "/auth/reset-password/": {
       "post": {
         "tags": ["Users"],
-        "summary": "Reset Password",
-        "description": "Ini adalah API endpoint yang digunakan untuk reset password menggunakan token yang telah disediakan",
-        "parameters": [
+        "security": [
           {
-            "name": "token",
-            "in": "path",
-            "description": "Token to reset the password",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "bearerToken": []
           }
         ],
+        "summary": "Reset Password",
+        "description": "Ini adalah API endpoint yang digunakan untuk reset password menggunakan token yang telah disediakan",
+
         "requestBody": {
           "description": "Request body untuk sukses Reset Password",
           "content": {

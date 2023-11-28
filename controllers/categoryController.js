@@ -5,6 +5,10 @@ const createCategory = async (req, res) => {
   const { name } = req.body;
 
   try {
+    if (!name) {
+      return next(new ApiError('Name is required', 400));
+    }
+
     const newCat = await Category.create({
       name,
     });
@@ -24,9 +28,13 @@ const updateCategory = async (req, res) => {
   const { name } = req.body;
 
   try {
+    if (!name) {
+      return next(new ApiError('Name is required', 400));
+    }
     const catId = req.params.id;
-    if (catId) {
-      return next(new ApiError('ID not found!', 404));
+    const categoryExist = Category.findByPk(catId);
+    if (!categoryExist) {
+      return next(new ApiError('Category not found!', 404));
     }
 
     const newCat = await Category.update(
@@ -50,8 +58,9 @@ const updateCategory = async (req, res) => {
 const deleteCategory = async (req, res) => {
   try {
     const catId = req.params.id;
-    if (catId) {
-      return next(new ApiError('ID not found!', 404));
+    const categoryExist = Category.findByPk(catId);
+    if (!categoryExist) {
+      return next(new ApiError('Category not found!', 404));
     }
 
     await Category.destroy({
@@ -84,6 +93,11 @@ const getAllCategory = async (req, res) => {
 const getCategoryById = async (req, res) => {
   try {
     const catId = req.params.id;
+    const categoryExist = Category.findByPk(catId);
+    if (!categoryExist) {
+      return next(new ApiError('Category not found!', 404));
+    }
+
     const category = await Category.findOne({
       where: {
         id: catId,

@@ -11,6 +11,11 @@
       "description": " Ini adalah API untuk USERS resources yang di dalamya terdiri dari beberapa endpoint"
     }
   ],
+  "servers": [
+    {
+      "url": "https://backendbelajar-production.up.railway.app/api/v1"
+    }
+  ],
   "paths": {
     "/auth/register": {
       "post": {

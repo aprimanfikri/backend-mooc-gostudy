@@ -11,11 +11,6 @@
       "description": " Ini adalah API untuk USERS resources yang di dalamya terdiri dari beberapa endpoint"
     }
   ],
-  "servers": [
-    {
-      "url": "https://localhost:5000/api/v1"
-    }
-  ],
   "paths": {
     "/auth/register": {
       "post": {

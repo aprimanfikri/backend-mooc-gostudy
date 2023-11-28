@@ -43,12 +43,14 @@ const register = async (req, res, next) => {
     });
     const token = generateToken(newUser);
     await sendOtpVerification(newUser.id, email);
-    res.cookie('token', token, { httpOnly: true });
+    // res.cookie("token", token, { httpOnly: true });
+
     res.status(201).json({
       status: 'success',
       message: 'Register successfully',
       data: {
         user: newUser,
+        token,
       },
     });
   } catch (error) {
@@ -118,7 +120,7 @@ const verifyOtp = async (req, res, next) => {
     }
     await verifiedOtp.destroy();
     await user.update({ verify: true });
-    res.clearCookie('token');
+    // res.clearCookie("token");
     const token = generateToken(user);
     res.status(200).json({
       status: 'success',
@@ -139,8 +141,8 @@ const resendOtp = async (req, res, next) => {
     if (!user) {
       throw new ApiError('User not found', 404);
     }
-    if (user.verified) {
-      throw new ApiError('User is already verified', 400);
+    if (user.verify) {
+      throw new ApiError("User is already verified", 400);
     }
     await sendOtpVerification(user.id, user.email);
     res.status(200).json({

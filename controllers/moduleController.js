@@ -2,26 +2,46 @@ const { Module } = require('../models');
 const imagekit = require('../lib/imagekit');
 const ApiError = require('../utils/apiError');
 
-const createModule = async (req, res) => {
-  const { no, name, description, chapterId } = req.body;
-
-  const files = req.files;
-  let video;
+const createModule = async (req, res, next) => {
   try {
-    if (files) {
-      files.map(async (file) => {
-        // Get extension file
-        const split = file.originalname.split('.');
-        const extension = split[split.length - 1];
+    const { no, name, description, chapterId, videoUrl } = req.body;
+    const file = req.file;
 
-        // Upload file to imagekit
-        video = await imagekit.upload({
-          file: file.buffer,
-          fileName: `VID-${Date.now()}.${extension}`,
-        });
-      });
+    if (!no) {
+      throw new ApiError('No is required', 400);
     }
-
+    if (!name) {
+      throw new ApiError('Name is required', 400);
+    }
+    if (!description) {
+      throw new ApiError('Description is required', 400);
+    }
+    if (!chapterId) {
+      throw new ApiError('Chapter ID is required', 400);
+    }
+    if (!file && !videoUrl) {
+      throw new ApiError(
+        'Please provide either a video file or a video URL.',
+        400
+      );
+    }
+    let video;
+    if (file) {
+      const split = file.originalname.split('.');
+      const fileType = split[split.length - 1];
+      const uploadVideo = await imagekit.upload({
+        file: file.buffer.toString('base64'),
+        fileName: `VID-${name}.${fileType}`,
+        folder: '/gostudy/module-video',
+      });
+      video = uploadVideo;
+    } else {
+      video = {
+        url: videoUrl,
+        fileId: null,
+        duration: null,
+      };
+    }
     const newModule = await Module.create({
       no,
       name,
@@ -43,16 +63,29 @@ const createModule = async (req, res) => {
   }
 };
 
-const updateModule = async (req, res) => {
-  const { no, name, description, chapterId } = req.body;
-
-  const files = req.files;
-  let video;
+const updateModule = async (req, res, next) => {
   try {
-    const moduleId = req.params.id;
-    if (!moduleId) {
-      return next(new ApiError('ID not found!', 404));
+    const { no, name, description, chapterId, videoUrl } = req.body;
+    const { id } = req.params;
+    const file = req.file;
+    const module = await Module.findByPk(id);
+    if (!module) {
+      throw new ApiError('Module not found!', 404);
     }
+
+    if (!no) {
+      throw new ApiError('No is required', 400);
+    }
+    if (!name) {
+      throw new ApiError('Name is required', 400);
+    }
+    if (!description) {
+      throw new ApiError('Description is required', 400);
+    }
+    if (!chapterId) {
+      throw new ApiError('Chapter ID is required', 400);
+    }
+
     let video;
     if (file) {
       const split = file.originalname.split('.');

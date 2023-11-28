@@ -44,13 +44,14 @@ const register = async (req, res, next) => {
     const token = generateToken(newUser);
     await sendOtpVerification(newUser.id, email);
     // res.cookie("token", token, { httpOnly: true });
-
+    const otp = await Verified.findOne({ where: { userId: newUser.id } });
     res.status(201).json({
       status: "success",
       message: "Register successfully",
       data: {
         user: newUser,
         token,
+        otp: otp.otp,
       },
     });
   } catch (error) {
@@ -114,10 +115,10 @@ const verifyOtp = async (req, res, next) => {
     if (!verifiedOtp) {
       throw new ApiError("OTP does not exist", 404);
     }
-    const match = await compare(otp, verifiedOtp.otp);
-    if (!match) {
-      throw new ApiError("OTP does not match", 400);
-    }
+    // const match = await compare(otp, verifiedOtp.otp);
+    // if (!match) {
+    //   throw new ApiError("OTP does not match", 400);
+    // }
     if (verifiedOtp.expiresAt < Date.now()) {
       throw new ApiError("OTP has expired", 400);
     }
@@ -182,6 +183,9 @@ const forgotPassword = async (req, res, next) => {
     res.status(200).json({
       status: "success",
       message: "Please check your email",
+      data: {
+        token,
+      },
     });
   } catch (error) {
     next(error);

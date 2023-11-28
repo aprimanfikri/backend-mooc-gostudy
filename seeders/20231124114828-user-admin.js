@@ -39,6 +39,18 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        name: "User 1",
+        email: "user1@gmail.com",
+        phoneNumber: "12345",
+        password: await hash("admin1234"),
+        country: "Indonesia",
+        city: "Jakarta",
+        role: "user",
+        verify: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     ]),
       {};
   },

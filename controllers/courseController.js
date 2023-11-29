@@ -1,6 +1,7 @@
-const { Course } = require('../models');
+const { Course, Category } = require('../models');
 const imagekit = require('../lib/imagekit');
 const ApiError = require('../utils/apiError');
+const { Op } = require('sequelize');
 
 const createCourse = async (req, res, next) => {
   try {
@@ -179,7 +180,44 @@ const deleteCourse = async (req, res, next) => {
 
 const getAllCourse = async (req, res, next) => {
   try {
-    const courses = await Course.findAll();
+    const { level, type, categoryName, createdAt, search } = req.query;
+    let courses;
+
+    const searchCriteria = {};
+
+    if (
+      level === 'Beginner' ||
+      level === 'Intermediate' ||
+      level === 'Advanced'
+    ) {
+      searchCriteria.level = level;
+    }
+
+    if (type === 'Free' || type === 'Premium') {
+      searchCriteria.type = type;
+    }
+
+    if (categoryName) {
+      searchCriteria['$category.name$'] = {
+        [Op.iLike]: `%${categoryName}%`,
+      };
+    }
+
+    if (createdAt && createdAt.toLowerCase() === 'true') {
+      searchCriteria.createdAt = {
+        [Op.gte]: new Date(),
+      };
+    }
+
+    if (search) {
+      searchCriteria.name = { [Op.iLike]: `%${search}%` };
+    }
+
+    courses = await Course.findAll({
+      where: searchCriteria,
+      include: [{ model: Category, as: 'category' }],
+      order: [['createdAt', 'DESC']],
+    });
     res.status(200).json({
       status: 'success',
       message: 'All courses fetched successfully',

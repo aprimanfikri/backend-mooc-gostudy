@@ -20,7 +20,7 @@ router.put(
   upload.single("image"),
   userController.updateProfile
 );
-
+router.put("/update-password", authenticate, userController.updatePassword);
 router.get(
   "/all",
   authenticate,

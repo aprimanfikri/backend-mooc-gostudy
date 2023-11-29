@@ -267,6 +267,49 @@ const updateProfile = async (req, res, next) => {
   }
 };
 
+const updatePassword = async (req, res, next) => {
+  try {
+    const { oldPassword, newPassword, confirmPassword } = req.body;
+    if (!oldPassword) {
+      throw new ApiError("Old password is required", 400);
+    }
+    if (!newPassword) {
+      throw new ApiError("New password is required", 400);
+    }
+    if (newPassword.length < 8) {
+      throw new ApiError("New password must be at least 8 characters", 400);
+    }
+    if (!confirmPassword) {
+      throw new ApiError("Confirm password is required", 400);
+    }
+    if (newPassword !== confirmPassword) {
+      throw new ApiError("Passwords do not match", 400);
+    }
+    const { id } = req.user;
+    const user = await User.findByPk(id);
+    if (!user) {
+      throw new ApiError("User not found", 404);
+    }
+    const isMatch = await compare(oldPassword, user.password);
+    if (!isMatch) {
+      throw new ApiError("Old password is incorrect", 400);
+    }
+    if (newPassword === user.password) {
+      throw new ApiError(
+        "New password cannot be the same as old password",
+        400
+      );
+    }
+    await user.update({ password: await hash(newPassword) });
+    res.status(200).json({
+      status: "success",
+      message: "Password updated successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getAllUsers = async (req, res, next) => {
   try {
     const users = await User.findAll();
@@ -309,6 +352,7 @@ module.exports = {
   forgotPassword,
   resetPassword,
   updateProfile,
+  updatePassword,
   getAllUsers,
   whoAmI,
 };

@@ -1,11 +1,7 @@
 const router = require("express").Router();
-
 const userController = require("../controllers/userController");
-
 const { authenticate } = require("../middlewares/auth");
-
 const upload = require("../middlewares/uploader");
-
 const checkRole = require("../middlewares/checkRole");
 
 router.post("/register", userController.register);
@@ -27,7 +23,11 @@ router.get(
   checkRole("admin"),
   userController.getAllUsers
 );
-
+router
+  .route("/:id")
+  .get(authenticate, checkRole("admin"), userController.getUserById)
+  .delete(authenticate, checkRole("admin"), userController.deleteUser);
+router.post("/login/admin", userController.loginAdmin);
 router.get("/me", authenticate, userController.whoAmI);
 
 module.exports = router;

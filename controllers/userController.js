@@ -344,6 +344,81 @@ const whoAmI = async (req, res, next) => {
   }
 };
 
+const loginAdmin = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    if (!email) {
+      throw new ApiError("Email is required", 400);
+    }
+    if (!password) {
+      throw new ApiError("Password is required", 400);
+    }
+    const user = await User.findOne({
+      where: { email },
+      include: ["Verified"],
+    });
+    if (!user) {
+      throw new ApiError("Email does not exist", 400);
+    }
+    if (user.role !== "admin") {
+      throw new ApiError("You are not admin", 400);
+    }
+    const isMatch = await compare(password, user.password);
+    if (!isMatch) {
+      throw new ApiError("Password is incorrect", 400);
+    }
+    const token = generateToken(user);
+    res.status(200).json({
+      status: "success",
+      message: "Your account has been logged in successfully",
+      data: {
+        token,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getUserById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findByPk(id);
+    if (!user) {
+      throw new ApiError("User not found", 404);
+    }
+    res.status(200).json({
+      status: "success",
+      message: "User fetched successfully",
+      data: {
+        user,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteUser = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findByPk(id);
+    if (!user) {
+      throw new ApiError("User not found", 404);
+    }
+    if (user.imageId) {
+      await imagekit.deleteFile(user.imageId);
+    }
+    await user.destroy();
+    res.status(200).json({
+      status: "success",
+      message: "User deleted successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -355,4 +430,7 @@ module.exports = {
   updatePassword,
   getAllUsers,
   whoAmI,
+  loginAdmin,
+  getUserById,
+  deleteUser,
 };

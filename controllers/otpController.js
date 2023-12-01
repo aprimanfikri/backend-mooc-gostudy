@@ -10,10 +10,10 @@ const sendOtpVerification = async (id, email) => {
       await exists.destroy();
     }
     const otp = Math.floor(1000 + Math.random() * 9000);
-    const hashedOtp = await hash(otp.toString());
+    // const hashedOtp = await hash(otp.toString());
     await Verified.create({
       userId: id,
-      otp: hashedOtp,
+      otp: otp,
       expiresAt: Date.now() + 1000 * 60 * 10,
     });
     const mailOptions = {

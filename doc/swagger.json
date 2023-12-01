@@ -8,7 +8,11 @@
   "tags": [
     {
       "name": "Users",
-      "description": " Ini adalah API untuk USERS resources yang di dalamya terdiri dari beberapa endpoint"
+      "description": "Ini adalah API untuk USERS resources yang di dalamya terdiri dari beberapa endpoint"
+    },
+    {
+      "name": "Course",
+      "description": "API untuk resources Course yang terdiri dari beberapa endpoint"
     }
   ],
   "servers": [
@@ -541,7 +545,7 @@
                       "example": "Login success!"
                     },
                     "data": {
-                      "tipe": "object",
+                      "type": "object",
                       "properties": {
                         "token": {
                           "type": "string",
@@ -929,6 +933,763 @@
                       "type": "string",
                       "description": "Message of the request",
                       "example": "Error occured during the retrieving process of user details"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/course": {
+      "post": {
+        "tags": ["Course"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "summary": "Create new course",
+        "description": "Ini adalah API endpoint untuk membuat course",
+        "requestBody": {
+          "description": "Request body untuk membuat course",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "UI/UX Introduction to Figma"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "level": {
+                    "type": "string",
+                    "example": "Intermediate"
+                  },
+                  "categoryId": {
+                    "type": "integer",
+                    "example": 2
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Figma is a tool for design an UI or UX. Figma also can make a prototype for present an UI/UX project"
+                  },
+                  "benefits": {
+                    "type": "string",
+                    "example": "1. Make prototype app"
+                  },
+                  "classCode": {
+                    "type": "string",
+                    "example": "UI001"
+                  },
+                  "totalModule": {
+                    "type": "integer",
+                    "example": 6
+                  },
+                  "type": {
+                    "type": "string",
+                    "example": "Premium"
+                  },
+                  "price": {
+                    "type": "integer",
+                    "example": 150000
+                  },
+                  "totalDuration": {
+                    "type": "integer",
+                    "example": 36000
+                  },
+                  "courseBy": {
+                    "type": "string",
+                    "example": "Halo Designer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Course created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Course created successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "newCourse": {
+                          "type": "object",
+                          "description": "Data new course"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Created New Course",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "All value fields are required"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Create Course",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during create course"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Course"],
+        "parameters": [
+          {
+            "name": "level",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "Intermediate"
+            },
+            "description": "Query level"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query type"
+          },
+          {
+            "name": "categoryName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query category name"
+          },
+          {
+            "name": "createdAt",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            },
+            "description": "Query newest data"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query search"
+          }
+        ],
+        "summary": "Get All Course",
+        "description": "Ini adalah API endpoint untuk menampilkan data course",
+        "responses": {
+          "200": {
+            "description": "All courses fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "description": "Status of the request",
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "description": "Message of the request",
+                      "type": "string",
+                      "example": "All courses fetched successfully"
+                    },
+                    "data": {
+                      "description": "Courses data",
+                      "type": "object",
+                      "properties": {
+                        "courses": {
+                          "description": "Data of the course",
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "format": "int64",
+                              "example": 1
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "Digital Marketing"
+                            },
+                            "imageUrl": {
+                              "type": "string",
+                              "format": "url",
+                              "example": "https://ik.imagekit.io/cbtfkvupm4/gostudy/course-image/Digital_Marketing_8SwRF29kS.jpg"
+                            },
+                            "imageId": {
+                              "type": "string",
+                              "example": "65649fca88c257da33e1c374"
+                            },
+                            "level": {
+                              "type": "string",
+                              "example": "Beginner"
+                            },
+                            "categoryId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "example": 1
+                            },
+                            "description": {
+                              "type": "string",
+                              "example": "Digital Marketing adalah ilmu untuk memasarkan sesuatu di ranah digital seperti social media."
+                            },
+                            "benefits": {
+                              "type": "string",
+                              "example": "1. Memasarkan suatu produk secara digital"
+                            },
+                            "classCode": {
+                              "type": "string",
+                              "example": "DM001"
+                            },
+                            "totalModule": {
+                              "type": "integer",
+                              "format": "int32",
+                              "example": 8
+                            },
+                            "type": {
+                              "type": "string",
+                              "example": "Free"
+                            },
+                            "price": {
+                              "type": "number",
+                              "format": "float",
+                              "example": 0
+                            },
+                            "totalDuration": {
+                              "type": "integer",
+                              "format": "int32",
+                              "example": "36000"
+                            },
+                            "courseBy": {
+                              "type": "string",
+                              "example": "Jo Xander"
+                            },
+                            "createdBy": {
+                              "type": "integer",
+                              "format": "int64"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Get Courses Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "No course data"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Get Course Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during get course data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/course/{id}": {
+      "get": {
+        "tags": ["Course"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID of the course to retrieve"
+          }
+        ],
+        "summary": "Get Course By ID",
+        "description": "Ini adalah API endpoint untuk menampilkan data course sesuai ID",
+        "responses": {
+          "200": {
+            "description": "Course fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "description": "Status of the request",
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "description": "Message of the request",
+                      "type": "string",
+                      "example": "Course 1 found!"
+                    },
+                    "data": {
+                      "description": "Courses data",
+                      "type": "object",
+                      "properties": {
+                        "course": {
+                          "description": "Data of the course",
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "format": "int64",
+                              "example": 1
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "Digital Marketing"
+                            },
+                            "imageUrl": {
+                              "type": "string",
+                              "format": "url",
+                              "example": "https://ik.imagekit.io/cbtfkvupm4/gostudy/course-image/Digital_Marketing_8SwRF29kS.jpg"
+                            },
+                            "imageId": {
+                              "type": "string",
+                              "example": "65649fca88c257da33e1c374"
+                            },
+                            "level": {
+                              "type": "string",
+                              "example": "Beginner"
+                            },
+                            "categoryId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "example": 1
+                            },
+                            "description": {
+                              "type": "string",
+                              "example": "Digital Marketing adalah ilmu untuk memasarkan sesuatu di ranah digital seperti social media."
+                            },
+                            "benefits": {
+                              "type": "string",
+                              "example": "1. Memasarkan suatu produk secara digital"
+                            },
+                            "classCode": {
+                              "type": "string",
+                              "example": "DM001"
+                            },
+                            "totalModule": {
+                              "type": "integer",
+                              "format": "int32",
+                              "example": 8
+                            },
+                            "type": {
+                              "type": "string",
+                              "example": "Free"
+                            },
+                            "price": {
+                              "type": "number",
+                              "format": "float",
+                              "example": 0
+                            },
+                            "totalDuration": {
+                              "type": "integer",
+                              "format": "int32",
+                              "example": "36000"
+                            },
+                            "courseBy": {
+                              "type": "string",
+                              "example": "Jo Xander"
+                            },
+                            "createdBy": {
+                              "type": "integer",
+                              "format": "int64"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Get Course Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Course not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Get Course Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during get course data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Course"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "summary": "Update Course By ID",
+        "description": "Ini adalah API endpoint untuk mengupdate course",
+        "requestBody": {
+          "description": "Request body untuk mengupdate course",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "UI/UX Introduction to Figma"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "level": {
+                    "type": "string",
+                    "example": "Intermediate"
+                  },
+                  "categoryId": {
+                    "type": "integer",
+                    "example": 2
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Figma is a tool for design an UI or UX. Figma also can make a prototype for present an UI/UX project"
+                  },
+                  "benefits": {
+                    "type": "string",
+                    "example": "1. Make prototype app"
+                  },
+                  "classCode": {
+                    "type": "string",
+                    "example": "UI001"
+                  },
+                  "totalModule": {
+                    "type": "integer",
+                    "example": 6
+                  },
+                  "type": {
+                    "type": "string",
+                    "example": "Premium"
+                  },
+                  "price": {
+                    "type": "integer",
+                    "example": 150000
+                  },
+                  "totalDuration": {
+                    "type": "integer",
+                    "example": 36000
+                  },
+                  "courseBy": {
+                    "type": "string",
+                    "example": "Halo Designer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Course updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Course updated successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "updatedCourse": {
+                          "type": "object",
+                          "description": "Data updated"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Updated New Course",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "All value fields are required"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Update Course",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during update course"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Course"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 3
+            },
+            "description": "ID of the course to retrieve"
+          }
+        ],
+        "summary": "Delete Course By ID",
+        "description": "Ini adalah API endpoint untuk menghapus data course",
+        "responses": {
+          "200": {
+            "description": "Delete a course by ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "description": "Status of the request",
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "description": "Message of the request",
+                      "type": "string",
+                      "example": "Course deleted"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Delete Course Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Course not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Delete Course Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during get course data"
                     }
                   }
                 }

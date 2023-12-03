@@ -11,8 +11,20 @@
       "description": "Ini adalah API untuk USERS resources yang di dalamya terdiri dari beberapa endpoint"
     },
     {
+      "name": "Category",
+      "description": "API untuk resources Category yang terdiri dari beberapa endpoint"
+    },
+    {
       "name": "Course",
       "description": "API untuk resources Course yang terdiri dari beberapa endpoint"
+    },
+    {
+      "name": "Chapter",
+      "description": "API untuk resources Chapter yang terdiri dari beberapa endpoint"
+    },
+    {
+      "name": "Module",
+      "description": "API untuk resources Module yang terdiri dari beberapa endpoint"
     }
   ],
   "servers": [
@@ -942,6 +954,525 @@
         }
       }
     },
+    "/category": {
+      "post": {
+        "tags": ["Category"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "summary": "Create a new category",
+        "description": "Ini adalah API endpoint untuk membuat category",
+        "requestBody": {
+          "description": "Request body untuk membuat category",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "UI/UX Design"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Category created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Course created successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "newCat": {
+                          "type": "object",
+                          "description": "Data new course",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "example": "UI/UX Design"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Created New Category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Name is required"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Create Category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during create category"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Category"],
+        "summary": "Get All Category",
+        "description": "Ini adalah API endpoint untuk menampilkan data category",
+        "responses": {
+          "200": {
+            "description": "All category fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "description": "Status of the request",
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "description": "Message of the request",
+                      "type": "string",
+                      "example": "All categories fetched successfully"
+                    },
+                    "data": {
+                      "description": "Courses data",
+                      "type": "object",
+                      "properties": {
+                        "categories": {
+                          "description": "Data of the category",
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "UI/UX Design"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Get Category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "No category data"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Get Category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during get category data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/category/{id}": {
+      "get": {
+        "tags": ["Category"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID of the Category to retrieve"
+          }
+        ],
+        "summary": "Get Category By ID",
+        "description": "Ini adalah API endpoint untuk menampilkan data category sesuai ID",
+        "responses": {
+          "200": {
+            "description": "Category fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "description": "Status of the request",
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "description": "Message of the request",
+                      "type": "string",
+                      "example": "Category 1 found!"
+                    },
+                    "data": {
+                      "description": "category data",
+                      "type": "object",
+                      "properties": {
+                        "course": {
+                          "description": "Data of the course",
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "format": "int64",
+                              "example": 1
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "UI/UX Design"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Get Category Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Category not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Get Category Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during get category data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Category"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID of the Category to retrieve"
+          }
+        ],
+        "summary": "Update Category By ID",
+        "description": "Ini adalah API endpoint untuk mengupdate category",
+        "requestBody": {
+          "description": "Request body untuk mengupdate category",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "UI/UX Design"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Category updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Category updated successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Updated Category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Name is required"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Update Category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during update category"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Category"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 3
+            },
+            "description": "ID of the category to retrieve"
+          }
+        ],
+        "summary": "Delete Category By ID",
+        "description": "Ini adalah API endpoint untuk menghapus data category",
+        "responses": {
+          "200": {
+            "description": "Delete a category by ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "description": "Status of the request",
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "description": "Message of the request",
+                      "type": "string",
+                      "example": "Category deleted"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Delete Course Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Course not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Delete Course Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during get course data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/course": {
       "post": {
         "tags": ["Course"],
@@ -981,6 +1512,7 @@
                   },
                   "benefits": {
                     "type": "string",
+                    "format": "text",
                     "example": "1. Make prototype app"
                   },
                   "classCode": {
@@ -1284,7 +1816,7 @@
                     "message": {
                       "type": "string",
                       "description": "Message of the request",
-                      "example": "Error occured during get course data"
+                      "example": "Error occured during get category data"
                     }
                   }
                 }
@@ -1473,6 +2005,18 @@
             "bearerToken": []
           }
         ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID of the Course to retrieve"
+          }
+        ],
         "summary": "Update Course By ID",
         "description": "Ini adalah API endpoint untuk mengupdate course",
         "requestBody": {
@@ -1568,7 +2112,7 @@
             }
           },
           "4xx": {
-            "description": "Failed Updated New Course",
+            "description": "Failed Updated Course",
             "content": {
               "application/json": {
                 "schema": {
@@ -1690,6 +2234,1244 @@
                       "type": "string",
                       "description": "Message of the request",
                       "example": "Error occured during get course data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chapter": {
+      "post": {
+        "tags": ["Chapter"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "summary": "Create a new chapter",
+        "description": "Ini adalah API endpoint untuk membuat chapter",
+        "requestBody": {
+          "description": "Request body untuk membuat chapter",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "noChapter": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "Mengenal Tools di Figma"
+                  },
+                  "courseId": {
+                    "type": "integer",
+                    "example": 2
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Chapter created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Chapter created successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "newChapter": {
+                          "type": "object",
+                          "description": "Data new course",
+                          "properties": {
+                            "noChapter": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "Mengenal Tools di Figma"
+                            },
+                            "courseId": {
+                              "type": "integer",
+                              "example": 2
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Created New Chapter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "All value fields are required!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Create Category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during create chapter"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Chapter"],
+        "summary": "Get All Chapter",
+        "description": "Ini adalah API endpoint untuk menampilkan data chapter",
+        "responses": {
+          "200": {
+            "description": "All chapter fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "description": "Status of the request",
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "description": "Message of the request",
+                      "type": "string",
+                      "example": "All chapters fetched successfully"
+                    },
+                    "data": {
+                      "description": "Chapters data",
+                      "type": "object",
+                      "properties": {
+                        "chapters": {
+                          "description": "Data of the chapter",
+                          "type": "object",
+                          "properties": {
+                            "noChapter": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "Mengenal Tools di Figma"
+                            },
+                            "courseId": {
+                              "type": "integer",
+                              "example": 2
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Get Chapter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "No chapter data"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Get Category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during get chapter data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chapter/{id}": {
+      "get": {
+        "tags": ["Chapter"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID of the Chapter to retrieve"
+          }
+        ],
+        "summary": "Get Chapter By ID",
+        "description": "Ini adalah API endpoint untuk menampilkan data chapter sesuai ID",
+        "responses": {
+          "200": {
+            "description": "Chapter fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "description": "Status of the request",
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "description": "Message of the request",
+                      "type": "string",
+                      "example": "Category 1 found!"
+                    },
+                    "data": {
+                      "description": "category data",
+                      "type": "object",
+                      "properties": {
+                        "id": {},
+                        "noChapter": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Mengenal Tools di Figma"
+                        },
+                        "courseId": {
+                          "type": "integer",
+                          "example": 2
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Get Chapter Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Chapter not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Get Category Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during get chapter data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Chapter"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID of the Chapter to retrieve"
+          }
+        ],
+        "summary": "Update Chapter By ID",
+        "description": "Ini adalah API endpoint untuk mengupdate chapter",
+        "requestBody": {
+          "description": "Request body untuk mengupdate chapter",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "noChapter": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "Mengenal Tools di Figma"
+                  },
+                  "courseId": {
+                    "type": "integer",
+                    "example": 2
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Chapter updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Chapter updated successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Updated Chapter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "All values are required"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Update Chapter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during update chapter"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Chapter"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 3
+            },
+            "description": "ID of the chapter to retrieve"
+          }
+        ],
+        "summary": "Delete Chapter By ID",
+        "description": "Ini adalah API endpoint untuk menghapus data chapter",
+        "responses": {
+          "200": {
+            "description": "Delete a chapter by ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "description": "Status of the request",
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "description": "Message of the request",
+                      "type": "string",
+                      "example": "Chapter deleted"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Delete Course Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Course not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Delete Course Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during get course data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/module": {
+      "post": {
+        "tags": ["Module"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "summary": "Create new Module",
+        "description": "Ini adalah API endpoint untuk membuat module",
+        "requestBody": {
+          "description": "Request body untuk membuat module",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "no": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "UI/UX Introduction to Figma"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Figma is a tool for design an UI or UX. Figma also can make a prototype for present an UI/UX project"
+                  },
+                  "chapterId": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "video": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Module created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Module created successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "newModule": {
+                          "type": "object",
+                          "description": "Data new module",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "no": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "UI/UX Introduction to Figma"
+                            },
+                            "description": {
+                              "type": "string",
+                              "example": "Figma is a tool for design an UI or UX. Figma also can make a prototype for present an UI/UX project"
+                            },
+                            "chapterId": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "video": {
+                              "type": "string",
+                              "format": "binary"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Created New Module",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "All value fields are required"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Create Module",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during create module"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Module"],
+        "summary": "Get All Modules",
+        "description": "Ini adalah API endpoint untuk menampilkan data module",
+        "responses": {
+          "200": {
+            "description": "All modules fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "description": "Status of the request",
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "description": "Message of the request",
+                      "type": "string",
+                      "example": "All modules fetched successfully"
+                    },
+                    "data": {
+                      "description": "Modules data",
+                      "type": "object",
+                      "properties": {
+                        "modules": {
+                          "description": "Data of the module",
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "no": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "UI/UX Introduction to Figma"
+                            },
+                            "description": {
+                              "type": "string",
+                              "example": "Figma is a tool for design an UI or UX. Figma also can make a prototype for present an UI/UX project"
+                            },
+                            "chapterId": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "videoUrl": {
+                              "type": "string",
+                              "format": "binary"
+                            },
+                            "videoId": {
+                              "type": "string"
+                            },
+                            "duration": {
+                              "type": "integer"
+                            },
+                            "createdBy": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Get Modules Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "No module data"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Get Module Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during get module data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/module/{id}": {
+      "get": {
+        "tags": ["Module"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID of the Module to retrieve"
+          }
+        ],
+        "summary": "Get Module By ID",
+        "description": "Ini adalah API endpoint untuk menampilkan data module sesuai ID",
+        "responses": {
+          "200": {
+            "description": "Module fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "description": "Status of the request",
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "description": "Message of the request",
+                      "type": "string",
+                      "example": "Module 1 found!"
+                    },
+                    "data": {
+                      "description": "category data",
+                      "type": "object",
+                      "properties": {
+                        "module": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "no": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "UI/UX Introduction to Figma"
+                            },
+                            "description": {
+                              "type": "string",
+                              "example": "Figma is a tool for design an UI or UX. Figma also can make a prototype for present an UI/UX project"
+                            },
+                            "chapterId": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "videoUrl": {
+                              "type": "string",
+                              "format": "binary"
+                            },
+                            "videoId": {
+                              "type": "string"
+                            },
+                            "duration": {
+                              "type": "integer"
+                            },
+                            "createdBy": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Get Module Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Module not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Get Module Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during get module data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Module"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID of the Module to retrieve"
+          }
+        ],
+        "summary": "Update Module By ID",
+        "description": "Ini adalah API endpoint untuk mengupdate module",
+        "requestBody": {
+          "description": "Request body untuk mengupdate module",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "no": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "UI/UX Introduction to Figma"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Figma is a tool for design an UI or UX. Figma also can make a prototype for present an UI/UX project"
+                  },
+                  "chapterId": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "video": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Module updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Module updated successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "updatedModule": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "no": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "UI/UX Introduction to Figma"
+                            },
+                            "description": {
+                              "type": "string",
+                              "example": "Figma is a tool for design an UI or UX. Figma also can make a prototype for present an UI/UX project"
+                            },
+                            "chapterId": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "videoUrl": {
+                              "type": "string",
+                              "format": "binary"
+                            },
+                            "videoId": {
+                              "type": "string"
+                            },
+                            "duration": {
+                              "type": "integer"
+                            },
+                            "createdBy": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Updated Module",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "All values are required"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Update Module",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during update module"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Module"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 3
+            },
+            "description": "ID of the module to retrieve"
+          }
+        ],
+        "summary": "Delete Module By ID",
+        "description": "Ini adalah API endpoint untuk menghapus data module",
+        "responses": {
+          "200": {
+            "description": "Module a chapter by ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "description": "Status of the request",
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "description": "Message of the request",
+                      "type": "string",
+                      "example": "Module deleted"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Delete Module Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Module not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Delete Module Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during delete module data"
                     }
                   }
                 }

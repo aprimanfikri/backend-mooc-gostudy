@@ -15,6 +15,7 @@ const createCategory = async (req, res) => {
 
     res.status(201).json({
       status: 'success',
+      message: 'Category created successfully',
       data: {
         newCat,
       },
@@ -81,6 +82,7 @@ const getAllCategory = async (req, res) => {
     const categories = await Category.findAll();
     res.status(200).json({
       status: 'success',
+      message: 'All categories fetched succesfully',
       data: {
         categories,
       },

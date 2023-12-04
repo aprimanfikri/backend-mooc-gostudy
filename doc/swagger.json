@@ -1389,6 +1389,11 @@
       },
       "delete": {
         "tags": ["Category"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -2159,6 +2164,11 @@
       },
       "delete": {
         "tags": ["Course"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -2712,6 +2722,11 @@
       },
       "delete": {
         "tags": ["Chapter"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -3397,6 +3412,11 @@
       },
       "delete": {
         "tags": ["Module"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",

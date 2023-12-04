@@ -7,6 +7,10 @@
   },
   "tags": [
     {
+      "name": "Auth",
+      "description": "Ini adalah API untuk AUTH resources yang di dalamya terdiri dari beberapa endpoint"
+    },
+    {
       "name": "Users",
       "description": "Ini adalah API untuk USERS resources yang di dalamya terdiri dari beberapa endpoint"
     },
@@ -29,13 +33,13 @@
   ],
   "servers": [
     {
-      "url": "https://gostudy.up.railway.app/api/v1"
+      "url": "http://localhost:5000/api/v1"
     }
   ],
   "paths": {
     "/auth/register": {
       "post": {
-        "tags": ["Users"],
+        "tags": ["Auth"],
         "summary": "Register user",
         "description": "Ini adalah API endpoint yang digunakan untuk register new user",
         "requestBody": {
@@ -142,7 +146,7 @@
     },
     "/auth/resend": {
       "post": {
-        "tags": ["Users"],
+        "tags": ["Auth"],
         "security": [
           {
             "bearerToken": []
@@ -221,7 +225,7 @@
     },
     "/auth/verify": {
       "post": {
-        "tags": ["Users"],
+        "tags": ["Auth"],
         "security": [
           {
             "bearerToken": []
@@ -318,7 +322,7 @@
     },
     "/auth/forgot-password": {
       "post": {
-        "tags": ["Users"],
+        "tags": ["Auth"],
         "summary": "Forgot Password",
         "description": "Ini adalah API endpoint yang digunakan untuk mengirim request link reset password",
         "requestBody": {
@@ -408,9 +412,9 @@
         }
       }
     },
-    "/auth/reset-password/": {
+    "/auth/reset-password": {
       "post": {
-        "tags": ["Users"],
+        "tags": ["Auth"],
         "security": [
           {
             "bearerToken": []
@@ -513,7 +517,7 @@
     },
     "/auth/login": {
       "post": {
-        "tags": ["Users"],
+        "tags": ["Auth"],
         "summary": "Login a user",
         "description": "ini adalah API endpoint untuk autentikasi dan login user menggunakan email dan password",
         "requestBody": {
@@ -617,7 +621,7 @@
         }
       }
     },
-    "/auth/update": {
+    "/user/update": {
       "put": {
         "tags": ["Users"],
         "security": [
@@ -750,7 +754,7 @@
         }
       }
     },
-    "/auth/update-password": {
+    "/user/update-password": {
       "put": {
         "tags": ["Users"],
         "security": [
@@ -857,7 +861,7 @@
         }
       }
     },
-    "/auth/me": {
+    "/user/me": {
       "get": {
         "tags": ["Users"],
         "security": [
@@ -1389,6 +1393,11 @@
       },
       "delete": {
         "tags": ["Category"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -2159,6 +2168,11 @@
       },
       "delete": {
         "tags": ["Course"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -2712,6 +2726,11 @@
       },
       "delete": {
         "tags": ["Chapter"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -3397,6 +3416,11 @@
       },
       "delete": {
         "tags": ["Module"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",

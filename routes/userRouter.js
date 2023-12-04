@@ -4,30 +4,22 @@ const { authenticate } = require("../middlewares/auth");
 const upload = require("../middlewares/uploader");
 const checkRole = require("../middlewares/checkRole");
 
-router.post("/register", userController.register);
-router.post("/verify", authenticate, userController.verifyOtp);
-router.post("/resend", authenticate, userController.resendOtp);
-router.post("/forgot-password", userController.forgotPassword);
-router.post("/reset-password", authenticate, userController.resetPassword);
-router.post("/login", userController.login);
+router.get("/me", authenticate, userController.whoAmI);
+
 router.put(
   "/update",
   authenticate,
   upload.single("image"),
   userController.updateProfile
 );
+
 router.put("/update-password", authenticate, userController.updatePassword);
-router.get(
-  "/all",
-  authenticate,
-  checkRole("admin"),
-  userController.getAllUsers
-);
+
+router.get("/", authenticate, checkRole("admin"), userController.getAllUsers);
+
 router
   .route("/:id")
   .get(authenticate, checkRole("admin"), userController.getUserById)
   .delete(authenticate, checkRole("admin"), userController.deleteUser);
-router.post("/login/admin", userController.loginAdmin);
-router.get("/me", authenticate, userController.whoAmI);
 
 module.exports = router;

@@ -40,7 +40,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       price: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
       },
       totalDuration: {
         type: Sequelize.INTEGER,

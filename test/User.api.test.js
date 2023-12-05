@@ -31,8 +31,7 @@ describe("API Register", () => {
     const user = {
       name: "admin",
       phoneNumber: "1234567890",
-      email:
-        "asdddaaay2aasdasasssasdasdsaqweasdassdsasddasddasdasdasdasdsdasdyfasdvsasa@gmail.com",
+      email: "aaaaa@gmail.com",
       password: "admin1234",
     };
     const response = await request(app)
@@ -59,8 +58,7 @@ describe("API Verify", () => {
     const user = {
       name: "admin",
       phoneNumber: "1234567890",
-      email:
-        "asdasdadyasasasdasdasdasdaaqwesdasdsasdssasdsdaasasdasddasdsdyasasddafvsasa@gmail.com",
+      email: "aaaaaa@gmail.com",
       password: "admin1234",
     };
     const register = await request(app)
@@ -84,8 +82,7 @@ describe("API Resend", () => {
     const user = {
       name: "admin",
       phoneNumber: "1234567890",
-      email:
-        "asdasdasdayyasdasdasaasdasdasqwedasdassssasdsddasdasaaaasasdasddasdasvvfsxa@gmail.com",
+      email: "aaaaaaa@gmail.com",
       password: "admin1234",
     };
     const register = await request(app)

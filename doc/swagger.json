@@ -31,13 +31,9 @@
       "description": "API untuk resources Module yang terdiri dari beberapa endpoint"
     }
   ],
-  "servers": [
-    {
-      "url": "https://gostudy.up.railway.app/api/v1"
-    }
-  ],
+
   "paths": {
-    "/auth/register": {
+    "/api/v1/auth/register": {
       "post": {
         "tags": ["Auth"],
         "summary": "Register user",
@@ -144,7 +140,7 @@
         }
       }
     },
-    "/auth/resend": {
+    "/api/v1/auth/resend": {
       "post": {
         "tags": ["Auth"],
         "security": [
@@ -223,7 +219,7 @@
         }
       }
     },
-    "/auth/verify": {
+    "/api/v1/auth/verify": {
       "post": {
         "tags": ["Auth"],
         "security": [
@@ -320,7 +316,7 @@
         }
       }
     },
-    "/auth/forgot-password": {
+    "/api/v1/auth/forgot-password": {
       "post": {
         "tags": ["Auth"],
         "summary": "Forgot Password",
@@ -412,7 +408,7 @@
         }
       }
     },
-    "/auth/reset-password": {
+    "/api/v1/auth/reset-password": {
       "post": {
         "tags": ["Auth"],
         "security": [
@@ -515,7 +511,7 @@
         }
       }
     },
-    "/auth/login": {
+    "/api/v1/auth/login": {
       "post": {
         "tags": ["Auth"],
         "summary": "Login a user",
@@ -621,7 +617,7 @@
         }
       }
     },
-    "/user/update": {
+    "/api/v1/user/update": {
       "put": {
         "tags": ["Users"],
         "security": [
@@ -754,7 +750,7 @@
         }
       }
     },
-    "/user/update-password": {
+    "/api/v1/user/update-password": {
       "put": {
         "tags": ["Users"],
         "security": [
@@ -861,7 +857,7 @@
         }
       }
     },
-    "/user/me": {
+    "/api/v1/user/me": {
       "get": {
         "tags": ["Users"],
         "security": [
@@ -958,7 +954,7 @@
         }
       }
     },
-    "/category": {
+    "/api/v1/category": {
       "post": {
         "tags": ["Category"],
         "security": [
@@ -1170,7 +1166,7 @@
         }
       }
     },
-    "/category/{id}": {
+    "/api/v1/category/{id}": {
       "get": {
         "tags": ["Category"],
         "parameters": [
@@ -1482,7 +1478,7 @@
         }
       }
     },
-    "/course": {
+    "/api/v1/course": {
       "post": {
         "tags": ["Course"],
         "security": [
@@ -1835,7 +1831,7 @@
         }
       }
     },
-    "/course/{id}": {
+    "/api/v1/course/{id}": {
       "get": {
         "tags": ["Course"],
         "parameters": [
@@ -2257,7 +2253,7 @@
         }
       }
     },
-    "/chapter": {
+    "/api/v1/chapter": {
       "post": {
         "tags": ["Chapter"],
         "security": [
@@ -2497,7 +2493,7 @@
         }
       }
     },
-    "/chapter/{id}": {
+    "/api/v1/chapter/{id}": {
       "get": {
         "tags": ["Chapter"],
         "parameters": [
@@ -2815,7 +2811,7 @@
         }
       }
     },
-    "/module": {
+    "/api/v1/module": {
       "post": {
         "tags": ["Module"],
         "security": [
@@ -3101,7 +3097,7 @@
         }
       }
     },
-    "/module/{id}": {
+    "/api/v1/module/{id}": {
       "get": {
         "tags": ["Module"],
         "parameters": [

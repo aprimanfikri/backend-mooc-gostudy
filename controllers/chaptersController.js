@@ -1,16 +1,15 @@
-const { Chapter, Course } = require('../models');
-const ApiError = require('../utils/apiError');
+const { Chapter, Course } = require("../models");
+const ApiError = require("../utils/apiError");
 
 const createChapter = async (req, res, next) => {
   const { noChapter, name, courseId } = req.body;
-
   try {
     if (!noChapter || !name || !courseId) {
-      throw new ApiError('Semua nilai Harus terisi', 400);
+      throw new ApiError("All value fields are required", 400);
     }
     const course = await Course.findByPk(courseId);
     if (!course) {
-      throw new ApiError('Course ID not found!', 404);
+      throw new ApiError("Course ID not found!", 404);
     }
     const newChapter = await Chapter.create({
       noChapter,
@@ -19,8 +18,8 @@ const createChapter = async (req, res, next) => {
     });
 
     res.status(201).json({
-      status: 'success',
-      message: 'Chapter created successfully',
+      status: "success",
+      message: "Chapter created successfully",
       data: {
         newChapter,
       },
@@ -35,31 +34,23 @@ const updateChapter = async (req, res, next) => {
     const { noChapter, name, courseId } = req.body;
     const { id } = req.params;
     if (!noChapter || !name || !courseId) {
-      return res.status(400).json({
-        status: 'Failed',
-        message: 'Atribute tidak boleh kosong',
-      });
+      throw new ApiError("All value fields are required", 400);
     }
     const chapter = await Chapter.findByPk(id);
     if (!chapter) {
-      throw new ApiError('Chapter not found', 404);
+      throw new ApiError("Chapter not found", 404);
     }
-
-    const updatedChapter = await Chapter.update(
-      {
-        noChapter,
-        name,
-        courseId,
-      },
-      {
-        where: {
-          id,
-        },
-      }
-    );
+    const updatedChapter = await chapter.update({
+      noChapter,
+      name,
+      courseId,
+    });
     res.status(200).json({
-      status: 'success',
-      message: 'Chapter updated successfully',
+      status: "success",
+      message: "Chapter updated successfully",
+      data: {
+        updatedChapter,
+      },
     });
   } catch (error) {
     next(error);
@@ -71,12 +62,12 @@ const deleteChapter = async (req, res, next) => {
     const { id } = req.params;
     const chapter = await Chapter.findByPk(id);
     if (!chapter) {
-      throw new ApiError('Chapter not found', 404);
+      throw new ApiError("Chapter not found", 404);
     }
     await chapter.destroy();
     res.status(200).json({
-      status: 'success',
-      message: 'Chapter deleted',
+      status: "success",
+      message: "Chapter deleted",
     });
   } catch (error) {
     next(error);
@@ -87,8 +78,8 @@ const getAllChapters = async (req, res, next) => {
   try {
     const chapters = await Chapter.findAll();
     res.status(200).json({
-      status: 'success',
-      message: 'All chapters fetched successfully',
+      status: "success",
+      message: "All chapters fetched successfully",
       data: {
         chapters,
       },
@@ -103,10 +94,10 @@ const getChapterById = async (req, res, next) => {
     const { id } = req.params;
     const chapter = await Chapter.findByPk(id);
     if (!chapter) {
-      throw new ApiError('Chapter not found', 404);
+      throw new ApiError("Chapter not found", 404);
     }
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: {
         chapter,
       },

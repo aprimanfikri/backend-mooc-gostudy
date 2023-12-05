@@ -1,119 +1,137 @@
-const { Category } = require('../models');
-const ApiError = require('../middlewares/errorHandler');
+const { Category } = require("../models");
+const ApiError = require("../utils/apiError");
+const imagekit = require("../lib/imagekit");
 
-const createCategory = async (req, res) => {
-  const { name } = req.body;
-
+const createCategory = async (req, res, next) => {
   try {
+    const { name } = req.body;
     if (!name) {
-      return next(new ApiError('Name is required', 400));
+      throw new ApiError("Name is required", 400);
     }
-
+    const file = req.file;
+    if (!file) {
+      throw new ApiError("Image is required", 400);
+    }
+    const split = file.originalname.split(".");
+    const fileType = split[split.length - 1];
+    const uploadImage = await imagekit.upload({
+      file: file.buffer.toString("base64"),
+      fileName: `IMG-${name}.${fileType}`,
+      folder: "/gostudy/category-image",
+    });
     const newCat = await Category.create({
       name,
+      slug: name.toLowerCase().replace(/\s+/g, "_"),
+      imageUrl: uploadImage.url,
+      imageId: uploadImage.fileId,
     });
-
     res.status(201).json({
-      status: 'success',
-      message: 'Category created successfully',
+      status: "success",
+      message: "Category created successfully",
       data: {
         newCat,
       },
     });
-  } catch {
-    return next(new ApiError(error.message, 400));
+  } catch (error) {
+    next(error);
   }
 };
 
-const updateCategory = async (req, res) => {
-  const { name } = req.body;
-
+const updateCategory = async (req, res, next) => {
   try {
+    const { name } = req.body;
     if (!name) {
-      return next(new ApiError('Name is required', 400));
+      throw new ApiError("Name is required", 400);
     }
-    const catId = req.params.id;
-    const categoryExist = Category.findByPk(catId);
-    if (!categoryExist) {
-      return next(new ApiError('Category not found!', 404));
+    const file = req.file;
+    const { id } = req.params;
+    const category = await Category.findByPk(id);
+    if (!category) {
+      throw new ApiError("Category not found!", 404);
     }
-
-    const newCat = await Category.update(
-      {
-        name,
+    console.log(category);
+    let image;
+    if (file) {
+      const split = file.originalname.split(".");
+      const fileType = split[split.length - 1];
+      const uploadImage = await imagekit.upload({
+        file: file.buffer.toString("base64"),
+        fileName: `IMG-${name}.${fileType}`,
+        folder: "/gostudy/category-image",
+      });
+      image = uploadImage;
+    }
+    if (category.imageId) {
+      await imagekit.deleteFile(category.imageId);
+    }
+    const updatedCategory = await category.update({
+      name,
+      slug: name.toLowerCase().replace(/\s+/g, "_"),
+      imageUrl: image.url,
+      imageId: image.fileId,
+    });
+    res.status(200).json({
+      status: "success",
+      message: "Category updated!",
+      data: {
+        updatedCategory,
       },
-      {
-        where: { id: catId },
-      }
-    );
-
-    res.status(201).json({
-      status: 'success',
-      message: 'Category updated!',
     });
-  } catch {
-    return next(new ApiError(error.message, 400));
+  } catch (error) {
+    next(error);
   }
 };
 
-const deleteCategory = async (req, res) => {
+const deleteCategory = async (req, res, next) => {
   try {
-    const catId = req.params.id;
-    const categoryExist = Category.findByPk(catId);
-    if (!categoryExist) {
-      return next(new ApiError('Category not found!', 404));
+    const { id } = req.params;
+    const category = await Category.findByPk(id);
+    if (!category) {
+      throw new ApiError("Category not found!", 404);
     }
-
-    await Category.destroy({
-      where: { id: catId },
-    });
-
-    res.status(201).json({
-      status: 'success',
-      message: 'Category deleted!',
+    if (!category.imageId) {
+      await imagekit.deleteFile(category.imageId);
+    }
+    await category.destroy();
+    res.status(200).json({
+      status: "success",
+      message: "Category deleted!",
     });
   } catch {
-    return next(new ApiError(error.message, 400));
+    next(error);
   }
 };
 
-const getAllCategory = async (req, res) => {
+const getAllCategory = async (req, res, next) => {
   try {
     const categories = await Category.findAll();
     res.status(200).json({
-      status: 'success',
-      message: 'All categories fetched succesfully',
+      status: "success",
+      message: "All categories fetched succesfully",
       data: {
         categories,
       },
     });
   } catch (error) {
-    return next(new ApiError(error.message, 400));
+    next(error);
   }
 };
 
-const getCategoryById = async (req, res) => {
+const getCategoryById = async (req, res, next) => {
   try {
-    const catId = req.params.id;
-    const categoryExist = Category.findByPk(catId);
-    if (!categoryExist) {
-      return next(new ApiError('Category not found!', 404));
+    const { id } = req.params;
+    const category = await Category.findByPk(id);
+    if (!category) {
+      throw new ApiError("Category not found!", 404);
     }
-
-    const category = await Category.findOne({
-      where: {
-        id: catId,
-      },
-    });
-
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: {
         category,
       },
     });
   } catch (error) {
-    return next(new ApiError(error.message, 400));
+    next(error);
   }
 };
 

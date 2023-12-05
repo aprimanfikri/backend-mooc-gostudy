@@ -1,6 +1,4 @@
 const router = require("express").Router();
-
-const ApiError = require("../utils/apiError");
 const Auth = require("./authRouter");
 const User = require("./userRouter");
 const Course = require("./courseRouter");

@@ -1,11 +1,7 @@
 const router = require("express").Router();
-
 const moduleController = require("../controllers/moduleController");
-
 const { authenticate } = require("../middlewares/auth");
-
 const upload = require("../middlewares/uploader");
-
 const checkRole = require("../middlewares/checkRole");
 
 router

@@ -4,7 +4,6 @@ const ApiError = require("../utils/apiError");
 const getAllPurchase = async (req, res, next) => {
   try {
     const Purchases = await Purchase.findAll();
-
     res.status(200).json({
       status: "success",
       data: {
@@ -18,17 +17,12 @@ const getAllPurchase = async (req, res, next) => {
 
 const findPurchaseById = async (req, res, next) => {
   try {
-    const Purchases = await Purchase.findOne({
-      where: {
-        id: req.params.id,
-      },
-    });
-
+    const { id } = req.params;
+    const Purchases = await Purchase.findByPk(id);
     if (!Purchases) {
       throw new ApiError("Purchase data not found!", 404);
     }
-
-    res.status(201).json({
+    res.status(200).json({
       status: "success",
       message: "Get purchase data by id success!",
       data: {
@@ -44,7 +38,6 @@ const createPurchase = async (req, res, next) => {
   try {
     const { price, paymentMethod, status, expiredAt, userId, courseId } =
       req.body;
-
     const newPurchase = await Purchase.create({
       price,
       paymentMethod,
@@ -53,7 +46,6 @@ const createPurchase = async (req, res, next) => {
       userId,
       courseId,
     });
-
     res.status(201).json({
       status: "success",
       message: "Purchase data created successfully!",
@@ -70,37 +62,24 @@ const updatePurchase = async (req, res, next) => {
   try {
     const { price, paymentMethod, status, expiredAt, userId, courseId } =
       req.body;
-    const updatedPurchases = await Purchase.findOne({
-      where: {
-        id: req.params.id,
-      },
-    });
-
-    if (!updatedPurchases) {
+    const { id } = req.params;
+    const purchase = await Purchase.findByPk(id);
+    if (!purchase) {
       throw new ApiError("Purchase data not found!", 404);
     }
-
-    const purchase = await Purchase.update(
-      {
-        price,
-        paymentMethod,
-        status,
-        expiredAt,
-        userId,
-        courseId,
-      },
-      {
-        where: {
-          id: req.params.id,
-        },
-      }
-    );
-
+    const updatedPhurchase = await purchase.update({
+      price,
+      paymentMethod,
+      status,
+      expiredAt,
+      userId,
+      courseId,
+    });
     res.status(200).json({
       status: "success",
       message: "Purchase data has been updated!",
       data: {
-        purchase,
+        updatedPhurchase,
       },
     });
   } catch (error) {
@@ -110,22 +89,12 @@ const updatePurchase = async (req, res, next) => {
 
 const deletePurchase = async (req, res, next) => {
   try {
-    const deletedPurchase = await Purchase.findOne({
-      where: {
-        id: req.params.id,
-      },
-    });
-
-    if (!deletedPurchase) {
+    const { id } = req.params;
+    const purchase = await Purchase.findByPk(id);
+    if (!purchase) {
       throw new ApiError("Purchase data not found!", 404);
     }
-
-    await Purchase.destroy({
-      where: {
-        id: req.params.id,
-      },
-    });
-
+    await purchase.destroy();
     res.status(200).json({
       status: "Success",
       message: "Purchase data successfully deleted!",

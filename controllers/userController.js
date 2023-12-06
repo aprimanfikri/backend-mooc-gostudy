@@ -88,6 +88,7 @@ const login = async (req, res, next) => {
       message: "Your account has been logged in successfully",
       data: {
         token,
+        user,
       },
     });
   } catch (error) {
@@ -212,10 +213,14 @@ const resetPassword = async (req, res, next) => {
     if (!user) {
       throw new ApiError("User does not exist", 404);
     }
-    if (password === user.password) {
-      throw new ApiError("Password cannot be the same as old password", 400);
+    const passwordMatch = await compare(password, user.password);
+    if (passwordMatch) {
+      throw new ApiError(
+        "New password cannot be the same as old password",
+        400
+      );
     }
-    res.clearCookie("token");
+    // res.clearCookie("token");
     await user.update({ password: await hash(password) });
     res.status(200).json({
       status: "success",
@@ -294,7 +299,7 @@ const updatePassword = async (req, res, next) => {
     if (!isMatch) {
       throw new ApiError("Old password is incorrect", 400);
     }
-    if (newPassword === user.password) {
+    if (oldPassword === newPassword) {
       throw new ApiError(
         "New password cannot be the same as old password",
         400

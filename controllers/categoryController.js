@@ -60,9 +60,9 @@ const updateCategory = async (req, res, next) => {
         folder: "/gostudy/category-image",
       });
       image = uploadImage;
-    }
-    if (category.imageId) {
-      await imagekit.deleteFile(category.imageId);
+      if (category.imageId) {
+        await imagekit.deleteFile(category.imageId);
+      }
     }
     const updatedCategory = await category.update({
       name,

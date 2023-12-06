@@ -39,7 +39,13 @@ const createCourse = async (req, res, next) => {
     }
 
     const course = await Course.findOne({ where: { name } });
+    if (course) {
+      throw new ApiError("Course name already exist", 400);
+    }
     const file = req.file;
+    if (!file) {
+      throw new ApiError("Image is required", 400);
+    }
     const split = file.originalname.split(".");
     const fileType = split[split.length - 1];
     const uploadImage = await imagekit.upload({
@@ -90,7 +96,6 @@ const updateCourse = async (req, res, next) => {
       totalDuration,
       courseBy,
     } = req.body;
-
     if (
       !name ||
       !level ||
@@ -109,7 +114,6 @@ const updateCourse = async (req, res, next) => {
     if (classCode.length < 5) {
       throw new ApiError("Class code must be at least 5 characters", 400);
     }
-
     const file = req.file;
     const { id } = req.params;
     const course = await Course.findByPk(id);

@@ -14,6 +14,10 @@ const createTransaction = async (req, res, next) => {
       include: ["Category"],
     });
 
+    if (!course) {
+      throw new ApiError("Course not found!", 404);
+    }
+
     const createPayment = await Payment.create({
       userId: req.user.id,
       courseId,
@@ -45,15 +49,13 @@ const createTransaction = async (req, res, next) => {
       },
     });
 
-    console.log(transaction);
-
     const dataPayment = {
       res: JSON.stringify(transaction),
     };
 
-    res.status(200).json({
+    res.status(201).json({
       status: "success",
-      message: "Transaksi dalam proses",
+      message: "Transaksi dibuat!",
       data: {
         dataPayment,
       },

@@ -91,21 +91,6 @@ const updateCourse = async (req, res, next) => {
       courseBy,
     } = req.body;
 
-    if (
-      !name ||
-      !level ||
-      !categoryId ||
-      !description ||
-      !benefits ||
-      !classCode ||
-      !totalModule ||
-      !type ||
-      !price ||
-      !totalDuration ||
-      !courseBy
-    ) {
-      throw new ApiError("All value fields are required", 400);
-    }
     if (classCode.length < 5) {
       throw new ApiError("Class code must be at least 5 characters", 400);
     }

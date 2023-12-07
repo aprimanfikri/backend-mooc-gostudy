@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       Course.belongsTo(models.Category, {
-        as: "category",
+        as: "Category",
         foreignKey: {
           name: "categoryId",
         },

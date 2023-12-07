@@ -29,6 +29,10 @@
     {
       "name": "Module",
       "description": "API untuk resources Module yang terdiri dari beberapa endpoint"
+    },
+    {
+      "name": "Payment",
+      "description": "API untuk resources Payment yang terdiri dari beberapa endpoint"
     }
   ],
 

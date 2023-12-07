@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
 
-      Course.hasMany(models.Purchase, {
+      Course.hasMany(models.Payment, {
         foreignKey: {
           name: "courseId",
         },

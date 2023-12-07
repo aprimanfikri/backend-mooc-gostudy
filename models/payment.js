@@ -1,7 +1,7 @@
-'use strict';
-const { Model } = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Purchase extends Model {
+  class Payment extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -9,32 +9,33 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Purchase.belongsTo(models.User, {
+      Payment.belongsTo(models.User, {
         foreignKey: {
-          name: 'userId',
+          name: "userId",
         },
       });
 
-      Purchase.belongsTo(models.Course, {
+      Payment.belongsTo(models.Course, {
         foreignKey: {
-          name: 'courseId',
+          name: "courseId",
         },
       });
     }
   }
-  Purchase.init(
+  Payment.init(
     {
       userId: DataTypes.INTEGER,
       courseId: DataTypes.INTEGER,
-      price: DataTypes.INTEGER,
-      paymentMethod: DataTypes.STRING,
-      status: DataTypes.STRING,
-      expiredAt: DataTypes.DATE,
+      price: DataTypes.FLOAT,
+      status: {
+        type: DataTypes.STRING,
+        defaultValue: "unpaid",
+      },
     },
     {
       sequelize,
-      modelName: 'Purchase',
+      modelName: "Payment",
     }
   );
-  return Purchase;
+  return Payment;
 };

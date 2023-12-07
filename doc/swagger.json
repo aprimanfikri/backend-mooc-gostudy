@@ -3648,6 +3648,238 @@
             }
           }
         }
+      },
+      "get": {
+        "tags": ["Payment"],
+        "summary": "Get All Payment",
+        "description": "Ini adalah API endpoint untuk menampilkan data payment",
+        "responses": {
+          "200": {
+            "description": "All payments fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "description": "Status of the request",
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "description": "Payments data",
+                      "type": "object",
+                      "properties": {
+                        "payments": {
+                          "description": "Data of the payment",
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "userId": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "courseId": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "price": {
+                              "type": "number",
+                              "format": "float",
+                              "example": 300000
+                            },
+                            "status": {
+                              "type": "string",
+                              "example": "paid"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Get Payments Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "No payment data"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Get Payment Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during get payment data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/payment/{id}": {
+      "get": {
+        "tags": ["Payment"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID of the payment to retrieve"
+          }
+        ],
+        "summary": "Get Payment by ID",
+        "description": "Ini adalah API endpoint untuk menampilkan data payment",
+        "responses": {
+          "200": {
+            "description": "Payment fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "description": "Status of the request",
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "description": "Payments data",
+                      "type": "object",
+                      "properties": {
+                        "payments": {
+                          "description": "Data of the payment",
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "userId": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "courseId": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "price": {
+                              "type": "number",
+                              "format": "float",
+                              "example": 300000
+                            },
+                            "status": {
+                              "type": "string",
+                              "example": "paid"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Get Payments Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "No payment data"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Get Payment Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during get payment data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   },

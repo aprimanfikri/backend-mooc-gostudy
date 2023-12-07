@@ -111,6 +111,7 @@ const getPaymentDetail = async (req, res, next) => {
     });
 
     res.status(200).json({
+      status: "success",
       data: {
         payment,
       },
@@ -122,11 +123,11 @@ const getPaymentDetail = async (req, res, next) => {
 
 const getAllPayment = async (req, res, next) => {
   try {
-    const purchases = await Payment.findAll();
+    const payments = await Payment.findAll();
     res.status(200).json({
       status: "success",
       data: {
-        purchases,
+        payments,
       },
     });
   } catch (error) {

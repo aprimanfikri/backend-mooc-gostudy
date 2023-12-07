@@ -49,7 +49,6 @@ const updateCategory = async (req, res, next) => {
     if (!category) {
       throw new ApiError("Category not found!", 404);
     }
-    console.log(category);
     let image;
     if (file) {
       const split = file.originalname.split(".");
@@ -97,7 +96,7 @@ const deleteCategory = async (req, res, next) => {
       status: "success",
       message: "Category deleted!",
     });
-  } catch {
+  } catch (error) {
     next(error);
   }
 };

@@ -1,4 +1,6 @@
 require("dotenv").config();
+const fs = require("fs");
+const path = require("path");
 const request = require("supertest");
 const app = require("../app");
 
@@ -56,7 +58,7 @@ describe("API Register", () => {
     const user = {
       name: "admin",
       phoneNumber: "1234567890",
-      email: "test1@gmail.com",
+      email: `user${new Date().getTime()}@gmail.com`,
       password: "test12345",
     };
     const response = await request(app)
@@ -167,64 +169,52 @@ describe("API Register", () => {
 });
 
 describe("API Verify", () => {
-  it("should return 200 Email verification successful", async () => {
-    const user = {
+  let registerData;
+  let loginData;
+  beforeEach(async () => {
+    const userRegister = {
       name: "admin",
       phoneNumber: "1234567890",
-      email: "test2@gmail.com",
+      email: `user${new Date().getTime()}@gmail.com`,
       password: "admin1234",
     };
-    const register = await request(app)
+    const response = await request(app)
       .post("/api/v1/auth/register")
-      .send(user);
-    const token = register.body.data.token;
-    const otp = register.body.data.otp;
-    const otpV = {
-      otp: otp,
+      .send(userRegister);
+    registerData = response.body.data;
+
+    const userLogin = {
+      email: "admin1@gmail.com",
+      password: "admin1234",
+    };
+    const login = await request(app).post("/api/v1/auth/login").send(userLogin);
+    loginData = login.body.data;
+  }, 10000);
+
+  it("should return 200 Email verification successful", async () => {
+    const otp = {
+      otp: registerData.otp,
     };
     const response = await request(app)
       .post("/api/v1/auth/verify")
-      .send(otpV)
-      .set("Authorization", `Bearer ${token}`);
+      .send(otp)
+      .set("Authorization", `Bearer ${registerData.token}`);
     expect(response.statusCode).toBe(200);
   }, 15000);
 
   it("should return 400 OTP is required", async () => {
-    const user = {
-      name: "admin",
-      phoneNumber: "1234567890",
-      email: "test3@gmail.com",
-      password: "admin1234",
-    };
-    const register = await request(app)
-      .post("/api/v1/auth/register")
-      .send(user);
-    const token = register.body.data.token;
-    const otp = register.body.data.otp;
-    const otpV = {
-      // otp: otp,
-    };
     const response = await request(app)
       .post("/api/v1/auth/verify")
-      .send(otpV)
-      .set("Authorization", `Bearer ${token}`);
+      .send()
+      .set("Authorization", `Bearer ${registerData.token}`);
     expect(response.statusCode).toBe(400);
   }, 10000);
 
   it("should return 400 User is already verified", async () => {
-    const user = {
-      email: "admin1@gmail.com",
-      password: "admin1234",
-    };
-    const login = await request(app).post("/api/v1/auth/login").send(user);
-    const token = login.body.data.token;
-    const otpV = {
-      otp: "1234",
-    };
     const response = await request(app)
       .post("/api/v1/auth/verify")
-      .send(otpV)
-      .set("Authorization", `Bearer ${token}`);
+      .send()
+      .set("Authorization", `Bearer ${loginData.token}`);
     expect(response.statusCode).toBe(400);
   });
 });
@@ -292,14 +282,18 @@ describe("API Forgot Password", () => {
 });
 
 describe("API Reset Password", () => {
-  it("should return 200 Password successfully reset", async () => {
+  let token;
+  beforeEach(async () => {
     const user = {
       email: "admin1@gmail.com",
     };
     const forgot = await request(app)
       .post("/api/v1/auth/forgot-password")
       .send(user);
-    const token = forgot.body.data.token;
+    token = forgot.body.data.token;
+  });
+
+  it("should return 200 Password successfully reset", async () => {
     const newPassword = {
       password: "admin12345",
       confirmPassword: "admin12345",
@@ -312,13 +306,6 @@ describe("API Reset Password", () => {
   }, 10000);
 
   it("should return 400 Password is required", async () => {
-    const user = {
-      email: "admin1@gmail.com",
-    };
-    const forgot = await request(app)
-      .post("/api/v1/auth/forgot-password")
-      .send(user);
-    const token = forgot.body.data.token;
     const newPassword = {
       confirmPassword: "admin1234",
     };
@@ -330,13 +317,6 @@ describe("API Reset Password", () => {
   }, 10000);
 
   it("should return 400 Password must be at least 8 characters", async () => {
-    const user = {
-      email: "admin1@gmail.com",
-    };
-    const forgot = await request(app)
-      .post("/api/v1/auth/forgot-password")
-      .send(user);
-    const token = forgot.body.data.token;
     const newPassword = {
       password: "admin",
       confirmPassword: "admin1234",
@@ -349,13 +329,6 @@ describe("API Reset Password", () => {
   });
 
   it("should return 400 Confirm password is required", async () => {
-    const user = {
-      email: "admin1@gmail.com",
-    };
-    const forgot = await request(app)
-      .post("/api/v1/auth/forgot-password")
-      .send(user);
-    const token = forgot.body.data.token;
     const newPassword = {
       password: "admin12345",
     };
@@ -367,13 +340,6 @@ describe("API Reset Password", () => {
   });
 
   it("should return 400 Passwords do not match", async () => {
-    const user = {
-      email: "admin1@gmail.com",
-    };
-    const forgot = await request(app)
-      .post("/api/v1/auth/forgot-password")
-      .send(user);
-    const token = forgot.body.data.token;
     const newPassword = {
       password: "admin123456",
       confirmPassword: "admin123467",
@@ -386,16 +352,9 @@ describe("API Reset Password", () => {
   }, 10000);
 
   it("should return 400 New password cannot be the same as old password", async () => {
-    const user = {
-      email: "user1@gmail.com",
-    };
-    const forgot = await request(app)
-      .post("/api/v1/auth/forgot-password")
-      .send(user);
-    const token = forgot.body.data.token;
     const newPassword = {
-      password: "admin1234",
-      confirmPassword: "admin1234",
+      password: "admin12345",
+      confirmPassword: "admin12345",
     };
     const response = await request(app)
       .post(`/api/v1/auth/reset-password`)
@@ -406,54 +365,43 @@ describe("API Reset Password", () => {
 });
 
 describe("API Update", () => {
-  it("should return 200 Profile updated successfully", async () => {
+  let token;
+  let imageBuffer;
+  beforeEach(async () => {
+    const filePath = path.join(__dirname, "../public/img/persia.jpg");
+    imageBuffer = fs.readFileSync(filePath);
     const user = {
       email: "user3@gmail.com",
       password: "admin1234",
     };
     const login = await request(app).post("/api/v1/auth/login").send(user);
-    const token = login.body.data.token;
-    const update = {
-      name: "User 3 Habis update",
-    };
+    token = login.body.data.token;
+  });
+  it("should return 200 Profile updated successfully", async () => {
     const response = await request(app)
       .put(`/api/v1/user/update`)
-      .send(update)
+      .field("name", "name habis update")
+      .attach("image", imageBuffer, "persia.jpg")
       .set("Authorization", `Bearer ${token}`);
     expect(response.statusCode).toBe(200);
   });
 });
 
 describe("API Update Password", () => {
-  it("should return 200 Profile updated successfully", async () => {
-    const user = {
-      email: "user3@gmail.com",
-      password: "admin1234",
-    };
-    const login = await request(app).post("/api/v1/auth/login").send(user);
-    const token = login.body.data.token;
-    const updatePassword = {
-      oldPassword: "admin1234",
-      newPassword: "admin12345",
-      confirmPassword: "admin12345",
-    };
-    const response = await request(app)
-      .put(`/api/v1/user/update-password`)
-      .send(updatePassword)
-      .set("Authorization", `Bearer ${token}`);
-    expect(response.statusCode).toBe(200);
-  });
-
-  it("should return 400 Old password is required", async () => {
+  let token;
+  beforeEach(async () => {
     const user = {
       email: "user4@gmail.com",
       password: "admin1234",
     };
     const login = await request(app).post("/api/v1/auth/login").send(user);
-    const token = login.body.data.token;
+    token = login.body.data.token;
+  });
+
+  it("should return 400 Old password is required", async () => {
     const updatePassword = {
-      newPassword: "admin12345",
-      confirmPassword: "admin12345",
+      newPassword: "admin12345678",
+      confirmPassword: "admin12345678",
     };
     const response = await request(app)
       .put(`/api/v1/user/update-password`)
@@ -463,12 +411,6 @@ describe("API Update Password", () => {
   });
 
   it("should return 400 New password is required", async () => {
-    const user = {
-      email: "user4@gmail.com",
-      password: "admin1234",
-    };
-    const login = await request(app).post("/api/v1/auth/login").send(user);
-    const token = login.body.data.token;
     const updatePassword = {
       oldPassword: "admin1234",
       confirmPassword: "admin12345",
@@ -481,12 +423,6 @@ describe("API Update Password", () => {
   });
 
   it("should return 400 New password must be at least 8 characters", async () => {
-    const user = {
-      email: "user4@gmail.com",
-      password: "admin1234",
-    };
-    const login = await request(app).post("/api/v1/auth/login").send(user);
-    const token = login.body.data.token;
     const updatePassword = {
       oldPassword: "admin1234",
       newPassword: "admin",
@@ -500,12 +436,6 @@ describe("API Update Password", () => {
   });
 
   it("should return 400 Confirm password is required", async () => {
-    const user = {
-      email: "user4@gmail.com",
-      password: "admin1234",
-    };
-    const login = await request(app).post("/api/v1/auth/login").send(user);
-    const token = login.body.data.token;
     const updatePassword = {
       oldPassword: "admin1234",
       newPassword: "admin123456",
@@ -518,12 +448,6 @@ describe("API Update Password", () => {
   });
 
   it("should return 400 Passwords do not match", async () => {
-    const user = {
-      email: "user4@gmail.com",
-      password: "admin1234",
-    };
-    const login = await request(app).post("/api/v1/auth/login").send(user);
-    const token = login.body.data.token;
     const updatePassword = {
       oldPassword: "admin1234",
       newPassword: "admin123456",
@@ -537,14 +461,8 @@ describe("API Update Password", () => {
   });
 
   it("should return 400 Old password is incorrect", async () => {
-    const user = {
-      email: "user4@gmail.com",
-      password: "admin1234",
-    };
-    const login = await request(app).post("/api/v1/auth/login").send(user);
-    const token = login.body.data.token;
     const updatePassword = {
-      oldPassword: "admin12345678asdasd",
+      oldPassword: "admin12345123123123",
       newPassword: "admin123457",
       confirmPassword: "admin123457",
     };
@@ -556,12 +474,6 @@ describe("API Update Password", () => {
   });
 
   it("should return 400 New password cannot be the same as old password", async () => {
-    const user = {
-      email: "user4@gmail.com",
-      password: "admin1234",
-    };
-    const login = await request(app).post("/api/v1/auth/login").send(user);
-    const token = login.body.data.token;
     const updatePassword = {
       oldPassword: "admin1234",
       newPassword: "admin1234",
@@ -573,32 +485,53 @@ describe("API Update Password", () => {
       .set("Authorization", `Bearer ${token}`);
     expect(response.statusCode).toBe(400);
   });
-});
 
-describe("API Get All User", () => {
-  it("should return 200 OK for successful get All user", async () => {
-    const user = {
-      email: "admin2@gmail.com",
-      password: "admin1234",
+  it("should return 200 Profile updated successfully", async () => {
+    const updatePassword = {
+      oldPassword: "admin1234",
+      newPassword: "admin12345",
+      confirmPassword: "admin12345",
     };
-    const login = await request(app).post("/api/v1/auth/login").send(user);
-    const token = login.body.data.token;
     const response = await request(app)
-      .get("/api/v1/user")
+      .put(`/api/v1/user/update-password`)
+      .send(updatePassword)
       .set("Authorization", `Bearer ${token}`);
     expect(response.statusCode).toBe(200);
   });
+});
 
-  it("should return 403 You don't have permission to access", async () => {
+describe("API Get All User", () => {
+  let tokenAdmin;
+  let tokenUser;
+  beforeEach(async () => {
+    const admin = {
+      email: "admin2@gmail.com",
+      password: "admin1234",
+    };
+    const loginAdmin = await request(app)
+      .post("/api/v1/auth/login")
+      .send(admin);
+    tokenAdmin = loginAdmin.body.data.token;
+
     const user = {
       email: "user1@gmail.com",
       password: "admin1234",
     };
-    const login = await request(app).post("/api/v1/auth/login").send(user);
-    const token = login.body.data.token;
+    const loginUser = await request(app).post("/api/v1/auth/login").send(user);
+    tokenUser = loginUser.body.data.token;
+  });
+
+  it("should return 200 OK for successful get All user", async () => {
     const response = await request(app)
       .get("/api/v1/user")
-      .set("Authorization", `Bearer ${token}`);
+      .set("Authorization", `Bearer ${tokenAdmin}`);
+    expect(response.statusCode).toBe(200);
+  });
+
+  it("should return 403 You don't have permission to access", async () => {
+    const response = await request(app)
+      .get("/api/v1/user")
+      .set("Authorization", `Bearer ${tokenUser}`);
     expect(response.statusCode).toBe(403);
   });
 
@@ -608,15 +541,9 @@ describe("API Get All User", () => {
   });
 
   it("should return 401 Invalid authorization token format", async () => {
-    const user = {
-      email: "user1@gmail.com",
-      password: "admin1234",
-    };
-    const login = await request(app).post("/api/v1/auth/login").send(user);
-    const token = login.body.data.token;
     const response = await request(app)
       .get("/api/v1/user")
-      .set("Authorization", token);
+      .set("Authorization", tokenAdmin);
     expect(response.statusCode).toBe(401);
   });
 
@@ -720,14 +647,21 @@ describe("API login admin", () => {
 });
 
 describe("API get user by id", () => {
-  it("should return 200 User fetched successfully", async () => {
-    const user = {
+  let token;
+  let id;
+  beforeEach(async () => {
+    const admin = {
       email: "admin2@gmail.com",
       password: "admin1234",
     };
-    const login = await request(app).post("/api/v1/auth/login").send(user);
-    const token = login.body.data.token;
-    const id = login.body.data.user.id;
+    const loginAdmin = await request(app)
+      .post("/api/v1/auth/login")
+      .send(admin);
+    token = loginAdmin.body.data.token;
+    id = loginAdmin.body.data.user.id;
+  });
+
+  it("should return 200 User fetched successfully", async () => {
     const response = await request(app)
       .get(`/api/v1/user/${id}`)
       .set("Authorization", `Bearer ${token}`);
@@ -735,12 +669,6 @@ describe("API get user by id", () => {
   });
 
   it("should return 404 User not found", async () => {
-    const user = {
-      email: "admin2@gmail.com",
-      password: "admin1234",
-    };
-    const login = await request(app).post("/api/v1/auth/login").send(user);
-    const token = login.body.data.token;
     const response = await request(app)
       .get(`/api/v1/user/1000`)
       .set("Authorization", `Bearer ${token}`);
@@ -749,7 +677,8 @@ describe("API get user by id", () => {
 });
 
 describe("API delete user", () => {
-  it("should return 200 User deleted successfully", async () => {
+  let token;
+  beforeEach(async () => {
     const admin = {
       email: "admin2@gmail.com",
       password: "admin1234",
@@ -757,9 +686,12 @@ describe("API delete user", () => {
     const loginAdmin = await request(app)
       .post("/api/v1/auth/login")
       .send(admin);
-    const token = loginAdmin.body.data.token;
+    token = loginAdmin.body.data.token;
+  });
+
+  it("should return 200 User deleted successfully", async () => {
     const user = {
-      email: "user5@gmail.com",
+      email: "user1@gmail.com",
       password: "admin1234",
     };
     const loginUser = await request(app).post("/api/v1/auth/login").send(user);
@@ -771,12 +703,6 @@ describe("API delete user", () => {
   });
 
   it("should return 404 User not found", async () => {
-    const user = {
-      email: "admin2@gmail.com",
-      password: "admin1234",
-    };
-    const login = await request(app).post("/api/v1/auth/login").send(user);
-    const token = login.body.data.token;
     const response = await request(app)
       .delete(`/api/v1/user/1000`)
       .set("Authorization", `Bearer ${token}`);

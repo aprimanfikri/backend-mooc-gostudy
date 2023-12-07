@@ -6,17 +6,8 @@ const createModule = async (req, res, next) => {
   try {
     const { no, name, description, chapterId, videoUrl } = req.body;
     const file = req.file;
-    if (!no) {
-      throw new ApiError("No is required", 400);
-    }
-    if (!name) {
-      throw new ApiError("Name is required", 400);
-    }
-    if (!description) {
-      throw new ApiError("Description is required", 400);
-    }
-    if (!chapterId) {
-      throw new ApiError("Chapter ID is required", 400);
+    if (!no || !name || !description || !chapterId) {
+      throw new ApiError("All value fields are required", 400);
     }
     if (!file && !videoUrl) {
       throw new ApiError(
@@ -71,17 +62,8 @@ const updateModule = async (req, res, next) => {
     if (!module) {
       throw new ApiError("Module not found!", 404);
     }
-    if (!no) {
-      throw new ApiError("No is required", 400);
-    }
-    if (!name) {
-      throw new ApiError("Name is required", 400);
-    }
-    if (!description) {
-      throw new ApiError("Description is required", 400);
-    }
-    if (!chapterId) {
-      throw new ApiError("Chapter ID is required", 400);
+    if (!no || !name || !description || !chapterId) {
+      throw new ApiError("All value fields are required", 400);
     }
     let video;
     if (file) {

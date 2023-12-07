@@ -971,13 +971,18 @@
         "requestBody": {
           "description": "Request body untuk membuat category",
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
                   "name": {
                     "type": "string",
                     "example": "UI/UX Design"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Image for category"
                   }
                 }
               }
@@ -1070,6 +1075,11 @@
       },
       "get": {
         "tags": ["Category"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
         "summary": "Get All Category",
         "description": "Ini adalah API endpoint untuk menampilkan data category",
         "responses": {
@@ -1173,6 +1183,11 @@
     "/api/v1/category/{id}": {
       "get": {
         "tags": ["Category"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -1309,13 +1324,18 @@
         "requestBody": {
           "description": "Request body untuk mengupdate category",
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
                   "name": {
                     "type": "string",
                     "example": "UI/UX Design"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Image for category"
                   }
                 }
               }

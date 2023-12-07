@@ -49,7 +49,6 @@ const updateCategory = async (req, res, next) => {
     if (!category) {
       throw new ApiError("Category not found!", 404);
     }
-    console.log(category);
     let image;
     if (file) {
       const split = file.originalname.split(".");
@@ -60,9 +59,9 @@ const updateCategory = async (req, res, next) => {
         folder: "/gostudy/category-image",
       });
       image = uploadImage;
-    }
-    if (category.imageId) {
-      await imagekit.deleteFile(category.imageId);
+      if (category.imageId) {
+        await imagekit.deleteFile(category.imageId);
+      }
     }
     const updatedCategory = await category.update({
       name,
@@ -97,7 +96,7 @@ const deleteCategory = async (req, res, next) => {
       status: "success",
       message: "Category deleted!",
     });
-  } catch {
+  } catch (error) {
     next(error);
   }
 };

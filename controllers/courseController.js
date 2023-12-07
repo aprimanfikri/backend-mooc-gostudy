@@ -39,7 +39,13 @@ const createCourse = async (req, res, next) => {
     }
 
     const course = await Course.findOne({ where: { name } });
+    if (course) {
+      throw new ApiError("Course name already exist", 400);
+    }
     const file = req.file;
+    if (!file) {
+      throw new ApiError("Image is required", 400);
+    }
     const split = file.originalname.split(".");
     const fileType = split[split.length - 1];
     const uploadImage = await imagekit.upload({
@@ -90,11 +96,9 @@ const updateCourse = async (req, res, next) => {
       totalDuration,
       courseBy,
     } = req.body;
-
-    if (classCode.length < 5) {
-      throw new ApiError("Class code must be at least 5 characters", 400);
-    }
-
+    // if (classCode.length < 5) {
+    //   throw new ApiError("Class code must be at least 5 characters", 400);
+    // }
     const file = req.file;
     const { id } = req.params;
     const course = await Course.findByPk(id);
@@ -105,16 +109,20 @@ const updateCourse = async (req, res, next) => {
     if (file) {
       const split = file.originalname.split(".");
       const fileType = split[split.length - 1];
-      if (course.imageId) {
-        await imagekit.deleteFile(course.imageId);
-      }
       const uploadImage = await imagekit.upload({
         file: file.buffer.toString("base64"),
         fileName: `${course.name}.${fileType}`,
         folder: "/gostudy/course-image",
       });
-      image = uploadImage;
+      image = {
+        url: uploadImage.url,
+        fileId: uploadImage.fileId,
+      };
+      if (course.imageId) {
+        await imagekit.deleteFile(course.imageId);
+      }
     }
+
     const updatedCourse = await course.update({
       name,
       imageUrl: image.url,
@@ -131,6 +139,7 @@ const updateCourse = async (req, res, next) => {
       courseBy,
       createdBy: req.user.id,
     });
+
     res.status(200).json({
       status: "success",
       message: "Course updated successfully",
@@ -217,7 +226,7 @@ const getCourseById = async (req, res, next) => {
     }
     res.status(200).json({
       status: "success",
-      message: `Course ${id} found!`,
+      message: `Course found!`,
       data: {
         course,
       },

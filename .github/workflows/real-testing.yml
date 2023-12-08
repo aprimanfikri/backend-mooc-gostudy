@@ -10,16 +10,16 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     env:
-      DB_HOST: ${{secrets.DB_HOST}}
-      DB_NAME: railway
-      DB_PASSWORD: C45B52f2FH3bf4h6fD6dDcAeCCBAB66H
-      DB_PORT: 13053
-      DB_USERNAME: mongo
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
       IMAGEKIT_PUBLIC_KEY: public_DVITNf+5XTiO9Y3dKRqIlhuE58Q=
-      IMAGEKIT_PRIVATE_KEY: private_fNqHqD5ocFxgaoj8uWVeiJdXf9s=
+      IMAGEKIT_PRIVATE_KEY: ${{ secrets.IMAGEKIT_PRIVATE_KEY }}
       IMAGEKIT_URL: https://ik.imagekit.io/dpmd80fxd
       NODEMAILER_EMAIL: jacksparrow133333@gmail.com
-      NODEMAILER_PASSWORD: ofwf sdep whgd mrbt
+      NODEMAILER_PASSWORD: ${{ secrets.NODEMAILER_PASSWORD }}
       PORT: 3000
       JWT_SECRET: rahasia
       JWT_LOGIN_TOKEN_EXPIRES_IN: 1d
@@ -36,23 +36,17 @@ jobs:
           path: ~/.npm
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
-        working-directory: ./BE
         run: npm install
       - name: drop existing DB
-        working-directory: ./BE
         run: npm run db:drop
       - name: Create DB
-        working-directory: ./BE
         run: npm run db:create
       - name: Migration database
-        working-directory: ./BE
         run: npm run db:migrate
       - name: Seed database
-        working-directory: ./BE
         run: npm run db:seed
       - name: Test code
         id: run-tests
-        working-directory: ./BE
         run: npm run test
   lint:
     needs: test
@@ -68,10 +62,8 @@ jobs:
           path: ~/.npm
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
-        working-directory: ./BE
         run: npm install
       - name: Lint code
-        working-directory: ./BE
         run: npm run lint
   merge:
     needs: [test, lint]

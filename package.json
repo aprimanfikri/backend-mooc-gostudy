@@ -12,7 +12,9 @@
     "db:drop": "sequelize db:drop",
     "db:migrate": "sequelize db:migrate",
     "db:migrate:undo": "sequelize db:migrate:undo:all",
-    "db:seed": "sequelize db:seed:undo:all && sequelize db:seed:all"
+    "db:seed": "sequelize db:seed:undo:all && sequelize db:seed:all",
+    "lint": "eslint .",
+    "fixlint": "eslint . --fix"
   },
   "keywords": [],
   "author": "",
@@ -44,6 +46,13 @@
     "postcss": "^8.4.31",
     "postcss-cli": "^10.1.0",
     "supertest": "^6.3.3",
-    "tailwindcss": "^3.3.5"
+    "tailwindcss": "^3.3.5",
+    "eslint": "^8.54.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.10.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.2.1"
   }
 }

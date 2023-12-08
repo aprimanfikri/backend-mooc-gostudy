@@ -1,0 +1,12 @@
+name: hello world
+on:
+  push:
+    branches:
+      - feat/testing
+jobs:
+  hello:
+    runs-on: ubuntu-latest
+    steps:
+      - name: kasih hello
+        run: |
+          echo "hello fsw 3"

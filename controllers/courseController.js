@@ -188,7 +188,7 @@ const getAllCourse = async (req, res, next) => {
       searchCriteria.type = type;
     }
     if (categoryName) {
-      searchCriteria["$category.name$"] = {
+      searchCriteria["$Category.name$"] = {
         [Op.iLike]: `%${categoryName}%`,
       };
     }
@@ -202,7 +202,7 @@ const getAllCourse = async (req, res, next) => {
     }
     courses = await Course.findAll({
       where: searchCriteria,
-      include: [{ model: Category, as: "category" }],
+      include: [{ model: Category, as: "Category" }],
       order: [["createdAt", "DESC"]],
     });
     res.status(200).json({

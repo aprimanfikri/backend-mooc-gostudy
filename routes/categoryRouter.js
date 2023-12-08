@@ -6,7 +6,7 @@ const upload = require("../middlewares/uploader");
 
 router
   .route("/")
-  .get(authenticate, checkRole("admin"), categoryController.getAllCategory)
+  .get(categoryController.getAllCategory)
   .post(
     authenticate,
     checkRole("admin"),

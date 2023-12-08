@@ -1,0 +1,92 @@
+name: Lint and Test Before Merge
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+    branches:
+      - main
+jobs:
+  test:
+    environment: test
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    env:
+      DB_HOST: ${{secrets.DB_HOST}}
+      DB_NAME: railway
+      DB_PASSWORD: C45B52f2FH3bf4h6fD6dDcAeCCBAB66H
+      DB_PORT: 13053
+      DB_USERNAME: mongo
+      IMAGEKIT_PUBLIC_KEY: public_DVITNf+5XTiO9Y3dKRqIlhuE58Q=
+      IMAGEKIT_PRIVATE_KEY: private_fNqHqD5ocFxgaoj8uWVeiJdXf9s=
+      IMAGEKIT_URL: https://ik.imagekit.io/dpmd80fxd
+      NODEMAILER_EMAIL: jacksparrow133333@gmail.com
+      NODEMAILER_PASSWORD: ofwf sdep whgd mrbt
+      PORT: 3000
+      JWT_SECRET: rahasia
+      JWT_LOGIN_TOKEN_EXPIRES_IN: 1d
+      JWT_ISSUER: abc
+      PASSWORD_HASH: admin123
+      BASE_URL: locahost:3000
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        working-directory: ./BE
+        run: npm install
+      - name: drop existing DB
+        working-directory: ./BE
+        run: npm run db:drop
+      - name: Create DB
+        working-directory: ./BE
+        run: npm run db:create
+      - name: Migration database
+        working-directory: ./BE
+        run: npm run db:migrate
+      - name: Seed database
+        working-directory: ./BE
+        run: npm run db:seed
+      - name: Test code
+        id: run-tests
+        working-directory: ./BE
+        run: npm run test
+  lint:
+    needs: test
+    environment: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        working-directory: ./BE
+        run: npm install
+      - name: Lint code
+        working-directory: ./BE
+        run: npm run lint
+  merge:
+    needs: [test, lint]
+    environment: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge
+        run: echo "Can Be Merge..."
+  report:
+    needs: merge
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Output information
+        working-directory: ./BE
+        run: |
+          echo "Something went wrong"
+          echo "${{ toJSON(github) }}"

@@ -26,8 +26,8 @@ const createTransaction = async (req, res, next) => {
 
     const snap = new midtransClient.Snap({
       isProduction: false,
-      serverKey: process.env.SERVER_KEY,
-      clientKey: process.env.CLIENT_KEY,
+      serverKey: process.env.MIDTRANS_SERVER_KEY,
+      clientKey: process.env.MIDTRANS_CLIENT_KEY,
     });
 
     const transaction = await snap.createTransaction({
@@ -77,7 +77,7 @@ const paymentCallback = async (req, res, next) => {
   } = req.body;
 
   try {
-    const serverKey = process.env.SERVER_KEY;
+    const serverKey = process.env.MIDTRANS_SERVER_KEY;
     const hashed = crypto
       .createHash('sha512')
       .update(order_id + status_code + gross_amount + serverKey)

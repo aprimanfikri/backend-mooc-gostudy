@@ -621,6 +621,112 @@
         }
       }
     },
+    "/api/v1/auth/login/admin": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Login as an admin",
+        "description": "ini adalah API endpoint untuk autentikasi dan login admin menggunakan email dan password",
+        "requestBody": {
+          "description": "Request body untuk success login",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "Email address of the user",
+                    "example": "johndoe@mail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "Password of the user",
+                    "example": "12345678"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Admin Login successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Login success!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "token": {
+                          "type": "string",
+                          "description": "Token of the user"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed to Login as an Admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": " Email or password incorrect"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "An unexpected error occured during the login process "
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/user/update": {
       "put": {
         "tags": ["Users"],

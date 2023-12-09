@@ -1,6 +1,6 @@
 const midtransClient = require("midtrans-client");
 const crypto = require("crypto");
-const { Payment, Course } = require("../models");
+const { Payment, Course, UserCourse } = require("../models");
 const ApiError = require("../utils/apiError");
 
 const createTransaction = async (req, res, next) => {
@@ -90,6 +90,14 @@ const paymentCallback = async (req, res, next) => {
 
         payment.status = "paid";
         await payment.save();
+
+        const userCourseData = {
+          userId: payment.userId,
+          courseId: payment.courseId,
+          isAccessible: true,
+        };
+
+        const newUserCourse = await UserCourse.create(userCourseData);
       }
     }
 

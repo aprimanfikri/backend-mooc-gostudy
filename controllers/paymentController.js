@@ -1,7 +1,7 @@
-const midtransClient = require("midtrans-client");
-const crypto = require("crypto");
-const { Payment, Course, UserCourse } = require("../models");
-const ApiError = require("../utils/apiError");
+const midtransClient = require('midtrans-client');
+const crypto = require('crypto');
+const { Payment, Course, UserCourse } = require('../models');
+const ApiError = require('../utils/apiError');
 
 const createTransaction = async (req, res, next) => {
   const { courseId } = req.body;
@@ -11,11 +11,11 @@ const createTransaction = async (req, res, next) => {
       where: {
         id: courseId,
       },
-      include: ["Category"],
+      include: ['Category'],
     });
 
     if (!course) {
-      throw new ApiError("Course not found!", 404);
+      throw new ApiError('Course not found!', 404);
     }
 
     const createPayment = await Payment.create({
@@ -54,8 +54,8 @@ const createTransaction = async (req, res, next) => {
     };
 
     res.status(201).json({
-      status: "success",
-      message: "Transaksi dibuat!",
+      status: 'success',
+      message: 'Transaksi dibuat!',
       data: {
         dataPayment,
       },
@@ -79,16 +79,16 @@ const paymentCallback = async (req, res, next) => {
   try {
     const serverKey = process.env.SERVER_KEY;
     const hashed = crypto
-      .createHash("sha512")
+      .createHash('sha512')
       .update(order_id + status_code + gross_amount + serverKey)
-      .digest("hex");
+      .digest('hex');
 
     if (hashed === signature_key) {
-      if (transaction_status === "settlement") {
+      if (transaction_status === 'settlement') {
         const payment = await Payment.findOne({ where: { id: order_id } });
-        if (!payment) throw new ApiError("Transaksi tidak ada", 404);
+        if (!payment) throw new ApiError('Transaksi tidak ada', 404);
 
-        payment.status = "paid";
+        payment.status = 'paid';
         await payment.save();
 
         const userCourseData = {
@@ -97,13 +97,13 @@ const paymentCallback = async (req, res, next) => {
           isAccessible: true,
         };
 
-        const newUserCourse = await UserCourse.create(userCourseData);
+        await UserCourse.create(userCourseData);
       }
     }
 
     res.status(200).json({
-      status: "success",
-      message: "Transaksi sukses!",
+      status: 'success',
+      message: 'Transaksi sukses!',
     });
   } catch (error) {
     next(error);
@@ -111,7 +111,7 @@ const paymentCallback = async (req, res, next) => {
 };
 
 const getPaymentDetail = async (req, res, next) => {
-  const id = req.params.id;
+  const { id } = req.params;
 
   try {
     const payment = await Payment.findOne({
@@ -119,7 +119,7 @@ const getPaymentDetail = async (req, res, next) => {
     });
 
     res.status(200).json({
-      status: "success",
+      status: 'success',
       data: {
         payment,
       },
@@ -133,7 +133,7 @@ const getAllPayment = async (req, res, next) => {
   try {
     const payments = await Payment.findAll();
     res.status(200).json({
-      status: "success",
+      status: 'success',
       data: {
         payments,
       },

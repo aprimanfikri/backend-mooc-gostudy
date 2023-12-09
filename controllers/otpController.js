@@ -1,7 +1,6 @@
-const transporter = require("../config/nodemailer");
-const { Verified } = require("../models");
-const { hash } = require("../utils/bcrypt");
-const ApiError = require("../utils/apiError");
+const transporter = require('../config/nodemailer');
+const { Verified } = require('../models');
+const ApiError = require('../utils/apiError');
 
 const sendOtpVerification = async (id, email) => {
   try {
@@ -13,13 +12,13 @@ const sendOtpVerification = async (id, email) => {
     // const hashedOtp = await hash(otp.toString());
     await Verified.create({
       userId: id,
-      otp: otp,
+      otp,
       expiresAt: Date.now() + 1000 * 60 * 10,
     });
     const mailOptions = {
       from: process.env.NODEMAILER_EMAIL,
       to: email,
-      subject: "Email Verification",
+      subject: 'Email Verification',
       html: `<p>Your OTP is ${otp}</p>`,
     };
     await transporter.sendMail(mailOptions);

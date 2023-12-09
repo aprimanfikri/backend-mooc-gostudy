@@ -559,7 +559,7 @@ describe('API Get All User', () => {
       .get('/api/v1/user')
       .set(
         'Authorization',
-        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6bnVsbCwiZW1haWwiOiJhcHJtbmZrckBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcwMDk5NTY0OCwiZXhwIjoxNzAwOTk1NzA4fQ.gpSMb1sLAZ83BTsYfhZLrm6ofLL97qQ2SD6I4geaeho'
+        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6bnVsbCwiZW1haWwiOiJhcHJtbmZrckBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcwMDk5NTY0OCwiZXhwIjoxNzAwOTk1NzA4fQ.gpSMb1sLAZ83BTsYfhZLrm6ofLL97qQ2SD6I4geaeho',
       );
     expect(response.statusCode).toBe(401);
   }, 10000);

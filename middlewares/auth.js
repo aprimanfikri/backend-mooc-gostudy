@@ -10,7 +10,7 @@ const authenticate = async (req, res, next) => {
     }
     if (!token.startsWith('Bearer ')) {
       return next(
-        new ApiError('Authorization token must start with Bearer', 401)
+        new ApiError('Authorization token must start with Bearer', 401),
       );
     }
     const tokenValue = token.split('Bearer ')[1];

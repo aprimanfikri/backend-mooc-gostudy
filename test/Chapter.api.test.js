@@ -1,7 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const request = require('supertest');
-const { it, expect, beforeAll, describe } = require('@jest/globals');
+const {
+  it, expect, beforeAll, describe,
+} = require('@jest/globals');
 const app = require('../app');
 
 let token;

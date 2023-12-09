@@ -14,7 +14,8 @@
     "migrations/",
     "seeders/",
     "postcss.config.js",
-    "server/"
+    "server/",
+    "utils/apiError.js"
   ],
   "rules": {}
 }

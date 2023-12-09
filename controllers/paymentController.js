@@ -26,8 +26,8 @@ const createTransaction = async (req, res, next) => {
 
     const snap = new midtransClient.Snap({
       isProduction: false,
-      serverKey: process.env.SERVER_KEY,
-      clientKey: process.env.CLIENT_KEY,
+      serverKey: process.env.MIDTRANS_SERVER_KEY,
+      clientKey: process.env.MIDTRANS_CLIENT_KEY,
     });
 
     const transaction = await snap.createTransaction({
@@ -69,23 +69,23 @@ const createTransaction = async (req, res, next) => {
 
 const paymentCallback = async (req, res, next) => {
   const {
-    order_id,
-    status_code,
-    gross_amount,
-    signature_key,
-    transaction_status,
+    order_id: orderId,
+    status_code: statusCode,
+    gross_amount: grossAmount,
+    signature_key: signatureKey,
+    transaction_status: transactionStatus,
   } = req.body;
 
   try {
-    const serverKey = process.env.SERVER_KEY;
+    const serverKey = process.env.MIDTRANS_SERVER_KEY;
     const hashed = crypto
       .createHash('sha512')
-      .update(order_id + status_code + gross_amount + serverKey)
+      .update(orderId + statusCode + grossAmount + serverKey)
       .digest('hex');
 
-    if (hashed === signature_key) {
-      if (transaction_status === 'settlement') {
-        const payment = await Payment.findOne({ where: { id: order_id } });
+    if (hashed === signatureKey) {
+      if (transactionStatus === 'settlement') {
+        const payment = await Payment.findOne({ where: { id: orderId } });
         if (!payment) throw new ApiError('Transaksi tidak ada', 404);
 
         payment.status = 'paid';

@@ -1,10 +1,8 @@
 const { verifyToken } = require('../../utils/jwt');
 
-const forgotPasswordView = (req, res) => {
-  res.render('forgotPassword', {
-    title: 'Forgot Password',
-  });
-};
+const forgotPasswordView = (req, res) => res.render('forgotPassword', {
+  title: 'Forgot Password',
+});
 
 const resetPasswordView = (req, res) => {
   try {
@@ -13,12 +11,12 @@ const resetPasswordView = (req, res) => {
       return res.redirect('/404');
     }
     verifyToken(token);
-    res.render('resetPassword', {
+    return res.render('resetPassword', {
       title: 'Reset Password',
       message: null,
     });
   } catch (error) {
-    res.render('resetPassword', {
+    return res.render('resetPassword', {
       title: 'Reset Password',
       message: error.message,
     });

@@ -7,10 +7,9 @@ const multerFiltering = (req, file, cb) => {
     || file.mimetype === 'image/jpeg'
     || file.mimetype === 'video/mp4'
   ) {
-    cb(null, true);
-  } else {
-    return cb('File yang diupload bukan png/jpg/jpeg.');
+    return cb(null, true);
   }
+  return cb('File yang diupload bukan png/jpg/jpeg.');
 };
 
 const upload = multer({

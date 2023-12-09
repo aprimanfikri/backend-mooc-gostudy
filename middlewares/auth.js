@@ -9,8 +9,8 @@ const authenticate = async (req, res, next) => {
       return next(new ApiError('Authorization token is required', 401));
     }
     if (!token.startsWith('Bearer ')) {
-      return Promise.reject(
-        new ApiError('Invalid authorization token format', 401),
+      return next(
+        new ApiError('Authorization token must start with Bearer', 401)
       );
     }
     const tokenValue = token.split('Bearer ')[1];

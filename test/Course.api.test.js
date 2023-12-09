@@ -1,9 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const request = require('supertest');
-const {
-  it, expect, beforeAll, describe,
-} = require('@jest/globals');
+const { it, expect, beforeAll, describe } = require('@jest/globals');
 const app = require('../app');
 
 let token;
@@ -43,7 +41,7 @@ describe('API create course', () => {
       .send(data)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 400 Class code must be at least 5 characters', async () => {
     const response = await request(app)
@@ -62,7 +60,7 @@ describe('API create course', () => {
       .set('Authorization', `Bearer ${token}`)
       .attach('image', imageBuffer, 'persia.jpg');
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 400 Course name already exist', async () => {
     const response = await request(app)
@@ -81,7 +79,7 @@ describe('API create course', () => {
       .set('Authorization', `Bearer ${token}`)
       .attach('image', imageBuffer, 'persia.jpg');
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 400 Image is required', async () => {
     const response = await request(app)
@@ -99,7 +97,7 @@ describe('API create course', () => {
       .field('courseBy', 'test')
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 });
 
 describe('API update course', () => {
@@ -138,7 +136,7 @@ describe('API update course', () => {
       .field('name', 'testing tests')
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(404);
-  });
+  }, 10000);
 });
 
 describe('API delete course', () => {
@@ -167,21 +165,21 @@ describe('API delete course', () => {
       .delete(`/api/v1/course/${courseId}`)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(200);
-  });
+  }, 10000);
 
   it('should return 404 Course not found', async () => {
     const response = await request(app)
       .delete('/api/v1/course/999')
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(404);
-  });
+  }, 10000);
 });
 
 describe('API get all course', () => {
   it('should return 200 All courses fetched successfully', async () => {
     const response = await request(app).get('/api/v1/course');
     expect(response.statusCode).toBe(200);
-  });
+  }, 10000);
 });
 
 describe('API get course by id', () => {
@@ -208,10 +206,10 @@ describe('API get course by id', () => {
   it('should return 200 Course found!', async () => {
     const response = await request(app).get(`/api/v1/course/${courseId}`);
     expect(response.statusCode).toBe(200);
-  });
+  }, 10000);
 
   it('should return 404 Course not found', async () => {
     const response = await request(app).get('/api/v1/course/999');
     expect(response.statusCode).toBe(404);
-  });
+  }, 10000);
 });

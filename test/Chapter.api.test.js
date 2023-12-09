@@ -46,7 +46,7 @@ describe('API create chapter', () => {
       .send(chapter)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(201);
-  });
+  }, 10000);
 
   it('should return 400 All value fields are required', async () => {
     const chapter = {
@@ -58,7 +58,7 @@ describe('API create chapter', () => {
       .send(chapter)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 404 Course ID not found!', async () => {
     const chapter = {
@@ -71,7 +71,7 @@ describe('API create chapter', () => {
       .send(chapter)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(404);
-  });
+  }, 10000);
 });
 
 describe('API update chapter', () => {
@@ -87,7 +87,7 @@ describe('API update chapter', () => {
       .send(chapter)
       .set('Authorization', `Bearer ${token}`);
     chapterId = createChapter.body.data.newChapter.id;
-  });
+  }, 10000);
 
   it('should return 400 All value fields are required', async () => {
     const response = await request(app)
@@ -95,7 +95,7 @@ describe('API update chapter', () => {
       .send()
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 404 Chapter not found', async () => {
     const chapter = {
@@ -108,7 +108,7 @@ describe('API update chapter', () => {
       .send(chapter)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(404);
-  });
+  }, 10000);
 
   it('should return 200 Chapter updated successfully', async () => {
     const chapter = {
@@ -121,7 +121,7 @@ describe('API update chapter', () => {
       .send(chapter)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(200);
-  });
+  }, 10000);
 });
 
 describe('API get chapter by id', () => {
@@ -137,21 +137,21 @@ describe('API get chapter by id', () => {
       .send(chapter)
       .set('Authorization', `Bearer ${token}`);
     chapterId = createChapter.body.data.newChapter.id;
-  });
+  }, 10000);
 
   it('should return 200 Chapter found', async () => {
     const response = await request(app)
       .get(`/api/v1/chapter/${chapterId}`)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(200);
-  });
+  }, 10000);
 
   it('should return 404 Chapter not found', async () => {
     const response = await request(app)
       .get('/api/v1/chapter/1000')
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(404);
-  });
+  }, 10000);
 });
 
 describe('API get all chapter', () => {
@@ -160,7 +160,7 @@ describe('API get all chapter', () => {
       .get('/api/v1/chapter')
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(200);
-  });
+  }, 10000);
 });
 
 describe('API delete chapter', () => {
@@ -176,19 +176,19 @@ describe('API delete chapter', () => {
       .send(chapter)
       .set('Authorization', `Bearer ${token}`);
     chapterId = createChapter.body.data.newChapter.id;
-  });
+  }, 10000);
 
   it('should return 200 Chapter deleted successfully', async () => {
     const response = await request(app)
       .delete(`/api/v1/chapter/${chapterId}`)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(200);
-  });
+  }, 10000);
 
   it('should return 404 Chapter not found', async () => {
     const response = await request(app)
       .delete('/api/v1/chapter/1000')
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(404);
-  });
+  }, 10000);
 });

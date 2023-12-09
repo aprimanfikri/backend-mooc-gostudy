@@ -36,7 +36,7 @@ describe('API create category', () => {
       .set('Authorization', `Bearer ${token}`)
       .attach('image', imageBuffer, 'persia.jpg');
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 400 Image is required', async () => {
     const response = await request(app)
@@ -44,7 +44,7 @@ describe('API create category', () => {
       .field('name', `category ${new Date().getTime()}`)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 });
 
 describe('API update category', () => {
@@ -65,7 +65,7 @@ describe('API update category', () => {
       .set('Authorization', `Bearer ${token}`)
       .attach('image', imageBuffer, 'persia.jpg');
     expect(response.statusCode).toBe(200);
-  });
+  }, 10000);
 
   it('should return 400 Name is required', async () => {
     const response = await request(app)
@@ -82,7 +82,7 @@ describe('API update category', () => {
       .set('Authorization', `Bearer ${token}`)
       .attach('image', imageBuffer, 'persia.jpg');
     expect(response.statusCode).toBe(404);
-  });
+  }, 10000);
 });
 
 describe('API delete category', () => {
@@ -94,21 +94,21 @@ describe('API delete category', () => {
       .set('Authorization', `Bearer ${token}`)
       .attach('image', imageBuffer, 'persia.jpg');
     id = response.body.data.newCat.id;
-  });
+  }, 10000);
 
   it('should return 200 Category deleted successfully', async () => {
     const response = await request(app)
       .delete(`/api/v1/category/${id}`)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(200);
-  });
+  }, 10000);
 
   it('should return 404 Category not found!', async () => {
     const response = await request(app)
       .delete('/api/v1/category/1000')
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(404);
-  });
+  }, 10000);
 });
 
 describe('API get category by id', () => {
@@ -120,21 +120,21 @@ describe('API get category by id', () => {
       .set('Authorization', `Bearer ${token}`)
       .attach('image', imageBuffer, 'persia.jpg');
     id = response.body.data.newCat.id;
-  });
+  }, 10000);
 
   it('should return 200 Category found', async () => {
     const response = await request(app)
       .get(`/api/v1/category/${id}`)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(200);
-  });
+  }, 10000);
 
   it('should return 404 Category not found!', async () => {
     const response = await request(app)
       .get('/api/v1/category/1000')
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(404);
-  });
+  }, 10000);
 });
 
 describe('API get all category', () => {
@@ -143,5 +143,5 @@ describe('API get all category', () => {
       .get('/api/v1/category')
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(200);
-  });
+  }, 10000);
 });

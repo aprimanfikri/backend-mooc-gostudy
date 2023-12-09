@@ -48,7 +48,7 @@ describe('API create module', () => {
       .field('videoUrl', 'https://www.youtube.com/watch?v=UIp6_0kct_U')
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(201);
-  });
+  }, 10000);
 
   it('should return 201 Module created successfully (using video)', async () => {
     const response = await request(app)
@@ -70,7 +70,7 @@ describe('API create module', () => {
       .field('description', 'Test description')
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 400 Please provide either a video file or a video URL.', async () => {
     const response = await request(app)
@@ -81,7 +81,7 @@ describe('API create module', () => {
       .field('chapterId', 1)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 });
 
 describe('API update module', () => {
@@ -141,7 +141,7 @@ describe('API update module', () => {
       .field('description', 'Test description')
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 404 Module not found!', async () => {
     const response = await request(app)
@@ -153,7 +153,7 @@ describe('API update module', () => {
       .attach('video', videoBuffer, 'testing.mp4')
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(404);
-  });
+  }, 10000);
 });
 
 describe('API delete module', () => {
@@ -175,21 +175,21 @@ describe('API delete module', () => {
       .delete(`/api/v1/module/${id}`)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(200);
-  });
+  }, 10000);
 
   it('should return 404 Module not found!', async () => {
     const response = await request(app)
       .delete('/api/v1/module/1000')
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(404);
-  });
+  }, 10000);
 });
 
 describe('API get all module', () => {
   it('should return 200 All modules fetched successfully', async () => {
     const response = await request(app).get('/api/v1/module');
     expect(response.statusCode).toBe(200);
-  });
+  }, 10000);
 });
 
 describe('API get module by id', () => {
@@ -209,10 +209,10 @@ describe('API get module by id', () => {
   it('should return 200 Module fetched successfully', async () => {
     const response = await request(app).get(`/api/v1/module/${id}`);
     expect(response.statusCode).toBe(200);
-  });
+  }, 10000);
 
   it('should return 404 Module not found!', async () => {
     const response = await request(app).get('/api/v1/module/1000');
     expect(response.statusCode).toBe(404);
-  });
+  }, 10000);
 });

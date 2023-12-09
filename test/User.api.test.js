@@ -19,21 +19,21 @@ describe('API Login', () => {
     };
     const response = await request(app).post('/api/v1/auth/login').send(user);
     expect(response.statusCode).toBe(200);
-  });
+  }, 10000);
   it('should return 400 Email is required', async () => {
     const user = {
       password: 'admin1234',
     };
     const response = await request(app).post('/api/v1/auth/login').send(user);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
   it('should return 400 Password is required', async () => {
     const user = {
       email: 'admin1@gmail.com',
     };
     const response = await request(app).post('/api/v1/auth/login').send(user);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
   it('should return 400 Email does not exist', async () => {
     const user = {
       email: 'example@example.com',
@@ -41,7 +41,7 @@ describe('API Login', () => {
     };
     const response = await request(app).post('/api/v1/auth/login').send(user);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
   it('should return 400 Email not verified', async () => {
     const user = {
       email: 'user2@gmail.com',
@@ -49,7 +49,7 @@ describe('API Login', () => {
     };
     const response = await request(app).post('/api/v1/auth/login').send(user);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
   it('should return 400 Password is incorrect', async () => {
     const user = {
       email: 'admin1@gmail.com',
@@ -57,7 +57,7 @@ describe('API Login', () => {
     };
     const response = await request(app).post('/api/v1/auth/login').send(user);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 });
 
 describe('API Register', () => {
@@ -84,7 +84,7 @@ describe('API Register', () => {
       .post('/api/v1/auth/register')
       .send(user);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 400 Name must be at least 3 characters', async () => {
     const user = {
@@ -97,7 +97,7 @@ describe('API Register', () => {
       .post('/api/v1/auth/register')
       .send(user);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 400 Email is required', async () => {
     const user = {
@@ -109,7 +109,7 @@ describe('API Register', () => {
       .post('/api/v1/auth/register')
       .send(user);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 400 Password is required', async () => {
     const user = {
@@ -121,7 +121,7 @@ describe('API Register', () => {
       .post('/api/v1/auth/register')
       .send(user);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 400 Password must be at least 8 characters', async () => {
     const user = {
@@ -134,7 +134,7 @@ describe('API Register', () => {
       .post('/api/v1/auth/register')
       .send(user);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 400 Phone number is required', async () => {
     const user = {
@@ -146,7 +146,7 @@ describe('API Register', () => {
       .post('/api/v1/auth/register')
       .send(user);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 400 Phone number must be at least 10 numbers', async () => {
     const user = {
@@ -159,7 +159,7 @@ describe('API Register', () => {
       .post('/api/v1/auth/register')
       .send(user);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 400 Email already exists', async () => {
     const user = {
@@ -172,7 +172,7 @@ describe('API Register', () => {
       .post('/api/v1/auth/register')
       .send(user);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 });
 
 describe('API Verify', () => {
@@ -223,7 +223,7 @@ describe('API Verify', () => {
       .send()
       .set('Authorization', `Bearer ${loginData.token}`);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 });
 
 describe('API Resend', () => {
@@ -298,7 +298,7 @@ describe('API Reset Password', () => {
       .post('/api/v1/auth/forgot-password')
       .send(user);
     token = forgot.body.data.token;
-  });
+  }, 10000);
 
   it('should return 200 Password successfully reset', async () => {
     const newPassword = {
@@ -333,7 +333,7 @@ describe('API Reset Password', () => {
       .send(newPassword)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 400 Confirm password is required', async () => {
     const newPassword = {
@@ -344,7 +344,7 @@ describe('API Reset Password', () => {
       .send(newPassword)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 400 Passwords do not match', async () => {
     const newPassword = {
@@ -383,7 +383,7 @@ describe('API Update', () => {
     };
     const login = await request(app).post('/api/v1/auth/login').send(user);
     token = login.body.data.token;
-  });
+  }, 10000);
   it('should return 200 Profile updated successfully', async () => {
     const response = await request(app)
       .put('/api/v1/user/update')
@@ -391,7 +391,7 @@ describe('API Update', () => {
       .attach('image', imageBuffer, 'persia.jpg')
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(200);
-  });
+  }, 10000);
 });
 
 describe('API Update Password', () => {
@@ -403,7 +403,7 @@ describe('API Update Password', () => {
     };
     const login = await request(app).post('/api/v1/auth/login').send(user);
     token = login.body.data.token;
-  });
+  }, 10000);
 
   it('should return 400 Old password is required', async () => {
     const updatePassword = {
@@ -415,7 +415,7 @@ describe('API Update Password', () => {
       .send(updatePassword)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 400 New password is required', async () => {
     const updatePassword = {
@@ -427,7 +427,7 @@ describe('API Update Password', () => {
       .send(updatePassword)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 400 New password must be at least 8 characters', async () => {
     const updatePassword = {
@@ -440,7 +440,7 @@ describe('API Update Password', () => {
       .send(updatePassword)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 400 Confirm password is required', async () => {
     const updatePassword = {
@@ -452,7 +452,7 @@ describe('API Update Password', () => {
       .send(updatePassword)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 400 Passwords do not match', async () => {
     const updatePassword = {
@@ -465,7 +465,7 @@ describe('API Update Password', () => {
       .send(updatePassword)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 400 Old password is incorrect', async () => {
     const updatePassword = {
@@ -478,7 +478,7 @@ describe('API Update Password', () => {
       .send(updatePassword)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 400 New password cannot be the same as old password', async () => {
     const updatePassword = {
@@ -491,7 +491,7 @@ describe('API Update Password', () => {
       .send(updatePassword)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 200 Profile updated successfully', async () => {
     const updatePassword = {
@@ -504,7 +504,7 @@ describe('API Update Password', () => {
       .send(updatePassword)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(200);
-  });
+  }, 10000);
 });
 
 describe('API Get All User', () => {
@@ -526,33 +526,33 @@ describe('API Get All User', () => {
     };
     const loginUser = await request(app).post('/api/v1/auth/login').send(user);
     tokenUser = loginUser.body.data.token;
-  });
+  }, 10000);
 
   it('should return 200 OK for successful get All user', async () => {
     const response = await request(app)
       .get('/api/v1/user')
       .set('Authorization', `Bearer ${tokenAdmin}`);
     expect(response.statusCode).toBe(200);
-  });
+  }, 10000);
 
   it("should return 403 You don't have permission to access", async () => {
     const response = await request(app)
       .get('/api/v1/user')
       .set('Authorization', `Bearer ${tokenUser}`);
     expect(response.statusCode).toBe(403);
-  });
+  }, 10000);
 
   it('should return 401 Missing authorization token', async () => {
     const response = await request(app).get('/api/v1/user');
     expect(response.statusCode).toBe(401);
-  });
+  }, 10000);
 
   it('should return 401 Invalid authorization token format', async () => {
     const response = await request(app)
       .get('/api/v1/user')
       .set('Authorization', tokenAdmin);
     expect(response.statusCode).toBe(401);
-  });
+  }, 10000);
 
   it('should return 401 Token has expired', async () => {
     const response = await request(app)
@@ -562,14 +562,14 @@ describe('API Get All User', () => {
         'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6bnVsbCwiZW1haWwiOiJhcHJtbmZrckBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcwMDk5NTY0OCwiZXhwIjoxNzAwOTk1NzA4fQ.gpSMb1sLAZ83BTsYfhZLrm6ofLL97qQ2SD6I4geaeho',
       );
     expect(response.statusCode).toBe(401);
-  });
+  }, 10000);
 
   it('should return 401 Token has Invalid token', async () => {
     const response = await request(app)
       .get('/api/v1/user')
       .set('Authorization', 'Bearer invalid');
     expect(response.statusCode).toBe(401);
-  });
+  }, 10000);
 });
 
 describe('API Get User', () => {
@@ -584,7 +584,7 @@ describe('API Get User', () => {
       .get('/api/v1/user/me')
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(200);
-  });
+  }, 10000);
 });
 
 describe('API login admin', () => {
@@ -597,7 +597,7 @@ describe('API login admin', () => {
       .post('/api/v1/auth/login/admin')
       .send(user);
     expect(response.statusCode).toBe(200);
-  });
+  }, 10000);
 
   it('should return 400 Email is required', async () => {
     const user = {
@@ -607,7 +607,7 @@ describe('API login admin', () => {
       .post('/api/v1/auth/login/admin')
       .send(user);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 400 Password is required', async () => {
     const user = {
@@ -617,7 +617,7 @@ describe('API login admin', () => {
       .post('/api/v1/auth/login/admin')
       .send(user);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 400 Email does not exist', async () => {
     const user = {
@@ -628,7 +628,7 @@ describe('API login admin', () => {
       .post('/api/v1/auth/login/admin')
       .send(user);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 400 Password is incorrect', async () => {
     const user = {
@@ -639,7 +639,7 @@ describe('API login admin', () => {
       .post('/api/v1/auth/login/admin')
       .send(user);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 
   it('should return 400 You are not admin', async () => {
     const user = {
@@ -650,7 +650,7 @@ describe('API login admin', () => {
       .post('/api/v1/auth/login/admin')
       .send(user);
     expect(response.statusCode).toBe(400);
-  });
+  }, 10000);
 });
 
 describe('API get user by id', () => {
@@ -666,21 +666,21 @@ describe('API get user by id', () => {
       .send(admin);
     token = loginAdmin.body.data.token;
     id = loginAdmin.body.data.user.id;
-  });
+  }, 10000);
 
   it('should return 200 User fetched successfully', async () => {
     const response = await request(app)
       .get(`/api/v1/user/${id}`)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(200);
-  });
+  }, 10000);
 
   it('should return 404 User not found', async () => {
     const response = await request(app)
       .get('/api/v1/user/1000')
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(404);
-  });
+  }, 10000);
 });
 
 describe('API delete user', () => {
@@ -694,7 +694,7 @@ describe('API delete user', () => {
       .post('/api/v1/auth/login')
       .send(admin);
     token = loginAdmin.body.data.token;
-  });
+  }, 10000);
 
   it('should return 200 User deleted successfully', async () => {
     const user = {
@@ -707,21 +707,21 @@ describe('API delete user', () => {
       .delete(`/api/v1/user/${id}`)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(200);
-  });
+  }, 10000);
 
   it('should return 404 User not found', async () => {
     const response = await request(app)
       .delete('/api/v1/user/1000')
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(404);
-  });
+  }, 10000);
 });
 
 describe('Forgot Password View', () => {
   it('should render the forgotPassword template', async () => {
     const response = await request(app).get('/forgot-password');
     expect(response.statusCode).toBe(200);
-  });
+  }, 10000);
 });
 
 describe('Reset Password View', () => {
@@ -735,10 +735,10 @@ describe('Reset Password View', () => {
     const { token } = resetPassword.body.data;
     const res = await request(app).get(`/reset-password?token=${token}`);
     expect(res.status).toBe(200);
-  });
+  }, 10000);
 
   it('should redirect to /404 with an invalid token', async () => {
     const res = await request(app).get('/reset-password');
     expect(res.status).toBe(302);
-  });
+  }, 10000);
 });

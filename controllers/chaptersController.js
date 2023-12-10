@@ -1,4 +1,4 @@
-const { Chapter, Course } = require("../models");
+const { Chapter, Course, Module } = require("../models");
 const ApiError = require("../utils/apiError");
 
 const createChapter = async (req, res, next) => {
@@ -16,6 +16,32 @@ const createChapter = async (req, res, next) => {
       name,
       courseId,
     });
+
+    const module = await Module.findOne({
+      where: {
+        chapterId: newChapter.id,
+      },
+    });
+
+    const moduleCount = await Module.count({
+      where: {
+        chapterId: newChapter.id,
+      },
+    });
+
+    const totalDuration = module ? module.duration : 0;
+
+    await Course.update(
+      {
+        totalModule: moduleCount,
+        totalDuration,
+      },
+      {
+        where: {
+          id: courseId,
+        },
+      }
+    );
 
     res.status(201).json({
       status: "success",

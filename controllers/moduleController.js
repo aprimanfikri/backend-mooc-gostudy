@@ -1,4 +1,4 @@
-const { Module } = require("../models");
+const { Module, Chapter, Course } = require("../models");
 const imagekit = require("../lib/imagekit");
 const ApiError = require("../utils/apiError");
 
@@ -42,6 +42,39 @@ const createModule = async (req, res, next) => {
       duration: video.duration,
       createdBy: req.user.id,
     });
+
+    const chapter = await Chapter.findOne({
+      where: {
+        id: newModule.chapterId,
+      },
+    });
+
+    const moduleCount = await Module.count({
+      where: {
+        chapterId: chapter.id,
+      },
+    });
+
+    const existingModuleDuration = await Module.sum("duration", {
+      where: {
+        chapterId: chapter.id,
+      },
+    });
+
+    const totalDuration = existingModuleDuration + (newModule.duration || 0);
+
+    await Course.update(
+      {
+        totalModule: moduleCount,
+        totalDuration,
+      },
+      {
+        where: {
+          id: chapter.courseId,
+        },
+      }
+    );
+
     res.status(201).json({
       status: "success",
       data: {

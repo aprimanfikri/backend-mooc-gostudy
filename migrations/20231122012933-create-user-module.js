@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('UserModules', {
+    await queryInterface.createTable("UserModules", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -10,6 +10,9 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       userId: {
+        type: Sequelize.INTEGER,
+      },
+      chapterId: {
         type: Sequelize.INTEGER,
       },
       moduleId: {
@@ -20,6 +23,9 @@ module.exports = {
       },
       isUnlocked: {
         type: Sequelize.BOOLEAN,
+      },
+      progress: {
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,
@@ -32,6 +38,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('UserModules');
+    await queryInterface.dropTable("UserModules");
   },
 };

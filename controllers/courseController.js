@@ -26,10 +26,8 @@ const createCourse = async (req, res, next) => {
       !description ||
       !benefits ||
       !classCode ||
-      !totalModule ||
       !type ||
       !price ||
-      !totalDuration ||
       !courseBy
     ) {
       throw new ApiError("All value fields are required", 400);
@@ -62,10 +60,8 @@ const createCourse = async (req, res, next) => {
       description,
       benefits,
       classCode,
-      totalModule,
       type,
       price,
-      totalDuration,
       courseBy,
       createdBy: req.user.id,
     });
@@ -90,10 +86,8 @@ const updateCourse = async (req, res, next) => {
       description,
       benefits,
       classCode,
-      totalModule,
       type,
       price,
-      totalDuration,
       courseBy,
     } = req.body;
     // if (classCode.length < 5) {
@@ -132,10 +126,8 @@ const updateCourse = async (req, res, next) => {
       description,
       benefits,
       classCode,
-      totalModule,
       type,
       price,
-      totalDuration,
       courseBy,
       createdBy: req.user.id,
     });
@@ -188,10 +180,14 @@ const getAllCourse = async (req, res, next) => {
       searchCriteria.type = type;
     }
     if (categoryName) {
+      const categories = categoryName
+        .split(",")
+        .map((category) => category.trim());
       searchCriteria["$Category.name$"] = {
-        [Op.iLike]: `%${categoryName}%`,
+        [Op.iLike]: { [Op.any]: categories },
       };
     }
+
     if (createdAt && createdAt.toLowerCase() === "true") {
       searchCriteria.createdAt = {
         [Op.gte]: new Date(),

@@ -1779,8 +1779,7 @@
             "name": "createdAt",
             "in": "query",
             "schema": {
-              "type": "boolean",
-              "example": true
+              "type": "boolean"
             },
             "description": "Query newest data"
           },

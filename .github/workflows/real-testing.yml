@@ -1,8 +1,5 @@
 name: Lint and Test Before Merge
-on:
-  push:
-    branches:
-      - '*'
+on: push
 jobs:
   test:
     environment: test

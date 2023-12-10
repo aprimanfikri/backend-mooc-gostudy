@@ -246,9 +246,9 @@ const updateProfile = async (req, res, next) => {
     if (file) {
       const split = file.originalname.split('.');
       const fileType = split[split.length - 1];
-      if (user.imageId) {
-        await imagekit.deleteFile(user.imageId);
-      }
+      // if (user.imageId) {
+      //   await imagekit.deleteFile(user.imageId);
+      // }
       const uploadImage = await imagekit.upload({
         file: file.buffer.toString('base64'),
         fileName: `${user.id}.${fileType}`,

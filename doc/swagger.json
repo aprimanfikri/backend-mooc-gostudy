@@ -3664,7 +3664,7 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "dataPayment": {
+                        "payment": {
                           "type": "object",
                           "properties": {
                             "userId": {
@@ -3969,6 +3969,139 @@
                       "type": "string",
                       "description": "Message of the request",
                       "example": "Error occured during get payment data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/payment/v2": {
+      "post": {
+        "tags": ["Payment"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "summary": "Pembayaran course",
+        "description": "Ini adalah API endpoint untuk pembayaran course",
+        "requestBody": {
+          "description": "Request body untuk pembayaran course",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "courseId": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "bank": {
+                    "type": "string",
+                    "example": "bca"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Transaksi dibuat",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Transaksi dibuat!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "dataPayment": {
+                          "type": "object",
+                          "properties": {
+                            "userId": {
+                              "type": "integer",
+                              "example": 7
+                            },
+                            "courseId": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "price": {
+                              "type": "number",
+                              "format": "float",
+                              "example": 300000
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "token": {
+                      "type": "string",
+                      "description": "Token for payment",
+                      "example": "jdiajsdoiasjosal12921"
+                    },
+                    "redirect_url": {
+                      "type": "string",
+                      "description": "URL for redirect to payment page",
+                      "example": "https://midtrans-90809.com"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Created Transaction",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Course not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Create Transaction",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during create Transaction"
                     }
                   }
                 }

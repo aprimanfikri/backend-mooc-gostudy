@@ -216,3 +216,50 @@ describe('API get module by id', () => {
     expect(response.statusCode).toBe(404);
   }, 10000);
 });
+
+describe('API create module', () => {
+  it('should return 201 Module created successfully (using url)', async () => {
+    const response = await request(app)
+      .post('/api/v1/module/v2')
+      .field('no', 1)
+      .field('name', 'Module 1')
+      .field('description', 'Test description')
+      .field('chapterId', 1)
+      .field('videoUrl', 'https://www.youtube.com/watch?v=UIp6_0kct_U')
+      .set('Authorization', `Bearer ${token}`);
+    expect(response.statusCode).toBe(201);
+  }, 60000);
+
+  it('should return 201 Module created successfully (using video)', async () => {
+    const response = await request(app)
+      .post('/api/v1/module/v2')
+      .field('no', 1)
+      .field('name', 'Module 1')
+      .field('description', 'Test description')
+      .field('chapterId', 1)
+      .attach('video', videoBuffer, 'testing.mp4')
+      .set('Authorization', `Bearer ${token}`);
+    expect(response.statusCode).toBe(201);
+  }, 15000);
+
+  it('should return 400 All value fields are required', async () => {
+    const response = await request(app)
+      .post('/api/v1/module/v2')
+      .field('no', 1)
+      .field('name', 'Module 1')
+      .field('description', 'Test description')
+      .set('Authorization', `Bearer ${token}`);
+    expect(response.statusCode).toBe(400);
+  }, 10000);
+
+  it('should return 400 Please provide either a video file or a video URL.', async () => {
+    const response = await request(app)
+      .post('/api/v1/module/v2')
+      .field('no', 1)
+      .field('name', 'Module 1')
+      .field('description', 'Test description')
+      .field('chapterId', 1)
+      .set('Authorization', `Bearer ${token}`);
+    expect(response.statusCode).toBe(400);
+  }, 10000);
+});

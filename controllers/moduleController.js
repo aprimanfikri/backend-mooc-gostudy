@@ -1,6 +1,8 @@
+const fs = require("fs");
 const { Module } = require("../models");
 const imagekit = require("../lib/imagekit");
 const ApiError = require("../utils/apiError");
+const { processVideo } = require("../utils/compress");
 
 const createModule = async (req, res, next) => {
   try {
@@ -209,9 +211,9 @@ const getModuleById = async (req, res, next) => {
 
 const createModuleV2 = async (req, res, next) => {
   try {
-    const { no, name, description, chapterId, videoUrl } = req.body;
+    const { noModule, name, description, chapterId, videoUrl } = req.body;
     const { file } = req;
-    if (!no || !name || !description || !chapterId) {
+    if (!noModule || !name || !description || !chapterId) {
       throw new ApiError("All value fields are required", 400);
     }
     if (!file && !videoUrl) {
@@ -243,7 +245,7 @@ const createModuleV2 = async (req, res, next) => {
       };
     }
     const newModule = await Module.create({
-      no,
+      noModule,
       name,
       description,
       chapterId,

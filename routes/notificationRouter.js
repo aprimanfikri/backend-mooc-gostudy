@@ -1,13 +1,13 @@
-const router = require("express").Router();
-const notificationController = require("../controllers/notificationController");
+const router = require('express').Router();
+const notificationController = require('../controllers/notificationController');
 
 router
-  .route("/")
+  .route('/')
   .get(notificationController.getAllNotif)
   .post(notificationController.createNotif);
 
 router
-  .route("/:id")
+  .route('/:id')
   .get(notificationController.getNotifById)
   .patch(notificationController.updateNotif)
   .delete(notificationController.deleteNotif);

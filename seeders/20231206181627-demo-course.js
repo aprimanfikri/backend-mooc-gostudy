@@ -18,16 +18,16 @@ module.exports = {
         description: 'Course description',
         benefits: 'Course benefits',
         classCode: 'Course123',
-        totalModule: 1,
+        // totalModule: 1,
         type: 'Course',
         price: 100000,
-        totalDuration: 1,
+        // totalDuration: 1,
         courseBy: 'Course',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
     ]),
-    {};
+      {};
   },
 
   async down(queryInterface, Sequelize) {

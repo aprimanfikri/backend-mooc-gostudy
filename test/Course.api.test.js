@@ -26,10 +26,8 @@ describe('API create course', () => {
       .field('description', 'Test description')
       .field('benefits', 'Test benefits')
       .field('classCode', 'test123')
-      .field('totalModule', 1)
       .field('type', 'Online')
       .field('price', 100000)
-      .field('totalDuration', 1)
       .field('courseBy', 'test')
       .set('Authorization', `Bearer ${token}`)
       .attach('image', imageBuffer, 'persia.jpg');
@@ -54,10 +52,8 @@ describe('API create course', () => {
       .field('description', 'Test description')
       .field('benefits', 'Test benefits')
       .field('classCode', 'tes')
-      .field('totalModule', 1)
       .field('type', 'Online')
       .field('price', 100000)
-      .field('totalDuration', 1)
       .field('courseBy', 'test')
       .set('Authorization', `Bearer ${token}`)
       .attach('image', imageBuffer, 'persia.jpg');
@@ -73,10 +69,8 @@ describe('API create course', () => {
       .field('description', 'Test description')
       .field('benefits', 'Test benefits')
       .field('classCode', 'tes')
-      .field('totalModule', 1)
       .field('type', 'Online')
       .field('price', 100000)
-      .field('totalDuration', 1)
       .field('courseBy', 'test')
       .set('Authorization', `Bearer ${token}`)
       .attach('image', imageBuffer, 'persia.jpg');
@@ -92,10 +86,8 @@ describe('API create course', () => {
       .field('description', 'Test description')
       .field('benefits', 'Test benefits')
       .field('classCode', 'tessss123')
-      .field('totalModule', 1)
       .field('type', 'Online')
       .field('price', 100000)
-      .field('totalDuration', 1)
       .field('courseBy', 'test')
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(400);
@@ -113,10 +105,8 @@ describe('API update course', () => {
       .field('description', 'Test description')
       .field('benefits', 'Test benefits')
       .field('classCode', 'test123')
-      .field('totalModule', 1)
       .field('type', 'Online')
       .field('price', 100000)
-      .field('totalDuration', 1)
       .field('courseBy', 'test')
       .set('Authorization', `Bearer ${token}`)
       .attach('image', imageBuffer, 'persia.jpg');
@@ -152,10 +142,8 @@ describe('API delete course', () => {
       .field('description', 'Test description')
       .field('benefits', 'Test benefits')
       .field('classCode', 'test123')
-      .field('totalModule', 1)
       .field('type', 'Online')
       .field('price', 100000)
-      .field('totalDuration', 1)
       .field('courseBy', 'test')
       .set('Authorization', `Bearer ${token}`)
       .attach('image', imageBuffer, 'persia.jpg');
@@ -195,10 +183,8 @@ describe('API get course by id', () => {
       .field('description', 'Test description')
       .field('benefits', 'Test benefits')
       .field('classCode', 'test123')
-      .field('totalModule', 1)
       .field('type', 'Online')
       .field('price', 100000)
-      .field('totalDuration', 1)
       .field('courseBy', 'test')
       .set('Authorization', `Bearer ${token}`)
       .attach('image', imageBuffer, 'persia.jpg');

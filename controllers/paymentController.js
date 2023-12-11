@@ -66,18 +66,23 @@ const createTransaction = async (req, res, next) => {
 };
 
 const paymentCallback = async (req, res, next) => {
-  const { orderId, statusCode, grossAmount, signatureKey, transactionStatus } =
-    req.body;
+  const {
+    order_id,
+    status_code,
+    gross_amount,
+    signature_key,
+    transaction_status,
+  } = req.body;
   try {
     const serverKey = process.env.MIDTRANS_SERVER_KEY;
     const hashed = crypto
       .createHash("sha512")
-      .update(orderId + statusCode + grossAmount + serverKey)
+      .update(order_id + status_code + gross_amount + serverKey)
       .digest("hex");
 
-    if (hashed === signatureKey) {
-      if (transactionStatus === "settlement") {
-        const payment = await Payment.findOne({ where: { id: orderId } });
+    if (hashed === signature_key) {
+      if (transaction_status === "settlement") {
+        const payment = await Payment.findOne({ where: { id: order_id } });
         if (!payment) throw new ApiError("Transaksi tidak ada", 404);
 
         payment.status = "paid";

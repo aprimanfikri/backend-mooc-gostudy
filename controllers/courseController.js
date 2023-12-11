@@ -1,7 +1,7 @@
+const { Op } = require("sequelize");
 const { Course, Category } = require("../models");
 const imagekit = require("../lib/imagekit");
 const ApiError = require("../utils/apiError");
-const { Op } = require("sequelize");
 
 const createCourse = async (req, res, next) => {
   try {
@@ -40,7 +40,7 @@ const createCourse = async (req, res, next) => {
     if (course) {
       throw new ApiError("Course name already exist", 400);
     }
-    const file = req.file;
+    const { file } = req;
     if (!file) {
       throw new ApiError("Image is required", 400);
     }
@@ -93,7 +93,7 @@ const updateCourse = async (req, res, next) => {
     // if (classCode.length < 5) {
     //   throw new ApiError("Class code must be at least 5 characters", 400);
     // }
-    const file = req.file;
+    const { file } = req;
     const { id } = req.params;
     const course = await Course.findByPk(id);
     if (!course) {
@@ -167,7 +167,6 @@ const deleteCourse = async (req, res, next) => {
 const getAllCourse = async (req, res, next) => {
   try {
     const { level, type, categoryName, createdAt, search } = req.query;
-    let courses;
     const searchCriteria = {};
     if (
       level === "Beginner" ||
@@ -180,14 +179,10 @@ const getAllCourse = async (req, res, next) => {
       searchCriteria.type = type;
     }
     if (categoryName) {
-      const categories = categoryName
-        .split(",")
-        .map((category) => category.trim());
       searchCriteria["$Category.name$"] = {
-        [Op.iLike]: { [Op.any]: categories },
+        [Op.iLike]: `%${categoryName}%`,
       };
     }
-
     if (createdAt && createdAt.toLowerCase() === "true") {
       searchCriteria.createdAt = {
         [Op.gte]: new Date(),
@@ -196,7 +191,7 @@ const getAllCourse = async (req, res, next) => {
     if (search) {
       searchCriteria.name = { [Op.iLike]: `%${search}%` };
     }
-    courses = await Course.findAll({
+    const courses = await Course.findAll({
       where: searchCriteria,
       include: [{ model: Category, as: "Category" }],
       order: [["createdAt", "DESC"]],
@@ -224,7 +219,7 @@ const getCourseById = async (req, res, next) => {
     }
     res.status(200).json({
       status: "success",
-      message: `Course found!`,
+      message: "Course found!",
       data: {
         course,
       },

@@ -1,9 +1,5 @@
 name: Lint and Test Before Merge
-on:
-  pull_request:
-    types: [opened, edited, synchronize]
-    branches:
-      - main
+on: push
 jobs:
   test:
     environment: test
@@ -26,6 +22,7 @@ jobs:
       JWT_ISSUER: abc
       PASSWORD_HASH: ${{ secrets.PASSWORD_HASH }}
       BASE_URL: locahost:3000
+      NODE_ENV: test
     steps:
       - name: Get code
         uses: actions/checkout@v3
@@ -35,6 +32,8 @@ jobs:
         with:
           path: ~/.npm
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Set NODE_ENV to test
+        run: echo "NODE_ENV=test" >> $GITHUB_ENV
       - name: Install dependencies
         run: npm install
       - name: drop existing DB

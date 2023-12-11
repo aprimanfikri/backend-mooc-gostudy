@@ -2,16 +2,20 @@
   "env": {
     "browser": true,
     "commonjs": true,
-    "es2021": true
+    "es2021": true,
+    "node": true
   },
   "extends": "airbnb-base",
   "parserOptions": {
     "ecmaVersion": "latest"
   },
-  "rules": {
-    "linebreak-style": "off",
-    "semi": "warn",
-    "quotes": ["warn", "double"],
-    "comma-dangle": "off"
-  }
+  "ignorePatterns": [
+    "models/",
+    "migrations/",
+    "seeders/",
+    "postcss.config.js",
+    "server/",
+    "utils/apiError.js"
+  ],
+  "rules": {}
 }

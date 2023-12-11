@@ -1,23 +1,21 @@
-const midtransClient = require("midtrans-client");
-const crypto = require("crypto");
-const { Payment, Course, UserCourse } = require("../models");
-const ApiError = require("../utils/apiError");
+const midtransClient = require('midtrans-client');
+const crypto = require('crypto');
+const { Payment, Course, UserCourse } = require('../models');
+const ApiError = require('../utils/apiError');
+const midtrans = require('../config/midtrans');
 
 const createTransaction = async (req, res, next) => {
   const { courseId } = req.body;
-
   try {
     const course = await Course.findOne({
       where: {
         id: courseId,
       },
-      include: ["Category"],
+      include: ['Category'],
     });
-
     if (!course) {
-      throw new ApiError("Course not found!", 404);
+      throw new ApiError('Course not found!', 404);
     }
-
     const createPayment = await Payment.create({
       userId: req.user.id,
       courseId,
@@ -54,8 +52,8 @@ const createTransaction = async (req, res, next) => {
     };
 
     res.status(201).json({
-      status: "success",
-      message: "Transaksi dibuat!",
+      status: 'success',
+      message: 'Transaksi dibuat!',
       data: {
         dataPayment,
       },
@@ -69,26 +67,21 @@ const createTransaction = async (req, res, next) => {
 
 const paymentCallback = async (req, res, next) => {
   const {
-    order_id,
-    status_code,
-    gross_amount,
-    signature_key,
-    transaction_status,
+    orderId, statusCode, grossAmount, signatureKey, transactionStatus,
   } = req.body;
-
   try {
     const serverKey = process.env.MIDTRANS_SERVER_KEY;
     const hashed = crypto
-      .createHash("sha512")
-      .update(order_id + status_code + gross_amount + serverKey)
-      .digest("hex");
+      .createHash('sha512')
+      .update(orderId + statusCode + grossAmount + serverKey)
+      .digest('hex');
 
-    if (hashed === signature_key) {
-      if (transaction_status === "settlement") {
-        const payment = await Payment.findOne({ where: { id: order_id } });
-        if (!payment) throw new ApiError("Transaksi tidak ada", 404);
+    if (hashed === signatureKey) {
+      if (transactionStatus === 'settlement') {
+        const payment = await Payment.findOne({ where: { id: orderId } });
+        if (!payment) throw new ApiError('Transaksi tidak ada', 404);
 
-        payment.status = "paid";
+        payment.status = 'paid';
         await payment.save();
 
         const userCourseData = {
@@ -97,13 +90,13 @@ const paymentCallback = async (req, res, next) => {
           isAccessible: true,
         };
 
-        const newUserCourse = await UserCourse.create(userCourseData);
+        await UserCourse.create(userCourseData);
       }
     }
 
     res.status(200).json({
-      status: "success",
-      message: "Transaksi sukses!",
+      status: 'success',
+      message: 'Transaksi sukses!',
     });
   } catch (error) {
     next(error);
@@ -111,7 +104,7 @@ const paymentCallback = async (req, res, next) => {
 };
 
 const getPaymentDetail = async (req, res, next) => {
-  const id = req.params.id;
+  const { id } = req.params;
 
   try {
     const payment = await Payment.findOne({
@@ -119,7 +112,7 @@ const getPaymentDetail = async (req, res, next) => {
     });
 
     res.status(200).json({
-      status: "success",
+      status: 'success',
       data: {
         payment,
       },
@@ -133,9 +126,63 @@ const getAllPayment = async (req, res, next) => {
   try {
     const payments = await Payment.findAll();
     res.status(200).json({
-      status: "success",
+      status: 'success',
       data: {
         payments,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const createTransactionv2 = async (req, res, next) => {
+  try {
+    const { bank, courseId } = req.body;
+    const course = await Course.findOne({
+      where: {
+        id: courseId,
+      },
+      include: ['Category'],
+    });
+    if (!course) {
+      throw new ApiError('Course not found!', 404);
+    }
+    const transaction = await midtrans.coreApi.charge({
+      payment_type: 'bank_transfer',
+      transaction_details: {
+        order_id: `ORDER-${course.classCode}-${req.user.id}-${Date.now()}`,
+        gross_amount: course.price,
+      },
+      customer_details: {
+        first_name: req.user.name,
+        email: req.user.email,
+        phone: req.user.phoneNumber,
+      },
+      item_details: {
+        id: course.id,
+        price: course.price,
+        name: course.name,
+        category: course.Category.name,
+        quantity: 1,
+      },
+      bank_transfer: {
+        bank,
+      },
+    });
+
+    const payment = await Payment.create({
+      userId: req.user.id,
+      courseId,
+      price: course.price,
+    });
+
+    res.status(201).json({
+      status: 'success',
+      message: 'Success create transaction!',
+      data: {
+        payment,
+        transaction,
       },
     });
   } catch (error) {
@@ -148,4 +195,5 @@ module.exports = {
   paymentCallback,
   getPaymentDetail,
   getAllPayment,
+  createTransactionv2,
 };

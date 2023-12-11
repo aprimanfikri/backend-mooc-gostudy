@@ -3212,6 +3212,161 @@
         }
       }
     },
+    "/api/v1/module/v2": {
+      "post": {
+        "tags": ["Module"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "summary": "Create new Module",
+        "description": "Ini adalah API endpoint untuk membuat module (sama kek yang diatas, cuma ini di kompress dulu jadi agak lama)",
+        "requestBody": {
+          "description": "Request body untuk membuat module",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "no": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "UI/UX Introduction to Figma"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Figma is a tool for design an UI or UX. Figma also can make a prototype for present an UI/UX project"
+                  },
+                  "chapterId": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "video": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Module created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Module created successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "newModule": {
+                          "type": "object",
+                          "description": "Data new module",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "no": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "UI/UX Introduction to Figma"
+                            },
+                            "description": {
+                              "type": "string",
+                              "example": "Figma is a tool for design an UI or UX. Figma also can make a prototype for present an UI/UX project"
+                            },
+                            "chapterId": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "video": {
+                              "type": "string",
+                              "format": "binary"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Created New Module",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "All value fields are required"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Create Module",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during create module"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/module/{id}": {
       "get": {
         "tags": ["Module"],
@@ -3663,7 +3818,7 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "dataPayment": {
+                        "payment": {
                           "type": "object",
                           "properties": {
                             "userId": {
@@ -3968,6 +4123,139 @@
                       "type": "string",
                       "description": "Message of the request",
                       "example": "Error occured during get payment data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/payment/v2": {
+      "post": {
+        "tags": ["Payment"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "summary": "Pembayaran course",
+        "description": "Ini adalah API endpoint untuk pembayaran course",
+        "requestBody": {
+          "description": "Request body untuk pembayaran course",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "courseId": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "bank": {
+                    "type": "string",
+                    "example": "bca"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Transaksi dibuat",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Transaksi dibuat!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "dataPayment": {
+                          "type": "object",
+                          "properties": {
+                            "userId": {
+                              "type": "integer",
+                              "example": 7
+                            },
+                            "courseId": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "price": {
+                              "type": "number",
+                              "format": "float",
+                              "example": 300000
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "token": {
+                      "type": "string",
+                      "description": "Token for payment",
+                      "example": "jdiajsdoiasjosal12921"
+                    },
+                    "redirect_url": {
+                      "type": "string",
+                      "description": "URL for redirect to payment page",
+                      "example": "https://midtrans-90809.com"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Created Transaction",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Course not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Create Transaction",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during create Transaction"
                     }
                   }
                 }

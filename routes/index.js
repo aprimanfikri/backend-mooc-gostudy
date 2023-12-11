@@ -21,7 +21,7 @@ router.use("/api/v1/category", Category);
 router.use("/api/v1/payment", Payment);
 router.use("/api/v1/notif", Notification);
 
-router.all("*", (req, res, next) => {
+router.all("*", (req, res) => {
   res.render("error", {
     title: "Error Page",
   });

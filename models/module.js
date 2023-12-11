@@ -27,6 +27,18 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
     }
+    static afterCreate(module, options) {
+      return sequelize.models.Course.increment(
+        {
+          totalDuration: module.duration,
+          totalModule: 1,
+        },
+        {
+          where: { id: module.chapter.courseId },
+          transaction: options.transaction,
+        }
+      );
+    }
   }
   Module.init(
     {
@@ -42,7 +54,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'Module',
-    },
+    }
   );
   return Module;
 };

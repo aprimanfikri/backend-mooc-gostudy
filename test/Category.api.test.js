@@ -2,11 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const request = require('supertest');
 const {
-  it,
-  expect,
-  beforeEach,
-  beforeAll,
-  describe,
+  it, expect, beforeAll, describe,
 } = require('@jest/globals');
 const app = require('../app');
 
@@ -49,7 +45,7 @@ describe('API create category', () => {
 
 describe('API update category', () => {
   let id;
-  beforeEach(async () => {
+  beforeAll(async () => {
     const response = await request(app)
       .post('/api/v1/category')
       .field('name', `category ${new Date().getTime()}`)
@@ -87,7 +83,7 @@ describe('API update category', () => {
 
 describe('API delete category', () => {
   let id;
-  beforeEach(async () => {
+  beforeAll(async () => {
     const response = await request(app)
       .post('/api/v1/category')
       .field('name', `category ${new Date().getTime()}`)
@@ -113,7 +109,7 @@ describe('API delete category', () => {
 
 describe('API get category by id', () => {
   let id;
-  beforeEach(async () => {
+  beforeAll(async () => {
     const response = await request(app)
       .post('/api/v1/category')
       .field('name', `category ${new Date().getTime()}`)

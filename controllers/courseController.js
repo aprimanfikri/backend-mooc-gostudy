@@ -1,5 +1,7 @@
 const { Op } = require('sequelize');
-const { Course, Category } = require('../models');
+const {
+  Course, Category, Chapter, Module,
+} = require('../models');
 const imagekit = require('../lib/imagekit');
 const ApiError = require('../utils/apiError');
 
@@ -213,6 +215,10 @@ const getCourseById = async (req, res, next) => {
     const { id } = req.params;
     const course = await Course.findOne({
       where: { id },
+      include: {
+        model: Chapter,
+        include: Module,
+      },
     });
     if (!course) {
       throw new ApiError('Course not found', 404);

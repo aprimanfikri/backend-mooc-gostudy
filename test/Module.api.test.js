@@ -65,14 +65,14 @@ describe('API create module', () => {
   it('should return 201 Module created successfully (using video)', async () => {
     const response = await request(app)
       .post('/api/v1/module')
-      .field('noModule', 1)
+      .field('noModule', 2)
       .field('name', 'Module 1')
       .field('description', 'Test description')
-      .field('chapterId', 1)
+      .field('chapterId', chapterId)
       .attach('video', videoBuffer, 'testing.mp4')
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(201);
-  }, 15000);
+  }, 20000);
 
   it('should return 400 All value fields are required', async () => {
     const response = await request(app)
@@ -90,7 +90,7 @@ describe('API create module', () => {
       .field('noModule', 1)
       .field('name', 'Module 1')
       .field('description', 'Test description')
-      .field('chapterId', 1)
+      .field('chapterId', chapterId)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(400);
   }, 10000);
@@ -101,7 +101,7 @@ describe('API update module', () => {
   let chapterId;
   beforeAll(async () => {
     const chapter = {
-      noChapter: 1,
+      noChapter: 2,
       name: 'Chapter 1',
       courseId,
     };
@@ -112,10 +112,10 @@ describe('API update module', () => {
     chapterId = createChapter.body.data.newChapter.id;
     const response = await request(app)
       .post('/api/v1/module')
-      .field('noModule', 1)
+      .field('noModule', 10)
       .field('name', 'Module 1')
       .field('description', 'Test description')
-      .field('chapterId', 1)
+      .field('chapterId', chapterId)
       .attach('video', videoBuffer, 'testing.mp4')
       .set('Authorization', `Bearer ${token}`);
     id = response.body.data.newModule.id;
@@ -124,7 +124,7 @@ describe('API update module', () => {
   it('should return 200 Module updated successfully (using video)', async () => {
     const response = await request(app)
       .patch(`/api/v1/module/${id}`)
-      .field('noModule', 1)
+      .field('noModule', 10)
       .field('name', 'Module 1')
       .field('description', 'Test description')
       .field('chapterId', chapterId)
@@ -136,7 +136,7 @@ describe('API update module', () => {
   it('should return 200 Module updated successfully (using url)', async () => {
     const response = await request(app)
       .patch(`/api/v1/module/${id}`)
-      .field('noModule', 1)
+      .field('noModule', 10)
       .field('name', 'Module 1')
       .field('description', 'Test description')
       .field('chapterId', chapterId)
@@ -173,7 +173,7 @@ describe('API delete module', () => {
   beforeAll(async () => {
     const response = await request(app)
       .post('/api/v1/module')
-      .field('noModule', 1)
+      .field('noModule', 99)
       .field('name', 'Module 1')
       .field('description', 'Test description')
       .field('chapterId', 1)
@@ -209,7 +209,7 @@ describe('API get module by id', () => {
   beforeAll(async () => {
     const response = await request(app)
       .post('/api/v1/module')
-      .field('noModule', 1)
+      .field('noModule', 66)
       .field('name', 'Module 1')
       .field('description', 'Test description')
       .field('chapterId', 1)
@@ -230,13 +230,27 @@ describe('API get module by id', () => {
 });
 
 describe('API create module v2', () => {
+  let chapterId;
+  beforeAll(async () => {
+    const chapter = {
+      noChapter: 3,
+      name: 'Chapter 1',
+      courseId,
+    };
+    const createChapter = await request(app)
+      .post('/api/v1/chapter')
+      .send(chapter)
+      .set('Authorization', `Bearer ${token}`);
+    chapterId = createChapter.body.data.newChapter.id;
+  });
+
   it('should return 201 Module created successfully (using url)', async () => {
     const response = await request(app)
       .post('/api/v1/module/v2')
-      .field('noModule', 1)
+      .field('noModule', 77)
       .field('name', 'Module 1')
       .field('description', 'Test description')
-      .field('chapterId', 1)
+      .field('chapterId', chapterId)
       .field('videoUrl', 'https://www.youtube.com/watch?v=UIp6_0kct_U')
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(201);
@@ -245,10 +259,10 @@ describe('API create module v2', () => {
   it('should return 201 Module created successfully (using video)', async () => {
     const response = await request(app)
       .post('/api/v1/module/v2')
-      .field('noModule', 1)
+      .field('noModule', 81)
       .field('name', 'Module 1')
       .field('description', 'Test description')
-      .field('chapterId', 1)
+      .field('chapterId', chapterId)
       .attach('video', videoBuffer, 'testing.mp4')
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(201);
@@ -257,7 +271,7 @@ describe('API create module v2', () => {
   it('should return 400 All value fields are required', async () => {
     const response = await request(app)
       .post('/api/v1/module/v2')
-      .field('noModule', 1)
+      .field('noModule', 56)
       .field('name', 'Module 1')
       .field('description', 'Test description')
       .set('Authorization', `Bearer ${token}`);
@@ -267,10 +281,10 @@ describe('API create module v2', () => {
   it('should return 400 Please provide either a video file or a video URL.', async () => {
     const response = await request(app)
       .post('/api/v1/module/v2')
-      .field('noModule', 1)
+      .field('noModule', 43)
       .field('name', 'Module 1')
       .field('description', 'Test description')
-      .field('chapterId', 1)
+      .field('chapterId', chapterId)
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(400);
   }, 10000);

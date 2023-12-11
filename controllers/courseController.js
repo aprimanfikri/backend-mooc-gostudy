@@ -216,7 +216,9 @@ const getAllCourse = async (req, res, next) => {
 const getCourseById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const course = await Course.findByPk(id);
+    const course = await Course.findOne({
+      where: { id },
+    });
     if (!course) {
       throw new ApiError("Course not found", 404);
     }

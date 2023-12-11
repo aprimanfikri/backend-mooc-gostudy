@@ -4,9 +4,9 @@ const ApiError = require("../utils/apiError");
 
 const createModule = async (req, res, next) => {
   try {
-    const { no, name, description, chapterId, videoUrl } = req.body;
+    const { noModule, name, description, chapterId, videoUrl } = req.body;
     const file = req.file;
-    if (!no || !name || !description || !chapterId) {
+    if (!noModule || !name || !description || !chapterId) {
       throw new ApiError("All value fields are required", 400);
     }
     if (!file && !videoUrl) {
@@ -33,7 +33,7 @@ const createModule = async (req, res, next) => {
       };
     }
     const newModule = await Module.create({
-      no,
+      noModule,
       name,
       description,
       chapterId,
@@ -50,18 +50,30 @@ const createModule = async (req, res, next) => {
     });
 
     const moduleCount = await Module.count({
-      where: {
-        chapterId: chapter.id,
-      },
+      include: [
+        {
+          model: Chapter,
+          where: {
+            courseId: chapter.courseId,
+          },
+        },
+      ],
     });
 
     const existingModuleDuration = await Module.sum("duration", {
       where: {
-        chapterId: chapter.id,
+        "$Chapter.courseId$": chapter.courseId,
       },
+      include: [
+        {
+          model: Chapter,
+          attributes: [],
+        },
+      ],
+      group: ["Chapter.id"],
     });
 
-    const totalDuration = existingModuleDuration + (newModule.duration || 0);
+    const totalDuration = existingModuleDuration || 0;
 
     await Course.update(
       {
@@ -88,14 +100,14 @@ const createModule = async (req, res, next) => {
 
 const updateModule = async (req, res, next) => {
   try {
-    const { no, name, description, chapterId, videoUrl } = req.body;
+    const { noModule, name, description, chapterId, videoUrl } = req.body;
     const { id } = req.params;
     const file = req.file;
     const module = await Module.findByPk(id);
     if (!module) {
       throw new ApiError("Module not found!", 404);
     }
-    if (!no || !name || !description || !chapterId) {
+    if (!noModule || !name || !description || !chapterId) {
       throw new ApiError("All value fields are required", 400);
     }
     let video;
@@ -119,7 +131,7 @@ const updateModule = async (req, res, next) => {
       };
     }
     const updatedModule = await module.update({
-      no,
+      noModule,
       name,
       description,
       chapterId,

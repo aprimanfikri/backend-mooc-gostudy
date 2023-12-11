@@ -17,31 +17,31 @@ const createChapter = async (req, res, next) => {
       courseId,
     });
 
-    const module = await Module.findOne({
-      where: {
-        chapterId: newChapter.id,
-      },
-    });
+    // const module = await Module.findOne({
+    //   where: {
+    //     chapterId: newChapter.id,
+    //   },
+    // });
 
-    const moduleCount = await Module.count({
-      where: {
-        chapterId: newChapter.id,
-      },
-    });
+    // const moduleCount = await Module.count({
+    //   where: {
+    //     chapterId: newChapter.id,
+    //   },
+    // });
 
-    const totalDuration = module ? module.duration : 0;
+    // const totalDuration = module ? module.duration : 0;
 
-    await Course.update(
-      {
-        totalModule: moduleCount,
-        totalDuration,
-      },
-      {
-        where: {
-          id: courseId,
-        },
-      }
-    );
+    // await Course.update(
+    //   {
+    //     totalModule: moduleCount,
+    //     totalDuration,
+    //   },
+    //   {
+    //     where: {
+    //       id: courseId,
+    //     },
+    //   }
+    // );
 
     res.status(201).json({
       status: "success",

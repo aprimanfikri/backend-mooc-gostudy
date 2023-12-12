@@ -14,7 +14,8 @@
     "db:migrate:undo": "sequelize db:migrate:undo:all",
     "db:seed": "sequelize db:seed:undo:all && sequelize db:seed:all",
     "lint": "eslint .",
-    "fixlint": "eslint . --fix"
+    "fixlint": "eslint . --fix",
+    "dev:test": "sequelize db:migrate:undo:all && sequelize db:migrate && sequelize db:seed:all"
   },
   "keywords": [],
   "author": "",

@@ -1,4 +1,4 @@
-const { User, UserCourse } = require("../models");
+const { UserCourse } = require("../models");
 const ApiError = require("../utils/apiError");
 
 const giveAccess = async (req, res, next) => {

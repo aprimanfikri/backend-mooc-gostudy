@@ -3,21 +3,33 @@ const { Module, Chapter, Course } = require("../models");
 const imagekit = require("../lib/imagekit");
 const ApiError = require("../utils/apiError");
 const { processVideo } = require("../utils/compress");
-const { Sequelize } = require("sequelize");
 
 const createModule = async (req, res, next) => {
   try {
     const { noModule, name, description, chapterId, videoUrl } = req.body;
-    const { file } = req;
     if (!noModule || !name || !description || !chapterId) {
       throw new ApiError("All value fields are required", 400);
     }
+    const { file } = req;
     if (!file && !videoUrl) {
       throw new ApiError(
         "Please provide either a video file or a video URL.",
         400
       );
     }
+    const existingModule = await Module.findOne({
+      where: {
+        noModule,
+        chapterId,
+      },
+    });
+    if (existingModule) {
+      throw new ApiError(
+        "Module with the same number already exists in this chapter",
+        400
+      );
+    }
+
     let video;
     if (file) {
       const split = file.originalname.split(".");
@@ -63,46 +75,16 @@ const createModule = async (req, res, next) => {
       ],
     });
 
-    const existingModuleDurations = await Module.findAll({
-      attributes: [
-        [Sequelize.fn("SUM", sequelize.col("duration")), "totalDuration"],
-        "Chapter.id",
-      ],
-      where: {
-        "$Chapter.courseId$": chapter.courseId,
-      },
-      include: [
-        {
-          model: Chapter,
-          attributes: [],
-        },
-      ],
-      group: ["Chapter.id"],
-    });
+    const course = await Course.findByPk(chapter.courseId);
 
-    // Ambil total durasi dari hasil query
-    const totalDurations = existingModuleDurations.map((record) => ({
-      chapterId: record.Chapter.id,
-      totalDuration: record.get("totalDuration") || 0,
-    }));
+    course.totalModule = moduleCount;
 
-    // Hitung total durasi untuk semua bab
-    const totalDuration = totalDurations.reduce(
-      (total, record) => total + record.totalDuration,
-      0
-    );
+    if (newModule.duration) {
+      const total = course.totalDuration + newModule.duration;
+      course.totalDuration = total;
+    }
 
-    await Course.update(
-      {
-        totalModule: moduleCount,
-        totalDuration,
-      },
-      {
-        where: {
-          id: chapter.courseId,
-        },
-      }
-    );
+    await course.save();
 
     res.status(201).json({
       status: "success",
@@ -131,9 +113,9 @@ const updateModule = async (req, res, next) => {
     if (file) {
       const split = file.originalname.split(".");
       const fileType = split[split.length - 1];
-      if (module.videoId) {
-        await imagekit.deleteFile(module.videoId);
-      }
+      // if (module.videoId) {
+      //   await imagekit.deleteFile(module.videoId);
+      // }
       const uploadVideo = await imagekit.upload({
         file: file.buffer,
         fileName: `VID-${Date.now()}.${fileType}`,
@@ -147,6 +129,23 @@ const updateModule = async (req, res, next) => {
         duration: null,
       };
     }
+
+    const chapter = await Chapter.findOne({
+      where: {
+        id: module.chapterId,
+      },
+    });
+
+    const course = await Course.findByPk(chapter.courseId);
+
+    if (video.duration) {
+      const total = course.totalDuration - module.duration;
+      const totalDuration = total + video.duration;
+      course.totalDuration = totalDuration;
+    }
+
+    await course.save();
+
     const updatedModule = await module.update({
       noModule,
       name,
@@ -177,9 +176,26 @@ const deleteModule = async (req, res, next) => {
     if (!module) {
       throw new ApiError("Module not found!", 404);
     }
-    if (module.videoId) {
-      await imagekit.deleteFile(module.videoId);
+    // if (module.videoId) {
+    //   await imagekit.deleteFile(module.videoId);
+    // }
+    const chapter = await Chapter.findOne({
+      where: {
+        id: module.chapterId,
+      },
+    });
+
+    const course = await Course.findByPk(chapter.courseId);
+
+    if (module.duration) {
+      const total = course.totalDuration - module.duration;
+      course.totalDuration = total;
     }
+
+    course.totalModule -= 1;
+
+    await course.save();
+
     await module.destroy();
     res.status(200).json({
       status: "success",

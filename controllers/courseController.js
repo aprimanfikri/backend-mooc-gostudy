@@ -195,7 +195,13 @@ const getAllCourse = async (req, res, next) => {
     }
     const courses = await Course.findAll({
       where: searchCriteria,
-      include: [{ model: Category, as: 'Category' }],
+      include: [
+        { model: Category, as: 'Category' },
+        {
+          model: Chapter,
+          include: Module,
+        },
+      ],
       order: [['createdAt', 'DESC']],
     });
     res.status(200).json({

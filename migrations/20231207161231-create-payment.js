@@ -17,6 +17,12 @@ module.exports = {
       price: {
         type: Sequelize.FLOAT,
       },
+      settlementTime: {
+        type: Sequelize.DATE,
+      },
+      paymentType: {
+        type: Sequelize.STRING,
+      },
       status: {
         type: Sequelize.STRING,
         defaultValue: 'unpaid',

@@ -27,6 +27,8 @@ module.exports = (sequelize, DataTypes) => {
       userId: DataTypes.INTEGER,
       courseId: DataTypes.INTEGER,
       price: DataTypes.FLOAT,
+      paymentType: DataTypes.STRING,
+      settlementTime: DataTypes.DATE,
       status: {
         type: DataTypes.STRING,
         defaultValue: 'unpaid',
@@ -35,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'Payment',
-    },
+    }
   );
   return Payment;
 };

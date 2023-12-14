@@ -24,6 +24,7 @@ router.use('/api/v1/notification', Notification);
 router.all('*', (req, res) => {
   res.render('error', {
     title: 'Error Page',
+    url: req.originalUrl,
   });
 });
 

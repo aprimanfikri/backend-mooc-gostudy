@@ -90,16 +90,19 @@ const updateCourse = async (req, res, next) => {
       price,
       courseBy,
     } = req.body;
-    // if (classCode.length < 5) {
-    //   throw new ApiError("Class code must be at least 5 characters", 400);
-    // }
     const { file } = req;
     const { id } = req.params;
     const course = await Course.findByPk(id);
+
     if (!course) {
       throw new ApiError('Course not found', 404);
     }
-    let image;
+
+    let image = {
+      url: course.imageUrl,
+      fileId: course.imageId,
+    };
+
     if (file) {
       const split = file.originalname.split('.');
       const fileType = split[split.length - 1];
@@ -108,13 +111,11 @@ const updateCourse = async (req, res, next) => {
         fileName: `${course.name}.${fileType}`,
         folder: '/gostudy/course-image',
       });
+
       image = {
         url: uploadImage.url,
         fileId: uploadImage.fileId,
       };
-      if (course.imageId) {
-        await imagekit.deleteFile(course.imageId);
-      }
     }
 
     const updatedCourse = await course.update({

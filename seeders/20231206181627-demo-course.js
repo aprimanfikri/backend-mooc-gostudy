@@ -10,19 +10,19 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
      */
-    await queryInterface.bulkInsert('Courses', [
+    await queryInterface.bulkInsert("Courses", [
       {
-        name: 'Demo Course',
-        level: 'Admin',
+        name: "Demo Course",
+        level: "Admin",
         categoryId: 1,
-        description: 'Course description',
-        benefits: 'Course benefits',
-        classCode: 'Course123',
+        description: "Course description",
+        benefits: ["Course benefits 1", "Course benefits 2"],
+        classCode: "Course123",
         // totalModule: 1,
-        type: 'Course',
+        type: "Course",
         price: 100000,
         // totalDuration: 1,
-        courseBy: 'Course',
+        courseBy: "Course",
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -37,6 +37,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete('Courses', null, {});
+    await queryInterface.bulkDelete("Courses", null, {});
   },
 };

@@ -1,7 +1,9 @@
+const { DataTypes } = require("sequelize");
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Courses', {
+    await queryInterface.createTable("Courses", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -27,7 +29,8 @@ module.exports = {
         type: Sequelize.TEXT,
       },
       benefits: {
-        type: Sequelize.TEXT,
+        type: Sequelize.ARRAY(DataTypes.STRING),
+        defaultValue: [],
       },
       classCode: {
         type: Sequelize.STRING,
@@ -61,6 +64,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Courses');
+    await queryInterface.dropTable("Courses");
   },
 };

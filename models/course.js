@@ -49,7 +49,10 @@ module.exports = (sequelize, DataTypes) => {
       level: DataTypes.STRING,
       categoryId: DataTypes.INTEGER,
       description: DataTypes.TEXT,
-      benefits: DataTypes.TEXT,
+      benefits: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        defaultValue: [],
+      },
       classCode: DataTypes.STRING,
       totalModule: DataTypes.INTEGER,
       type: DataTypes.STRING,

@@ -33,7 +33,6 @@ module.exports = (sequelize, DataTypes) => {
       chapterId: DataTypes.INTEGER,
       isStudied: DataTypes.BOOLEAN,
       isUnlocked: DataTypes.BOOLEAN,
-      progress: DataTypes.INTEGER,
     },
     {
       sequelize,

@@ -100,15 +100,16 @@ const createModule = async (req, res, next) => {
 const updateModule = async (req, res, next) => {
   try {
     const { noModule, name, description, chapterId, videoUrl } = req.body;
+    if (!noModule || !name || !description || !chapterId) {
+      throw new ApiError("All value fields are required", 400);
+    }
     const { id } = req.params;
     const { file } = req;
     const module = await Module.findByPk(id);
     if (!module) {
       throw new ApiError("Module not found!", 404);
     }
-    if (!noModule || !name || !description || !chapterId) {
-      throw new ApiError("All value fields are required", 400);
-    }
+
     let video;
     if (file) {
       const split = file.originalname.split(".");

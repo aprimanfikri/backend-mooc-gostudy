@@ -1,6 +1,8 @@
 const midtransClient = require('midtrans-client');
 const crypto = require('crypto');
-const { Payment, Course, UserCourse } = require('../models');
+const {
+  Payment, Course, UserCourse, Category, User,
+} = require('../models');
 const ApiError = require('../utils/apiError');
 const midtrans = require('../config/midtrans');
 
@@ -75,6 +77,8 @@ const paymentCallback = async (req, res, next) => {
     gross_amount,
     signature_key,
     transaction_status,
+    settlement_time,
+    payment_type,
   } = req.body;
   try {
     const serverKey = process.env.MIDTRANS_SERVER_KEY;
@@ -89,6 +93,8 @@ const paymentCallback = async (req, res, next) => {
         if (!payment) throw new ApiError('Transaksi tidak ada', 404);
 
         payment.status = 'paid';
+        payment.settlementTime = settlement_time;
+        payment.paymentType = payment_type;
         await payment.save();
 
         const userCourseData = {
@@ -132,7 +138,22 @@ const getPaymentDetail = async (req, res, next) => {
 
 const getAllPayment = async (req, res, next) => {
   try {
-    const payments = await Payment.findAll();
+    const payments = await Payment.findAll({
+      include: [
+        {
+          model: Course,
+          as: 'Course',
+          include: {
+            model: Category,
+            as: 'Category',
+          },
+        },
+        {
+          model: User,
+          as: 'User',
+        },
+      ],
+    });
     res.status(200).json({
       status: 'success',
       data: {

@@ -26,6 +26,7 @@ router.use("/api/v1/my-course", MyCourse);
 router.all("*", (req, res) => {
   res.render("error", {
     title: "Error Page",
+    url: req.originalUrl,
   });
 });
 

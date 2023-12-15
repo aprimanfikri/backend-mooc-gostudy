@@ -219,9 +219,9 @@ const getAllCourse = async (req, res, next) => {
 
 const getCourseById = async (req, res, next) => {
   try {
-    const { courseId } = req.params;
+    const { id } = req.params;
     const course = await Course.findOne({
-      where: { courseId },
+      where: { id },
       include: {
         model: Chapter,
         include: Module,

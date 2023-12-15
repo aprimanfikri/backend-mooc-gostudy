@@ -32,7 +32,6 @@ module.exports = (sequelize, DataTypes) => {
       moduleId: DataTypes.INTEGER,
       chapterId: DataTypes.INTEGER,
       isStudied: DataTypes.BOOLEAN,
-      isUnlocked: DataTypes.BOOLEAN,
     },
     {
       sequelize,

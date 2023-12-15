@@ -1,15 +1,23 @@
-const { UserCourse } = require("../models");
+const { Payment, Module } = require("../models");
 const ApiError = require("../utils/apiError");
 
 const giveAccess = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    const userCourseRelation = await UserCourse.findOne({
+    const { moduleId } = req.params;
+    const userCourseRelation = await Payment.findOne({
       where: {
         userId,
       },
     });
-    if (!userCourseRelation) {
+
+    const module = await Module.findOne({
+      where: {
+        id: moduleId,
+      },
+    });
+
+    if (userCourseRelation.isPaid === true && module.status === 0) {
       return next(new ApiError("Anda belum membeli course ini!", 400));
     }
 

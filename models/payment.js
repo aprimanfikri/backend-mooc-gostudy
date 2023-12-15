@@ -23,9 +23,9 @@ module.exports = (sequelize, DataTypes) => {
       price: DataTypes.FLOAT,
       paymentType: DataTypes.STRING,
       settlementTime: DataTypes.DATE,
-      isPaid: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
+      status: {
+        type: DataTypes.STRING,
+        defaultValue: "unpaid",
       },
     },
     {

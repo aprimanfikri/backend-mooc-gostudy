@@ -23,9 +23,9 @@ module.exports = {
       paymentType: {
         type: Sequelize.STRING,
       },
-      isPaid: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
+      status: {
+        type: Sequelize.STRING,
+        defaultValue: "unpaid",
       },
       createdAt: {
         allowNull: false,

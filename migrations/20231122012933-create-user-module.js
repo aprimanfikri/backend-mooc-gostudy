@@ -21,9 +21,6 @@ module.exports = {
       isStudied: {
         type: Sequelize.BOOLEAN,
       },
-      isUnlocked: {
-        type: Sequelize.BOOLEAN,
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

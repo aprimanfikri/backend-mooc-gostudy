@@ -18,7 +18,7 @@ router
 
 router
   .route("/:id")
-  .get(authenticate, courseController.getCourseById)
+  .get(courseController.getCourseById)
   .patch(
     authenticate,
     checkRole("admin"),

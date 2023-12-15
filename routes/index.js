@@ -7,7 +7,7 @@ const Module = require("./moduleRouter");
 const Category = require("./categoryRouter");
 const Payment = require("./paymentRouter");
 const Notification = require("./notificationRouter");
-const MyCourse = require("./myCourseRouter");
+const UserCourse = require("./userCourseRouter");
 
 const render = require("./render");
 
@@ -21,12 +21,10 @@ router.use("/api/v1/module", Module);
 router.use("/api/v1/category", Category);
 router.use("/api/v1/payment", Payment);
 router.use("/api/v1/notification", Notification);
-router.use("/api/v1/my-course", MyCourse);
 
 router.all("*", (req, res) => {
   res.render("error", {
     title: "Error Page",
-    url: req.originalUrl,
   });
 });
 

@@ -38,6 +38,7 @@ module.exports = (sequelize, DataTypes) => {
       chapterId: DataTypes.INTEGER,
       duration: DataTypes.INTEGER,
       createdBy: DataTypes.INTEGER,
+      status: DataTypes.TINYINT,
     },
     {
       sequelize,

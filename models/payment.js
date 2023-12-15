@@ -1,4 +1,4 @@
-const { Model } = require('sequelize');
+const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
   class Payment extends Model {
@@ -11,13 +11,13 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Payment.belongsTo(models.User, {
         foreignKey: {
-          name: 'userId',
+          name: "userId",
         },
       });
 
       Payment.belongsTo(models.Course, {
         foreignKey: {
-          name: 'courseId',
+          name: "courseId",
         },
       });
     }
@@ -29,14 +29,14 @@ module.exports = (sequelize, DataTypes) => {
       price: DataTypes.FLOAT,
       paymentType: DataTypes.STRING,
       settlementTime: DataTypes.DATE,
-      status: {
-        type: DataTypes.STRING,
-        defaultValue: 'unpaid',
+      isPaid: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
       },
     },
     {
       sequelize,
-      modelName: 'Payment',
+      modelName: "Payment",
     }
   );
   return Payment;

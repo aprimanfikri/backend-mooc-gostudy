@@ -1,5 +1,12 @@
 const { Op } = require("sequelize");
-const { UserCourse, UserModule, Course, User } = require("../models");
+const {
+  UserCourse,
+  UserModule,
+  Course,
+  User,
+  Chapter,
+  Module,
+} = require("../models");
 const ApiError = require("../utils/apiError");
 
 const clickModule = async (req, res, next) => {
@@ -11,24 +18,27 @@ const clickModule = async (req, res, next) => {
       throw new ApiError("ID user tidak ada", 404);
     }
 
-    // Cek apakah UserModule sudah ada
     let userModule = await UserModule.findOne({
       where: { userId, moduleId },
     });
 
+    const findModule = await Module.findOne({
+      where: {
+        id: moduleId,
+      },
+    });
+
     if (!userModule) {
-      // Jika belum ada, buat UserModule baru
       userModule = await UserModule.create({
         userId,
         moduleId,
-        isStudied: true, // Setelah mengklik, anggap sudah belajar
+        chapterId: findModule.chapterId,
+        isStudied: true,
       });
     } else {
-      // Jika sudah ada, set isStudied menjadi true
       await userModule.update({ isStudied: true });
     }
 
-    // Hitung total progress dan update UserCourse
     const userModules = await UserModule.findAll({
       where: { userId },
     });
@@ -36,16 +46,41 @@ const clickModule = async (req, res, next) => {
     const totalStudiedModules = userModules.filter(
       (module) => module.isStudied
     ).length;
-    const totalModules = userModules.length;
 
-    // Hitung persentase progress
-    const totalProgress = (totalStudiedModules / totalModules) * 100;
-    await UserCourse.update(
-      { totalProgress },
-      {
-        where: { userId, courseId },
-      }
-    );
+    const totalModulesInCourse = await Course.count({
+      where: { id: courseId },
+      include: {
+        model: Chapter,
+        include: Module,
+      },
+    });
+
+    const totalProgress =
+      totalModulesInCourse > 0
+        ? (totalStudiedModules / totalModulesInCourse) * 100
+        : 0;
+
+    const userCourseRelation = await UserCourse.findOne({
+      where: {
+        userId,
+        courseId,
+      },
+    });
+
+    if (userCourseRelation) {
+      await UserCourse.update(
+        { totalProgress },
+        {
+          where: { userId, courseId },
+        }
+      );
+    } else {
+      await UserCourse.create({
+        userId,
+        courseId,
+        totalProgress,
+      });
+    }
 
     res.status(200).json({
       success: true,

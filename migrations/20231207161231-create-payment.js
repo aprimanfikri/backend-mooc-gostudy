@@ -2,11 +2,10 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("Payments", {
-      id: {
+      orderId: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
       },
       userId: {
         type: Sequelize.INTEGER,
@@ -24,7 +23,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       status: {
-        type: Sequelize.STRING,
+        type: Sequelize.ENUM(["unpaid", "paid"]),
         defaultValue: "unpaid",
       },
       createdAt: {

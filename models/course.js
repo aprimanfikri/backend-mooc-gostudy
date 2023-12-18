@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.STRING,
       imageUrl: DataTypes.TEXT,
       imageId: DataTypes.STRING,
-      level: DataTypes.STRING,
+      level: DataTypes.ENUM(["Beginner", "Intermediate", "Advanced"]),
       categoryId: DataTypes.INTEGER,
       description: DataTypes.TEXT,
       benefits: {
@@ -55,10 +55,12 @@ module.exports = (sequelize, DataTypes) => {
       },
       classCode: DataTypes.STRING,
       totalModule: DataTypes.INTEGER,
-      type: DataTypes.STRING,
+      type: DataTypes.ENUM(["Free", "Premium"]),
       price: DataTypes.FLOAT,
+      promoPercentage: DataTypes.INTEGER,
       totalDuration: DataTypes.INTEGER,
       courseBy: DataTypes.STRING,
+      rating: DataTypes.FLOAT,
       createdBy: DataTypes.INTEGER,
     },
     {

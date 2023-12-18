@@ -1,34 +1,37 @@
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.bulkInsert(
-      'Payments',
+      "Payments",
       [
         {
+          orderId: `ORDER-UI001-4-${Date.now()}`,
           userId: 4,
           courseId: 1,
           price: 100000,
-          status: 'unpaid',
+          status: "unpaid",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
+          orderId: `ORDER-UI001-6-${Date.now()}`,
           userId: 6,
           courseId: 2,
           price: 100000,
-          paymentType: 'bank_tranfer',
+          paymentType: "bank_tranfer",
           settlementTime: new Date(),
-          status: 'paid',
+          status: "paid",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
+          orderId: `ORDER-UI001-7-${Date.now()}`,
           userId: 7,
           courseId: 3,
           price: 100000,
-          status: 'unpaid',
+          status: "unpaid",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -38,6 +41,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('Payments', null, {});
+    await queryInterface.bulkDelete("Payments", null, {});
   },
 };

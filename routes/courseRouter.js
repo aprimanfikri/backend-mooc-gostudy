@@ -3,8 +3,6 @@ const courseController = require("../controllers/courseController");
 const { authenticate } = require("../middlewares/auth");
 const upload = require("../middlewares/uploader");
 const checkRole = require("../middlewares/checkRole");
-const { progressVideo } = require("../controllers/userCourseController");
-const openCourse = require("../controllers/openCourse");
 
 router
   .route("/")

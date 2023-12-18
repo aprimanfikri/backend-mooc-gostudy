@@ -18,13 +18,18 @@ module.exports = (sequelize, DataTypes) => {
   }
   Payment.init(
     {
+      orderId: {
+        allowNull: false,
+        primaryKey: true,
+        type: DataTypes.STRING,
+      },
       userId: DataTypes.INTEGER,
       courseId: DataTypes.INTEGER,
       price: DataTypes.FLOAT,
       paymentType: DataTypes.STRING,
       settlementTime: DataTypes.DATE,
       status: {
-        type: DataTypes.STRING,
+        type: DataTypes.ENUM(["unpaid", "paid"]),
         defaultValue: "unpaid",
       },
     },

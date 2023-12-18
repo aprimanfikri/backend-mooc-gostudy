@@ -29,12 +29,11 @@ module.exports = {
       duration: {
         type: Sequelize.INTEGER,
       },
-      status: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
-      },
       createdBy: {
         type: Sequelize.INTEGER,
+      },
+      isUnlocked: {
+        type: Sequelize.BOOLEAN,
       },
       createdAt: {
         allowNull: false,

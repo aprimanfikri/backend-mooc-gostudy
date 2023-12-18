@@ -21,6 +21,7 @@ router.use("/api/v1/module", Module);
 router.use("/api/v1/category", Category);
 router.use("/api/v1/payment", Payment);
 router.use("/api/v1/notification", Notification);
+router.use("/api/v1/view-course", UserCourse);
 
 router.all("*", (req, res) => {
   res.render("error", {

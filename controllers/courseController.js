@@ -14,8 +14,12 @@ const createCourse = async (req, res, next) => {
       classCode,
       type,
       price,
+      promoPercentage,
       courseBy,
+      rating,
     } = req.body;
+
+    const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
     if (
       !name ||
@@ -42,6 +46,9 @@ const createCourse = async (req, res, next) => {
     if (!file) {
       throw new ApiError("Image is required", 400);
     }
+    if (file && file.size > MAX_FILE_SIZE) {
+      throw new ApiError("File size exceeds the limit (5MB)", 400);
+    }
     const split = file.originalname.split(".");
     const fileType = split[split.length - 1];
     const uploadImage = await imagekit.upload({
@@ -62,7 +69,9 @@ const createCourse = async (req, res, next) => {
       classCode,
       type,
       price,
+      promoPercentage,
       courseBy,
+      rating,
       createdBy: req.user.id,
     });
     res.status(201).json({
@@ -88,14 +97,21 @@ const updateCourse = async (req, res, next) => {
       classCode,
       type,
       price,
+      promoPercentage,
       courseBy,
+      rating,
     } = req.body;
+    const MAX_FILE_SIZE = 5 * 1024 * 1024;
     const { file } = req;
     const { id } = req.params;
     const course = await Course.findByPk(id);
 
     if (!course) {
       throw new ApiError("Course not found", 404);
+    }
+
+    if (file && file.size > MAX_FILE_SIZE) {
+      throw new ApiError("File size exceeds the limit (5MB)", 400);
     }
 
     let image = {
@@ -131,7 +147,9 @@ const updateCourse = async (req, res, next) => {
       classCode,
       type,
       price,
+      promoPercentage,
       courseBy,
+      rating,
       createdBy: req.user.id,
     });
 
@@ -169,7 +187,7 @@ const deleteCourse = async (req, res, next) => {
 
 const getAllCourse = async (req, res, next) => {
   try {
-    const { level, type, categoryName, createdAt, search } = req.query;
+    const { level, type, categoryName, createdAt, promo, search } = req.query;
     const searchCriteria = {};
 
     const validLevels = ["Beginner", "Intermediate", "Advanced"];
@@ -189,6 +207,11 @@ const getAllCourse = async (req, res, next) => {
     if (createdAt && createdAt.toLowerCase() === "true") {
       searchCriteria.createdAt = {
         [Op.gte]: new Date(),
+      };
+    }
+    if (promo && promo.toLowerCase() === "true") {
+      searchCriteria.promoPercentage = {
+        [Op.ne]: 0,
       };
     }
     if (search) {

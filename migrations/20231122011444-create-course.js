@@ -20,7 +20,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       level: {
-        type: Sequelize.STRING,
+        type: Sequelize.ENUM(["Beginner", "Intermediate", "Advanced"]),
       },
       categoryId: {
         type: Sequelize.INTEGER,
@@ -39,16 +39,23 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       type: {
-        type: Sequelize.STRING,
+        type: Sequelize.ENUM(["Free", "Premium"]),
       },
       price: {
         type: Sequelize.FLOAT,
+      },
+      promoPercentage: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
       },
       totalDuration: {
         type: Sequelize.INTEGER,
       },
       courseBy: {
         type: Sequelize.STRING,
+      },
+      rating: {
+        type: Sequelize.FLOAT,
       },
       createdBy: {
         type: Sequelize.INTEGER,

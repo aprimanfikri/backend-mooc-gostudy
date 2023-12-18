@@ -1,24 +1,26 @@
 const multer = require('multer');
 const path = require('path');
+const ApiError = require('../utils/apiError');
 
 module.exports = multer({
   storage: multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, 'public/vid');
+    destination: (req, file, next) => {
+      next(null, 'public/vid');
     },
-    filename: (req, file, cb) => {
+    filename: (req, file, next) => {
       const uniqueSuffix = `${Date.now()}-${Math.round(
-        Math.random() * 1e9,
+        Math.random() * 1e9
       )}${path.extname(file.originalname)}`;
-      cb(null, `${file.fieldname}-${uniqueSuffix}`);
+      next(null, `${file.fieldname}-${uniqueSuffix}`);
     },
   }),
-  fileFilter: (req, file, cb) => {
+  fileFilter: (req, file, next) => {
     const ext = path.extname(file.originalname);
     if (ext !== '.mp4' && ext !== '.mov' && ext !== '.mkv') {
-      cb(new Error('File type is not supported'), false);
-      return;
+      return next(
+        new ApiError('Only .mp4, .mov, and .mkv format allowed!', 400)
+      );
     }
-    cb(null, true);
+    return next(null, true);
   },
 });

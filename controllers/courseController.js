@@ -1,7 +1,5 @@
 const { Op } = require('sequelize');
-const {
-  Course, Category, Chapter, Module,
-} = require('../models');
+const { Course, Category, Chapter, Module } = require('../models');
 const imagekit = require('../lib/imagekit');
 const ApiError = require('../utils/apiError');
 
@@ -16,19 +14,23 @@ const createCourse = async (req, res, next) => {
       classCode,
       type,
       price,
+      promoPercentage,
       courseBy,
+      rating,
     } = req.body;
 
+    const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
     if (
-      !name
-      || !level
-      || !categoryId
-      || !description
-      || !benefits
-      || !classCode
-      || !type
-      || !price
-      || !courseBy
+      !name ||
+      !level ||
+      !categoryId ||
+      !description ||
+      !benefits ||
+      !classCode ||
+      !type ||
+      !price ||
+      !courseBy
     ) {
       throw new ApiError('All value fields are required', 400);
     }
@@ -44,6 +46,9 @@ const createCourse = async (req, res, next) => {
     if (!file) {
       throw new ApiError('Image is required', 400);
     }
+    if (file && file.size > MAX_FILE_SIZE) {
+      throw new ApiError('File size exceeds the limit (5MB)', 400);
+    }
     const split = file.originalname.split('.');
     const fileType = split[split.length - 1];
     const uploadImage = await imagekit.upload({
@@ -51,6 +56,8 @@ const createCourse = async (req, res, next) => {
       fileName: `IMG-${name}.${fileType}`,
       folder: '/gostudy/course-image',
     });
+
+    const benefitsArray = benefits.split(',');
     const newCourse = await Course.create({
       name,
       imageUrl: uploadImage.url,
@@ -58,11 +65,13 @@ const createCourse = async (req, res, next) => {
       level,
       categoryId,
       description,
-      benefits,
+      benefits: benefitsArray,
       classCode,
       type,
       price,
+      promoPercentage,
       courseBy,
+      rating,
       createdBy: req.user.id,
     });
     res.status(201).json({
@@ -88,14 +97,25 @@ const updateCourse = async (req, res, next) => {
       classCode,
       type,
       price,
+      promoPercentage,
       courseBy,
+      rating,
     } = req.body;
+    let benefitsArray;
+    if (benefits) {
+      benefitsArray = benefits.split(',');
+    }
+    const MAX_FILE_SIZE = 5 * 1024 * 1024;
     const { file } = req;
     const { id } = req.params;
     const course = await Course.findByPk(id);
 
     if (!course) {
       throw new ApiError('Course not found', 404);
+    }
+
+    if (file && file.size > MAX_FILE_SIZE) {
+      throw new ApiError('File size exceeds the limit (5MB)', 400);
     }
 
     let image = {
@@ -125,11 +145,13 @@ const updateCourse = async (req, res, next) => {
       level,
       categoryId,
       description,
-      benefits,
+      benefits: benefitsArray,
       classCode,
       type,
       price,
+      promoPercentage,
       courseBy,
+      rating,
       createdBy: req.user.id,
     });
 
@@ -167,33 +189,40 @@ const deleteCourse = async (req, res, next) => {
 
 const getAllCourse = async (req, res, next) => {
   try {
-    const {
-      level, type, categoryName, createdAt, search,
-    } = req.query;
+    const { level, type, categoryName, createdAt, promo, search } = req.query;
     const searchCriteria = {};
-    if (
-      level === 'Beginner'
-      || level === 'Intermediate'
-      || level === 'Advanced'
-    ) {
+
+    const validLevels = ['Beginner', 'Intermediate', 'Advanced'];
+    if (level && validLevels.includes(level)) {
       searchCriteria.level = level;
     }
-    if (type === 'Free' || type === 'Premium') {
+    const validTypes = ['Free', 'Premium'];
+    if (type && validTypes.includes(type)) {
       searchCriteria.type = type;
     }
     if (categoryName) {
+      const categoryNames = categoryName.split(',').map((name) => name.trim());
       searchCriteria['$Category.name$'] = {
-        [Op.iLike]: `%${categoryName}%`,
+        [Op.iLike]: { [Op.any]: categoryNames },
       };
     }
-    if (createdAt && createdAt.toLowerCase() === 'true') {
+    if (createdAt && createdAt.trim().toLowerCase() === 'true') {
       searchCriteria.createdAt = {
-        [Op.gte]: new Date(),
+        [Op.lte]: new Date(),
+      };
+    }
+    if (promo && promo.toLowerCase() === 'true') {
+      searchCriteria.promoPercentage = {
+        [Op.ne]: 0,
       };
     }
     if (search) {
       searchCriteria.name = { [Op.iLike]: `%${search}%` };
     }
+
+    const orderDirection =
+      createdAt && createdAt.trim().toLowerCase() === 'true' ? 'ASC' : 'DESC';
+
     const courses = await Course.findAll({
       where: searchCriteria,
       include: [
@@ -203,8 +232,9 @@ const getAllCourse = async (req, res, next) => {
           include: Module,
         },
       ],
-      order: [['createdAt', 'DESC']],
+      order: [['createdAt', orderDirection]],
     });
+
     res.status(200).json({
       status: 'success',
       message: 'All courses fetched successfully',

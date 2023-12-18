@@ -8,9 +8,7 @@ const { generateToken } = require('../utils/jwt');
 
 const register = async (req, res, next) => {
   try {
-    const {
-      name, email, password, phoneNumber,
-    } = req.body;
+    const { name, email, password, phoneNumber } = req.body;
     if (!name) {
       throw new ApiError('Name is required', 400);
     }
@@ -45,15 +43,15 @@ const register = async (req, res, next) => {
     });
     const token = generateToken(newUser);
     await sendOtpVerification(newUser.id, email);
-    // res.cookie("token", token, { httpOnly: true });
     const otp = await Verified.findOne({ where: { userId: newUser.id } });
+    const otpResponse = process.env.NODE_ENV === 'test' ? { otp: otp.otp } : {};
     res.status(201).json({
       status: 'success',
       message: 'Register successfully',
       data: {
         user: newUser,
         token,
-        otp: otp.otp,
+        otp: otpResponse,
       },
     });
   } catch (error) {
@@ -106,9 +104,6 @@ const verifyOtp = async (req, res, next) => {
     }
     const { id } = req.user;
     const user = await User.findByPk(id);
-    if (!user) {
-      throw new ApiError('User does not exist', 404);
-    }
     if (user.verify) {
       throw new ApiError('User is already verified', 400);
     }
@@ -117,6 +112,10 @@ const verifyOtp = async (req, res, next) => {
     });
     if (!verifiedOtp) {
       throw new ApiError('OTP does not exist', 404);
+    }
+    const match = verifiedOtp.otp === otp;
+    if (!match) {
+      throw new ApiError('OTP does not match', 400);
     }
     // const match = await compare(otp, verifiedOtp.otp);
     // if (!match) {
@@ -127,7 +126,6 @@ const verifyOtp = async (req, res, next) => {
     }
     await verifiedOtp.destroy();
     await user.update({ verify: true });
-    // res.clearCookie("token");
     const token = generateToken(user);
     res.status(200).json({
       status: 'success',
@@ -145,9 +143,6 @@ const resendOtp = async (req, res, next) => {
   try {
     const { id } = req.user;
     const user = await User.findByPk(id);
-    if (!user) {
-      throw new ApiError('User not found', 404);
-    }
     if (user.verify) {
       throw new ApiError('User is already verified', 400);
     }
@@ -212,14 +207,11 @@ const resetPassword = async (req, res, next) => {
     }
     const { id } = req.user;
     const user = await User.findByPk(id);
-    if (!user) {
-      throw new ApiError('User does not exist', 404);
-    }
     const passwordMatch = await compare(password, user.password);
     if (passwordMatch) {
       throw new ApiError(
         'New password cannot be the same as old password',
-        400,
+        400
       );
     }
     // res.clearCookie("token");
@@ -236,11 +228,13 @@ const resetPassword = async (req, res, next) => {
 const updateProfile = async (req, res, next) => {
   try {
     const { file } = req;
+    const MAX_FILE_SIZE = 5 * 1024 * 1024;
     const { id } = req.user;
     const user = await User.findByPk(id);
-    if (!user) {
-      throw new ApiError('User not found', 404);
+    if (file && file.size > MAX_FILE_SIZE) {
+      throw new ApiError('File size exceeds the limit (5MB)', 400);
     }
+
     let imgUrl;
     let imgId;
     if (file) {
@@ -294,9 +288,6 @@ const updatePassword = async (req, res, next) => {
     }
     const { id } = req.user;
     const user = await User.findByPk(id);
-    if (!user) {
-      throw new ApiError('User not found', 404);
-    }
     const isMatch = await compare(oldPassword, user.password);
     if (!isMatch) {
       throw new ApiError('Old password is incorrect', 400);
@@ -304,7 +295,7 @@ const updatePassword = async (req, res, next) => {
     if (oldPassword === newPassword) {
       throw new ApiError(
         'New password cannot be the same as old password',
-        400,
+        400
       );
     }
     await user.update({ password: await hash(newPassword) });
@@ -336,9 +327,6 @@ const whoAmI = async (req, res, next) => {
   try {
     const { id } = req.user;
     const user = await User.findByPk(id);
-    if (!user) {
-      throw new ApiError('User not found', 404);
-    }
     res.status(200).json({
       status: 'success',
       message: 'User fetched successfully',
@@ -413,9 +401,9 @@ const deleteUser = async (req, res, next) => {
     if (!user) {
       throw new ApiError('User not found', 404);
     }
-    if (user.imageId) {
-      await imagekit.deleteFile(user.imageId);
-    }
+    // if (user.imageId) {
+    //   await imagekit.deleteFile(user.imageId);
+    // }
     await user.destroy();
     res.status(200).json({
       status: 'success',

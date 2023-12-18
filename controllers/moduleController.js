@@ -6,9 +6,8 @@ const { processVideo } = require('../utils/compress');
 
 const createModule = async (req, res, next) => {
   try {
-    const {
-      noModule, name, description, chapterId, videoUrl,
-    } = req.body;
+    const { noModule, name, description, chapterId, videoUrl, status } =
+      req.body;
     if (!noModule || !name || !description || !chapterId) {
       throw new ApiError('All value fields are required', 400);
     }
@@ -16,7 +15,7 @@ const createModule = async (req, res, next) => {
     if (!file && !videoUrl) {
       throw new ApiError(
         'Please provide either a video file or a video URL.',
-        400,
+        400
       );
     }
     const existingModule = await Module.findOne({
@@ -25,10 +24,11 @@ const createModule = async (req, res, next) => {
         chapterId,
       },
     });
+
     if (existingModule) {
       throw new ApiError(
         'Module with the same number already exists in this chapter',
-        400,
+        409
       );
     }
 
@@ -58,6 +58,7 @@ const createModule = async (req, res, next) => {
       videoId: video.fileId,
       duration: video.duration,
       createdBy: req.user.id,
+      status,
     });
 
     const chapter = await Chapter.findOne({
@@ -88,6 +89,28 @@ const createModule = async (req, res, next) => {
 
     await course.save();
 
+    const updatedChapter = await Chapter.findOne({
+      where: {
+        id: newModule.chapterId,
+      },
+    });
+
+    const updatedModuleCount = await Module.count({
+      where: {
+        chapterId: updatedChapter.id,
+      },
+    });
+
+    updatedChapter.totalModule = updatedModuleCount;
+
+    if (newModule.duration) {
+      const updatedTotalDuration =
+        updatedChapter.totalDuration + newModule.duration;
+      updatedChapter.totalDuration = updatedTotalDuration;
+    }
+
+    await updatedChapter.save();
+
     res.status(201).json({
       status: 'success',
       data: {
@@ -101,12 +124,9 @@ const createModule = async (req, res, next) => {
 
 const updateModule = async (req, res, next) => {
   try {
-    const {
-      noModule, name, description, chapterId, videoUrl,
-    } = req.body;
-    if (!noModule || !name || !description || !chapterId) {
-      throw new ApiError('All value fields are required', 400);
-    }
+    const { noModule, name, description, chapterId, videoUrl, status } =
+      req.body;
+
     const { id } = req.params;
     const { file } = req;
     const module = await Module.findByPk(id);
@@ -118,9 +138,6 @@ const updateModule = async (req, res, next) => {
     if (file) {
       const split = file.originalname.split('.');
       const fileType = split[split.length - 1];
-      // if (module.videoId) {
-      //   await imagekit.deleteFile(module.videoId);
-      // }
       const uploadVideo = await imagekit.upload({
         file: file.buffer,
         fileName: `VID-${Date.now()}.${fileType}`,
@@ -147,9 +164,23 @@ const updateModule = async (req, res, next) => {
       const total = course.totalDuration - module.duration;
       const totalDuration = total + video.duration;
       course.totalDuration = totalDuration;
+    } else {
+      const total = course.totalDuration - module.duration;
+      course.totalDuration = total;
     }
 
     await course.save();
+
+    if (video.duration) {
+      const total = chapter.totalDuration - module.duration;
+      const totalDuration = total + video.duration;
+      chapter.totalDuration = totalDuration;
+    } else {
+      const total = chapter.totalDuration - module.duration;
+      chapter.totalDuration = total;
+    }
+
+    await chapter.save();
 
     const updatedModule = await module.update({
       noModule,
@@ -160,6 +191,7 @@ const updateModule = async (req, res, next) => {
       videoId: video.fileId,
       duration: video.duration,
       createdBy: req.user.id,
+      status,
     });
 
     res.status(200).json({
@@ -247,9 +279,8 @@ const getModuleById = async (req, res, next) => {
 
 const createModuleV2 = async (req, res, next) => {
   try {
-    const {
-      noModule, name, description, chapterId, videoUrl,
-    } = req.body;
+    const { noModule, name, description, chapterId, videoUrl, status } =
+      req.body;
     const { file } = req;
     if (!noModule || !name || !description || !chapterId) {
       throw new ApiError('All value fields are required', 400);
@@ -257,7 +288,7 @@ const createModuleV2 = async (req, res, next) => {
     if (!file && !videoUrl) {
       throw new ApiError(
         'Please provide either a video file or a video URL.',
-        400,
+        400
       );
     }
     let video;
@@ -291,6 +322,7 @@ const createModuleV2 = async (req, res, next) => {
       videoId: video.fileId,
       duration: video.duration,
       createdBy: req.user.id,
+      status,
     });
     res.status(201).json({
       status: 'success',

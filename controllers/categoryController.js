@@ -5,12 +5,16 @@ const imagekit = require('../lib/imagekit');
 const createCategory = async (req, res, next) => {
   try {
     const { name } = req.body;
+    const MAX_FILE_SIZE = 5 * 1024 * 1024;
     if (!name) {
       throw new ApiError('Name is required', 400);
     }
     const { file } = req;
     if (!file) {
       throw new ApiError('Image is required', 400);
+    }
+    if (file && file.size > MAX_FILE_SIZE) {
+      throw new ApiError('File size exceeds the limit (5MB)', 400);
     }
     const split = file.originalname.split('.');
     const fileType = split[split.length - 1];
@@ -40,6 +44,7 @@ const createCategory = async (req, res, next) => {
 const updateCategory = async (req, res, next) => {
   try {
     const { name } = req.body;
+    const MAX_FILE_SIZE = 5 * 1024 * 1024;
     if (!name) {
       throw new ApiError('Name is required', 400);
     }
@@ -48,6 +53,9 @@ const updateCategory = async (req, res, next) => {
     const category = await Category.findByPk(id);
     if (!category) {
       throw new ApiError('Category not found!', 404);
+    }
+    if (file && file.size > MAX_FILE_SIZE) {
+      throw new ApiError('File size exceeds the limit (5MB)', 400);
     }
     let image;
     if (file) {
@@ -88,9 +96,9 @@ const deleteCategory = async (req, res, next) => {
     if (!category) {
       throw new ApiError('Category not found!', 404);
     }
-    if (!category.imageId) {
-      await imagekit.deleteFile(category.imageId);
-    }
+    // if (category.imageId) {
+    //   await imagekit.deleteFile(category.imageId);
+    // }
     await category.destroy();
     res.status(200).json({
       status: 'success',

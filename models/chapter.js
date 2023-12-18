@@ -27,11 +27,13 @@ module.exports = (sequelize, DataTypes) => {
       noChapter: DataTypes.INTEGER,
       name: DataTypes.STRING,
       courseId: DataTypes.INTEGER,
+      totalDuration: DataTypes.INTEGER,
+      totalModule: DataTypes.INTEGER,
     },
     {
       sequelize,
       modelName: 'Chapter',
-    },
+    }
   );
   return Chapter;
 };

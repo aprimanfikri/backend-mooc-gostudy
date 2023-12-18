@@ -1644,10 +1644,6 @@
                     "type": "string",
                     "example": "UI001"
                   },
-                  "totalModule": {
-                    "type": "integer",
-                    "example": 6
-                  },
                   "type": {
                     "type": "string",
                     "example": "Premium"
@@ -1655,10 +1651,6 @@
                   "price": {
                     "type": "integer",
                     "example": 150000
-                  },
-                  "totalDuration": {
-                    "type": "integer",
-                    "example": 36000
                   },
                   "courseBy": {
                     "type": "string",
@@ -2178,10 +2170,6 @@
                     "type": "string",
                     "example": "UI001"
                   },
-                  "totalModule": {
-                    "type": "integer",
-                    "example": 6
-                  },
                   "type": {
                     "type": "string",
                     "example": "Premium"
@@ -2189,10 +2177,6 @@
                   "price": {
                     "type": "integer",
                     "example": 150000
-                  },
-                  "totalDuration": {
-                    "type": "integer",
-                    "example": 36000
                   },
                   "courseBy": {
                     "type": "string",

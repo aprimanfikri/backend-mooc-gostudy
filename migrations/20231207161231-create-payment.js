@@ -8,6 +8,9 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
+      orderId: {
+        type: Sequelize.STRING,
+      },
       userId: {
         type: Sequelize.INTEGER,
       },
@@ -24,7 +27,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       status: {
-        type: Sequelize.STRING,
+        type: Sequelize.ENUM(['unpaid', 'paid']),
         defaultValue: 'unpaid',
       },
       createdAt: {

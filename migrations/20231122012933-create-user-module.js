@@ -21,12 +21,6 @@ module.exports = {
       isStudied: {
         type: Sequelize.BOOLEAN,
       },
-      isUnlocked: {
-        type: Sequelize.BOOLEAN,
-      },
-      progress: {
-        type: Sequelize.INTEGER,
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

@@ -62,9 +62,9 @@ const updateNotif = async (req, res, next) => {
   try {
     const { category, title, description } = req.body;
     const { id } = req.params;
-    if (!category || !title || !description) {
-      throw new ApiError('All value fields are required', 400);
-    }
+    // if (!category || !title || !description) {
+    //   throw new ApiError('All value fields are required', 400);
+    // }
     const notif = await Notification.findByPk(id);
     if (!notif) {
       throw new ApiError('notif not found', 404);

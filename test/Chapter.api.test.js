@@ -1,10 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const request = require('supertest');
-const {
-  it, expect, beforeAll, describe,
-} = require('@jest/globals');
+const { it, expect, beforeAll, describe } = require('@jest/globals');
 const app = require('../app');
+const { Chapter } = require('../models');
 
 let token;
 let courseId;
@@ -24,7 +23,7 @@ beforeAll(async () => {
     .field('description', 'Test description')
     .field('benefits', 'Test benefits')
     .field('classCode', 'test123')
-    .field('type', 'Online')
+    .field('type', 'Premium')
     .field('price', 100000)
     .field('courseBy', 'test')
     .set('Authorization', `Bearer ${token}`)
@@ -58,6 +57,19 @@ describe('API create chapter', () => {
     expect(response.statusCode).toBe(400);
   }, 10000);
 
+  it('should return 409 Chapter with the same number already exists!', async () => {
+    const chapter = {
+      noChapter: 1,
+      name: 'Chapter 1',
+      courseId,
+    };
+    const response = await request(app)
+      .post('/api/v1/chapter')
+      .send(chapter)
+      .set('Authorization', `Bearer ${token}`);
+    expect(response.statusCode).toBe(409);
+  });
+
   it('should return 404 Course ID not found!', async () => {
     const chapter = {
       noChapter: 1,
@@ -76,8 +88,8 @@ describe('API update chapter', () => {
   let chapterId;
   beforeAll(async () => {
     const chapter = {
-      noChapter: 1,
-      name: 'Chapter 1',
+      noChapter: 2,
+      name: 'Chapter 2',
       courseId,
     };
     const createChapter = await request(app)
@@ -97,8 +109,8 @@ describe('API update chapter', () => {
 
   it('should return 404 Chapter not found', async () => {
     const chapter = {
-      noChapter: 1,
-      name: 'Chapter 1',
+      noChapter: 3,
+      name: 'Chapter 3',
       courseId,
     };
     const response = await request(app)
@@ -110,8 +122,8 @@ describe('API update chapter', () => {
 
   it('should return 200 Chapter updated successfully', async () => {
     const chapter = {
-      noChapter: 1,
-      name: 'Chapter 1',
+      noChapter: 4,
+      name: 'Chapter 4',
       courseId,
     };
     const response = await request(app)
@@ -126,8 +138,8 @@ describe('API get chapter by id', () => {
   let chapterId;
   beforeAll(async () => {
     const chapter = {
-      noChapter: 1,
-      name: 'Chapter 1',
+      noChapter: 5,
+      name: 'Chapter 5',
       courseId,
     };
     const createChapter = await request(app)
@@ -159,14 +171,21 @@ describe('API get all chapter', () => {
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(200);
   }, 10000);
+
+  it('should call next with error when an error occurs', async () => {
+    const mockedError = new Error('An example error');
+    jest.spyOn(Chapter, 'findAll').mockRejectedValueOnce(mockedError); // eslint-disable-line
+    const response = await request(app).get('/api/v1/chapter');
+    expect(response.statusCode).toBe(500);
+  }, 10000);
 });
 
 describe('API delete chapter', () => {
   let chapterId;
   beforeAll(async () => {
     const chapter = {
-      noChapter: 1,
-      name: 'Chapter 1',
+      noChapter: 6,
+      name: 'Chapter 6',
       courseId,
     };
     const createChapter = await request(app)

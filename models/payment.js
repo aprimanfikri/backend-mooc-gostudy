@@ -1,17 +1,17 @@
-const { Model } = require("sequelize");
+const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class Payment extends Model {
     static associate(models) {
       Payment.belongsTo(models.User, {
         foreignKey: {
-          name: "userId",
+          name: 'userId',
         },
       });
 
       Payment.belongsTo(models.Course, {
         foreignKey: {
-          name: "courseId",
+          name: 'courseId',
         },
       });
     }
@@ -19,8 +19,6 @@ module.exports = (sequelize, DataTypes) => {
   Payment.init(
     {
       orderId: {
-        allowNull: false,
-        primaryKey: true,
         type: DataTypes.STRING,
       },
       userId: DataTypes.INTEGER,
@@ -29,13 +27,13 @@ module.exports = (sequelize, DataTypes) => {
       paymentType: DataTypes.STRING,
       settlementTime: DataTypes.DATE,
       status: {
-        type: DataTypes.ENUM(["unpaid", "paid"]),
-        defaultValue: "unpaid",
+        type: DataTypes.ENUM(['unpaid', 'paid']),
+        defaultValue: 'unpaid',
       },
     },
     {
       sequelize,
-      modelName: "Payment",
+      modelName: 'Payment',
     }
   );
   return Payment;

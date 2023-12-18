@@ -1,15 +1,18 @@
 const multer = require('multer');
+const ApiError = require('../utils/apiError');
 
-const multerFiltering = (req, file, cb) => {
+const multerFiltering = (req, file, next) => {
   if (
-    file.mimetype === 'image/png'
-    || file.mimetype === 'image/jpg'
-    || file.mimetype === 'image/jpeg'
-    || file.mimetype === 'video/mp4'
+    file.mimetype === 'image/png' ||
+    file.mimetype === 'image/jpg' ||
+    file.mimetype === 'image/jpeg' ||
+    file.mimetype === 'video/mp4'
   ) {
-    return cb(null, true);
+    return next(null, true);
   }
-  return cb('File yang diupload bukan png/jpg/jpeg.');
+  return next(
+    new ApiError('Only .png, .jpg, .jpeg, and .mp4 format allowed!', 400)
+  );
 };
 
 const upload = multer({

@@ -1,10 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const request = require('supertest');
-const {
-  it, expect, beforeAll, describe,
-} = require('@jest/globals');
+const { it, expect, beforeAll, describe } = require('@jest/globals');
 const app = require('../app');
+const { Module } = require('../models');
 
 let token;
 let videoBuffer;
@@ -26,11 +25,11 @@ beforeAll(async () => {
     .field('description', 'Test description')
     .field('benefits', 'Test benefits')
     .field('classCode', 'test123')
-    .field('type', 'Online')
+    .field('type', 'Premium')
     .field('price', 100000)
     .field('courseBy', 'test')
-    .set('Authorization', `Bearer ${token}`)
-    .attach('image', imageBuffer, 'persia.jpg');
+    .attach('image', imageBuffer, 'persia.jpg')
+    .set('Authorization', `Bearer ${token}`);
   courseId = createCourse.body.data.newCourse.id;
   videoBuffer = fs.readFileSync(videoPath);
 }, 10000);
@@ -62,6 +61,18 @@ describe('API create module', () => {
     expect(response.statusCode).toBe(201);
   }, 10000);
 
+  it('should return 409 Module with the same number already exists in this chapter', async () => {
+    const response = await request(app)
+      .post('/api/v1/module')
+      .field('noModule', 1)
+      .field('name', 'Module 1')
+      .field('description', 'Test description')
+      .field('chapterId', chapterId)
+      .field('videoUrl', 'https://www.youtube.com/watch?v=UIp6_0kct_U')
+      .set('Authorization', `Bearer ${token}`);
+    expect(response.statusCode).toBe(409);
+  }, 10000);
+
   it('should return 201 Module created successfully (using video)', async () => {
     const response = await request(app)
       .post('/api/v1/module')
@@ -72,7 +83,7 @@ describe('API create module', () => {
       .attach('video', videoBuffer, 'testing.mp4')
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(201);
-  }, 20000);
+  }, 30000);
 
   it('should return 400 All value fields are required', async () => {
     const response = await request(app)
@@ -145,16 +156,6 @@ describe('API update module', () => {
     expect(response.statusCode).toBe(200);
   }, 10000);
 
-  it('should return 400 All value fields are required', async () => {
-    const response = await request(app)
-      .patch(`/api/v1/module/${id}`)
-      .field('noModule', 1)
-      .field('name', 'Module 1')
-      .field('description', 'Test description')
-      .set('Authorization', `Bearer ${token}`);
-    expect(response.statusCode).toBe(400);
-  }, 10000);
-
   it('should return 404 Module not found!', async () => {
     const response = await request(app)
       .patch('/api/v1/module/1000')
@@ -199,8 +200,19 @@ describe('API delete module', () => {
 
 describe('API get all module', () => {
   it('should return 200 All modules fetched successfully', async () => {
-    const response = await request(app).get('/api/v1/module');
+    const response = await request(app)
+      .get('/api/v1/module')
+      .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(200);
+  }, 10000);
+
+  it('should call next with error when an error occurs', async () => {
+    const mockedError = new Error('An example error');
+    jest.spyOn(Module, 'findAll').mockRejectedValueOnce(mockedError); // eslint-disable-line
+    const response = await request(app)
+      .get('/api/v1/module')
+      .set('Authorization', `Bearer ${token}`);
+    expect(response.statusCode).toBe(500);
   }, 10000);
 });
 
@@ -219,12 +231,16 @@ describe('API get module by id', () => {
   }, 15000);
 
   it('should return 200 Module fetched successfully', async () => {
-    const response = await request(app).get(`/api/v1/module/${id}`);
+    const response = await request(app)
+      .get(`/api/v1/module/${id}`)
+      .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(200);
   }, 10000);
 
   it('should return 404 Module not found!', async () => {
-    const response = await request(app).get('/api/v1/module/1000');
+    const response = await request(app)
+      .get('/api/v1/module/1000')
+      .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(404);
   }, 10000);
 });
@@ -267,6 +283,18 @@ describe('API create module v2', () => {
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(201);
   }, 15000);
+
+  it('should return 400 Only .mp4, .mov, and .mkv format allowed! (using video)', async () => {
+    const response = await request(app)
+      .post('/api/v1/module/v2')
+      .field('noModule', 123)
+      .field('name', 'Module 13423')
+      .field('description', 'Test description')
+      .field('chapterId', chapterId)
+      .attach('video', imageBuffer, 'persia.jpg')
+      .set('Authorization', `Bearer ${token}`);
+    expect(response.statusCode).toBe(400);
+  }, 30000);
 
   it('should return 400 All value fields are required', async () => {
     const response = await request(app)

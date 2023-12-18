@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op } = require('sequelize');
 const {
   UserCourse,
   UserModule,
@@ -6,8 +6,8 @@ const {
   User,
   Chapter,
   Module,
-} = require("../models");
-const ApiError = require("../utils/apiError");
+} = require('../models');
+const ApiError = require('../utils/apiError');
 
 const clickModule = async (req, res, next) => {
   try {
@@ -15,7 +15,7 @@ const clickModule = async (req, res, next) => {
     const userId = req.user.id;
 
     if (!userId) {
-      throw new ApiError("ID user tidak ada", 404);
+      throw new ApiError('ID user tidak ada', 404);
     }
 
     let userModule = await UserModule.findOne({
@@ -56,9 +56,9 @@ const clickModule = async (req, res, next) => {
     });
 
     const totalProgress =
-      totalModulesInCourse > 0
-        ? (totalStudiedModules / totalModulesInCourse) * 100
-        : 0;
+      totalModulesInCourse > 0 ?
+        (totalStudiedModules / totalModulesInCourse) * 100 :
+        0;
 
     const userCourseRelation = await UserCourse.findOne({
       where: {
@@ -84,7 +84,7 @@ const clickModule = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      message: "Module clicked successfully",
+      message: 'Module clicked successfully',
     });
   } catch (error) {
     next(error);
@@ -96,7 +96,7 @@ const getUserCourse = async (req, res, next) => {
     const { filterStatus } = req.query;
     const userId = req.user.id;
 
-    let whereCondition = { userId };
+    const whereCondition = { userId };
 
     if (filterStatus) {
       whereCondition.filterStatus = filterStatus;
@@ -109,8 +109,8 @@ const getUserCourse = async (req, res, next) => {
     });
 
     res.status(200).json({
-      status: "success",
-      message: "Sukses mengambil data course",
+      status: 'success',
+      message: 'Sukses mengambil data course',
       data: {
         course,
       },
@@ -123,26 +123,18 @@ const getUserCourse = async (req, res, next) => {
 const createUserCourse = async (req, res, next) => {
   try {
     const { courseId } = req.params;
-    const { userId } = req.body;
-    if (!courseId || !userId) {
-      throw new ApiError("All value fields are required", 400);
-    }
+    const { id } = req.user;
     const course = await Course.findByPk(courseId);
     if (!course) {
-      throw new ApiError("Course ID not found!", 404);
-    }
-    const user = await User.findByPk(userId);
-    if (!user) {
-      throw new ApiError("User ID not found!", 404);
+      throw new ApiError('Course ID not found!', 404);
     }
     const userCourse = await UserCourse.create({
-      userId,
+      userId: id,
       courseId,
     });
-
     res.status(201).json({
-      status: "success",
-      message: "User Course created successfully",
+      status: 'success',
+      message: 'User Course created successfully',
       data: {
         userCourse,
       },
@@ -158,15 +150,15 @@ const updateUserCourse = async (req, res, next) => {
     const { userId } = req.body;
 
     if (!courseId || !userId) {
-      throw new ApiError("All value fields are required", 400);
+      throw new ApiError('All value fields are required', 400);
     }
     const course = await Course.findByPk(courseId);
     if (!course) {
-      throw new ApiError("Course ID not found!", 404);
+      throw new ApiError('Course ID not found!', 404);
     }
     const user = await User.findByPk(userId);
     if (!user) {
-      throw new ApiError("User ID not found!", 404);
+      throw new ApiError('User ID not found!', 404);
     }
 
     const userCourse = await UserCourse.update({
@@ -178,8 +170,8 @@ const updateUserCourse = async (req, res, next) => {
     });
 
     res.status(200).json({
-      status: "success",
-      message: "User Course updated successfully",
+      status: 'success',
+      message: 'User Course updated successfully',
       data: {
         userCourse,
       },
@@ -195,15 +187,15 @@ const deleteUserCourse = async (req, res, next) => {
     const { userId } = req.body;
 
     if (!courseId || !userId) {
-      throw new ApiError("All value fields are required", 400);
+      throw new ApiError('All value fields are required', 400);
     }
     const course = await Course.findByPk(courseId);
     if (!course) {
-      throw new ApiError("Course ID not found!", 404);
+      throw new ApiError('Course ID not found!', 404);
     }
     const user = await User.findByPk(userId);
     if (!user) {
-      throw new ApiError("User ID not found!", 404);
+      throw new ApiError('User ID not found!', 404);
     }
 
     const userCourse = await UserCourse.delete({
@@ -214,8 +206,8 @@ const deleteUserCourse = async (req, res, next) => {
     });
 
     res.status(200).json({
-      status: "success",
-      message: "User Course deleted successfully",
+      status: 'success',
+      message: 'User Course deleted successfully',
       data: {
         userCourse,
       },

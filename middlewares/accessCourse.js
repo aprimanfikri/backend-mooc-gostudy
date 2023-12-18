@@ -1,5 +1,5 @@
-const { Payment, Module, Course, Chapter } = require("../models");
-const ApiError = require("../utils/apiError");
+const { Payment, Module, Course, Chapter } = require('../models');
+const ApiError = require('../utils/apiError');
 
 const giveAccess = async (req, res, next) => {
   try {
@@ -10,7 +10,7 @@ const giveAccess = async (req, res, next) => {
       where: {
         userId,
         courseId,
-        status: "paid",
+        status: 'paid',
       },
     });
 
@@ -27,7 +27,7 @@ const giveAccess = async (req, res, next) => {
     });
 
     if (!module) {
-      return next(new ApiError("Module not found!", 404));
+      return next(new ApiError('Module not found!', 404));
     }
 
     const chapter = await Chapter.findOne({
@@ -44,17 +44,21 @@ const giveAccess = async (req, res, next) => {
       ],
     });
 
+    if (!chapter) {
+      return next(new ApiError('Chapter not found!', 404));
+    }
+
     if (!userHasPayment) {
-      if (course && course.type === "Free") {
+      if (course && course.type === 'Free') {
         return next(); // User can access modules in Free courses
-      } else if (course && course.type === "Premium") {
+      }
+      if (course && course.type === 'Premium') {
         if (module.isUnlocked === true) {
           return next();
-        } else {
-          return next(
-            new ApiError("You have not purchased access to this course!", 400)
-          );
         }
+        return next(
+          new ApiError('You have not purchased access to this course!', 400)
+        );
       }
     }
 

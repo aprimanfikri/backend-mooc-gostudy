@@ -1,6 +1,7 @@
 const { Payment } = require("../models");
 const ApiError = require("../utils/apiError");
 
+// eslint-disable-next-line consistent-return
 const denyPayment = async (req, res, next) => {
   try {
     const { courseId } = req.body;

@@ -11,6 +11,15 @@ const createChapter = async (req, res, next) => {
     if (!course) {
       throw new ApiError('Course ID not found!', 404);
     }
+    const existingChapter = await Chapter.findOne({
+      where: {
+        noChapter,
+        courseId,
+      },
+    });
+    if (existingChapter) {
+      throw new ApiError('Chapter with the same number already exists!', 409);
+    }
     const newChapter = await Chapter.create({
       noChapter,
       name,

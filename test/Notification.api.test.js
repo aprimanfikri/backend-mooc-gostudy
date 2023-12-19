@@ -1,8 +1,7 @@
 const request = require('supertest');
-const {
-  it, expect, beforeAll, describe,
-} = require('@jest/globals');
+const { it, expect, beforeAll, describe } = require('@jest/globals');
 const app = require('../app');
+const { Notification } = require('../models');
 
 let token;
 
@@ -40,6 +39,15 @@ describe('API get all notification', () => {
       .get('/api/v1/notification')
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(200);
+  }, 10000);
+
+  it('should call next with error when an error occurs', async () => {
+    const mockedError = new Error('An example error');
+    jest.spyOn(Notification, 'findAll').mockRejectedValueOnce(mockedError); // eslint-disable-line
+    const response = await request(app)
+      .get('/api/v1/notification')
+      .set('Authorization', `Bearer ${token}`);
+    expect(response.statusCode).toBe(500);
   }, 10000);
 });
 

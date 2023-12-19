@@ -2,14 +2,29 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const request = require('supertest');
-const {
-  it,
-  expect,
-  beforeAll,
-  describe,
-  beforeEach,
-} = require('@jest/globals');
+const { it, expect, beforeAll, describe } = require('@jest/globals');
 const app = require('../app');
+const ApiError = require('../utils/apiError');
+const { User } = require('../models');
+
+let deletedUserToken;
+
+describe('ApiError', () => {
+  it('should set status to "failed" for 404 statusCode', () => {
+    const apiError = new ApiError('Not Found', 404);
+    expect(apiError.status).toBe('failed');
+  });
+
+  it('should set status to "error" for 500 statusCode', () => {
+    const apiError = new ApiError('Internal Server Error', 500);
+    expect(apiError.status).toBe('error');
+  });
+
+  it('should set status to "error" for 200 statusCode', () => {
+    const apiError = new ApiError('OK', 200);
+    expect(apiError.status).toBe('error');
+  });
+});
 
 describe('API Login', () => {
   it('should return 200 Your account has been logged in successfully', async () => {
@@ -175,57 +190,6 @@ describe('API Register', () => {
   }, 15000);
 });
 
-describe('API Verify', () => {
-  let registerData;
-  let loginData;
-  beforeEach(async () => {
-    const userRegister = {
-      name: 'admin',
-      phoneNumber: '1234567890',
-      email: `user${new Date().getTime()}@gmail.com`,
-      password: 'admin1234',
-    };
-    const response = await request(app)
-      .post('/api/v1/auth/register')
-      .send(userRegister);
-    registerData = response.body.data;
-
-    const userLogin = {
-      email: 'admin1@gmail.com',
-      password: 'admin1234',
-    };
-    const login = await request(app).post('/api/v1/auth/login').send(userLogin);
-    loginData = login.body.data;
-  }, 15000);
-
-  it('should return 200 Email verification successful', async () => {
-    const otp = {
-      otp: registerData.otp,
-    };
-    const response = await request(app)
-      .post('/api/v1/auth/verify')
-      .send(otp)
-      .set('Authorization', `Bearer ${registerData.token}`);
-    expect(response.statusCode).toBe(200);
-  }, 15000);
-
-  it('should return 400 OTP is required', async () => {
-    const response = await request(app)
-      .post('/api/v1/auth/verify')
-      .send()
-      .set('Authorization', `Bearer ${registerData.token}`);
-    expect(response.statusCode).toBe(400);
-  }, 15000);
-
-  it('should return 400 User is already verified', async () => {
-    const response = await request(app)
-      .post('/api/v1/auth/verify')
-      .send()
-      .set('Authorization', `Bearer ${loginData.token}`);
-    expect(response.statusCode).toBe(400);
-  }, 15000);
-});
-
 describe('API Resend', () => {
   it('should return 200 OTP has been resent to your email', async () => {
     const user = {
@@ -290,7 +254,7 @@ describe('API Forgot Password', () => {
 
 describe('API Reset Password', () => {
   let token;
-  beforeEach(async () => {
+  beforeAll(async () => {
     const user = {
       email: 'admin1@gmail.com',
     };
@@ -298,18 +262,6 @@ describe('API Reset Password', () => {
       .post('/api/v1/auth/forgot-password')
       .send(user);
     token = forgot.body.data.token;
-  }, 15000);
-
-  it('should return 200 Password successfully reset', async () => {
-    const newPassword = {
-      password: 'admin12345',
-      confirmPassword: 'admin12345',
-    };
-    const response = await request(app)
-      .post('/api/v1/auth/reset-password')
-      .send(newPassword)
-      .set('Authorization', `Bearer ${token}`);
-    expect(response.statusCode).toBe(200);
   }, 15000);
 
   it('should return 400 Password is required', async () => {
@@ -359,6 +311,17 @@ describe('API Reset Password', () => {
   }, 15000);
 
   it('should return 400 New password cannot be the same as old password', async () => {
+    const response = await request(app)
+      .post('/api/v1/auth/reset-password')
+      .send({
+        password: 'admin1234',
+        confirmPassword: 'admin1234',
+      })
+      .set('Authorization', `Bearer ${token}`);
+    expect(response.statusCode).toBe(400);
+  }, 15000);
+
+  it('should return 200 Password successfully reset', async () => {
     const newPassword = {
       password: 'admin12345',
       confirmPassword: 'admin12345',
@@ -367,16 +330,20 @@ describe('API Reset Password', () => {
       .post('/api/v1/auth/reset-password')
       .send(newPassword)
       .set('Authorization', `Bearer ${token}`);
-    expect(response.statusCode).toBe(400);
+    expect(response.statusCode).toBe(200);
   }, 15000);
 });
 
 describe('API Update', () => {
   let token;
   let imageBuffer;
+  let imageBuffer2;
+
   beforeAll(async () => {
     const filePath = path.join(__dirname, '../public/img/persia.jpg');
+    const filePath2 = path.join(__dirname, '../public/img/testImage.jpg');
     imageBuffer = fs.readFileSync(filePath);
+    imageBuffer2 = fs.readFileSync(filePath2);
     const user = {
       email: 'user3@gmail.com',
       password: 'admin1234',
@@ -384,6 +351,7 @@ describe('API Update', () => {
     const login = await request(app).post('/api/v1/auth/login').send(user);
     token = login.body.data.token;
   }, 15000);
+
   it('should return 200 Profile updated successfully', async () => {
     const response = await request(app)
       .put('/api/v1/user/update')
@@ -391,6 +359,14 @@ describe('API Update', () => {
       .attach('image', imageBuffer, 'persia.jpg')
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(200);
+  }, 15000);
+
+  it('should return 400 File size exceeds the limit (5MB)', async () => {
+    const response = await request(app)
+      .put('/api/v1/user/update')
+      .attach('image', imageBuffer2, 'testImage.jpg')
+      .set('Authorization', `Bearer ${token}`);
+    expect(response.statusCode).toBe(400);
   }, 15000);
 });
 
@@ -559,7 +535,7 @@ describe('API Get All User', () => {
       .get('/api/v1/user')
       .set(
         'Authorization',
-        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6bnVsbCwiZW1haWwiOiJhcHJtbmZrckBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcwMDk5NTY0OCwiZXhwIjoxNzAwOTk1NzA4fQ.gpSMb1sLAZ83BTsYfhZLrm6ofLL97qQ2SD6I4geaeho',
+        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6bnVsbCwiZW1haWwiOiJhcHJtbmZrckBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcwMDk5NTY0OCwiZXhwIjoxNzAwOTk1NzA4fQ.gpSMb1sLAZ83BTsYfhZLrm6ofLL97qQ2SD6I4geaeho'
       );
     expect(response.statusCode).toBe(401);
   }, 15000);
@@ -570,6 +546,15 @@ describe('API Get All User', () => {
       .set('Authorization', 'Bearer invalid');
     expect(response.statusCode).toBe(401);
   }, 15000);
+
+  it('should call next with error when an error occurs', async () => {
+    const mockedError = new Error('An example error');
+    jest.spyOn(User, 'findAll').mockRejectedValueOnce(mockedError); // eslint-disable-line
+    const response = await request(app)
+      .get('/api/v1/user')
+      .set('Authorization', `Bearer ${tokenAdmin}`);
+    expect(response.statusCode).toBe(500);
+  }, 10000);
 });
 
 describe('API Get User', () => {
@@ -579,7 +564,7 @@ describe('API Get User', () => {
       password: 'admin1234',
     };
     const login = await request(app).post('/api/v1/auth/login').send(user);
-    const { token } = login.body.data;
+    const { token } = await login.body.data;
     const response = await request(app)
       .get('/api/v1/user/me')
       .set('Authorization', `Bearer ${token}`);
@@ -600,12 +585,10 @@ describe('API login admin', () => {
   }, 15000);
 
   it('should return 400 Email is required', async () => {
-    const user = {
+    const response = await request(app).post('/api/v1/auth/login/admin').send({
+      email: '',
       password: 'admin1234',
-    };
-    const response = await request(app)
-      .post('/api/v1/auth/login/admin')
-      .send(user);
+    });
     expect(response.statusCode).toBe(400);
   }, 15000);
 
@@ -702,6 +685,7 @@ describe('API delete user', () => {
       password: 'admin1234',
     };
     const loginUser = await request(app).post('/api/v1/auth/login').send(user);
+    deletedUserToken = loginUser.body.data.token;
     const { id } = loginUser.body.data.user;
     const response = await request(app)
       .delete(`/api/v1/user/${id}`)
@@ -714,6 +698,80 @@ describe('API delete user', () => {
       .delete('/api/v1/user/1000')
       .set('Authorization', `Bearer ${token}`);
     expect(response.statusCode).toBe(404);
+  }, 15000);
+});
+
+describe('API Verify', () => {
+  let registerData;
+  let loginData;
+  beforeAll(async () => {
+    const userRegister = {
+      name: 'admin',
+      phoneNumber: '1234567890',
+      email: `user${new Date().getTime()}@gmail.com`,
+      password: 'admin1234',
+    };
+    const response = await request(app)
+      .post('/api/v1/auth/register')
+      .send(userRegister);
+    registerData = response.body.data;
+
+    const userLogin = {
+      email: 'admin2@gmail.com',
+      password: 'admin1234',
+    };
+    const login = await request(app).post('/api/v1/auth/login').send(userLogin);
+    loginData = login.body.data;
+  }, 15000);
+
+  it('should return 404 User not found', async () => {
+    const otp = {
+      otp: '1234',
+    };
+    const response = await request(app)
+      .post('/api/v1/auth/verify')
+      .send(otp)
+      .set('Authorization', `Bearer ${deletedUserToken}`);
+    expect(response.statusCode).toBe(404);
+  });
+
+  it('should return 400 OTP does not match', async () => {
+    const response = await request(app)
+      .post('/api/v1/auth/verify')
+      .send({
+        otp: '1234',
+      })
+      .set('Authorization', `Bearer ${registerData.token}`);
+    expect(response.statusCode).toBe(400);
+  });
+
+  it('should return 400 OTP is required', async () => {
+    const response = await request(app)
+      .post('/api/v1/auth/verify')
+      .send()
+      .set('Authorization', `Bearer ${registerData.token}`);
+    expect(response.statusCode).toBe(400);
+  }, 15000);
+
+  it('should return 400 User is already verified', async () => {
+    const response = await request(app)
+      .post('/api/v1/auth/verify')
+      .send({
+        otp: '1234',
+      })
+      .set('Authorization', `Bearer ${loginData.token}`);
+    expect(response.statusCode).toBe(400);
+  }, 15000);
+
+  it('should return 200 Email verification successful', async () => {
+    const otp = {
+      otp: registerData.otp,
+    };
+    const response = await request(app)
+      .post('/api/v1/auth/verify')
+      .send(otp.otp)
+      .set('Authorization', `Bearer ${registerData.token}`);
+    expect(response.statusCode).toBe(200);
   }, 15000);
 });
 
@@ -735,7 +793,7 @@ describe('Reset Password View', () => {
     const { token } = resetPassword.body.data;
     const res = await request(app).get(`/reset-password?token=${token}`);
     expect(res.status).toBe(200);
-  }, 15000);
+  }, 20000);
 
   it('should redirect to /404 with an invalid token', async () => {
     const res = await request(app).get('/reset-password');

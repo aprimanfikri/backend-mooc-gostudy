@@ -30,15 +30,7 @@ const clickModule = async (req, res, next) => {
       ],
     });
 
-    // console.log(course);
-
-    console.log(course.Chapters);
-
     const chapterIds = course.Chapters.map((chapter) => chapter.id);
-
-    console.log("ini pembatas");
-
-    console.log(chapterIds);
 
     let userModule = await UserModule.findOne({
       where: { userId, moduleId },

@@ -22,6 +22,6 @@
     "linebreak-style": ["off", "windows"],
     "object-curly-newline": ["off", "always"],
     "comma-dangle": ["off", "always"],
-    "operator-linebreak": ["error", "after"]
+    "operator-linebreak": ["off", "before"]
   }
 }

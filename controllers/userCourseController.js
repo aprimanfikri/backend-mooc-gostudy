@@ -18,6 +18,28 @@ const clickModule = async (req, res, next) => {
       throw new ApiError("ID user tidak ada", 404);
     }
 
+    const course = await Course.findOne({
+      where: {
+        id: courseId,
+      },
+      include: [
+        {
+          model: Chapter,
+          include: Module,
+        },
+      ],
+    });
+
+    // console.log(course);
+
+    console.log(course.Chapters);
+
+    const chapterIds = course.Chapters.map((chapter) => chapter.id);
+
+    console.log("ini pembatas");
+
+    console.log(chapterIds);
+
     let userModule = await UserModule.findOne({
       where: { userId, moduleId },
     });
@@ -40,12 +62,14 @@ const clickModule = async (req, res, next) => {
     }
 
     const userModules = await UserModule.findAll({
-      where: { userId },
+      where: { userId, chapterId: { [Op.in]: chapterIds } },
     });
 
     const totalStudiedModules = userModules.filter(
       (module) => module.isStudied
     ).length;
+
+    console.log(totalStudiedModules);
 
     const totalModulesInCourse = await Course.count({
       where: { id: courseId },
@@ -54,6 +78,8 @@ const clickModule = async (req, res, next) => {
         include: Module,
       },
     });
+
+    console.log(totalModulesInCourse);
 
     const totalProgress =
       totalModulesInCourse > 0

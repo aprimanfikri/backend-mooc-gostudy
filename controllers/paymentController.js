@@ -105,13 +105,23 @@ const paymentCallback = async (req, res, next) => {
         payment.paymentType = payment_type;
         await payment.save();
 
-        const userCourseData = {
-          userId: payment.userId,
-          courseId: payment.courseId,
-          isAccessible: true,
-        };
+        const findUserCourse = await UserCourse.findOne({
+          where: {
+            userId: payment.userId,
+          },
+        });
 
-        await UserCourse.create(userCourseData);
+        if (findUserCourse) {
+          await UserCourse.update({
+            isAccessible: true,
+          });
+        } else {
+          await UserCourse.create({
+            userId: payment.userId,
+            courseId: payment.courseId,
+            isAccessible: true,
+          });
+        }
       }
     }
 

@@ -1,6 +1,6 @@
-const transporter = require('../config/nodemailer');
-const { Verified } = require('../models');
-const ApiError = require('../utils/apiError');
+const transporter = require("../config/nodemailer");
+const { Verified } = require("../models");
+const ApiError = require("../utils/apiError");
 
 const sendOtpVerification = async (id, email) => {
   try {
@@ -18,7 +18,7 @@ const sendOtpVerification = async (id, email) => {
     const mailOptions = {
       from: process.env.NODEMAILER_EMAIL,
       to: email,
-      subject: 'Email Verification',
+      subject: "Email Verification",
       html: `<p>Your OTP is ${otp}</p>`,
     };
     await transporter.sendMail(mailOptions);

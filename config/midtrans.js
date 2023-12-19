@@ -1,4 +1,4 @@
-const { CoreApi, Snap } = require('midtrans-client');
+const { CoreApi, Snap } = require("midtrans-client");
 
 const midtransConfig = {
   isProduction: false,

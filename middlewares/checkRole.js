@@ -1,4 +1,4 @@
-const ApiError = require('../utils/apiError');
+const ApiError = require("../utils/apiError");
 
 const checkRole = (role) => async (req, res, next) => {
   try {

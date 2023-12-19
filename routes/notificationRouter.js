@@ -1,17 +1,17 @@
-const router = require('express').Router();
-const notificationController = require('../controllers/notificationController');
-const { authenticate } = require('../middlewares/auth');
-const checkRole = require('../middlewares/checkRole');
+const router = require("express").Router();
+const notificationController = require("../controllers/notificationController");
+const { authenticate } = require("../middlewares/auth");
+const checkRole = require("../middlewares/checkRole");
 
 router
-  .route('/')
+  .route("/")
   .get(notificationController.getAllNotif)
-  .post(authenticate, checkRole('admin'), notificationController.createNotif);
+  .post(authenticate, checkRole("admin"), notificationController.createNotif);
 
 router
-  .route('/:id')
+  .route("/:id")
   .get(notificationController.getNotifById)
-  .patch(authenticate, checkRole('admin'), notificationController.updateNotif)
-  .delete(authenticate, checkRole('admin'), notificationController.deleteNotif);
+  .patch(authenticate, checkRole("admin"), notificationController.updateNotif)
+  .delete(authenticate, checkRole("admin"), notificationController.deleteNotif);
 
 module.exports = router;

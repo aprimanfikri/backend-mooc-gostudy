@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Notifications', {
+    await queryInterface.createTable("Notifications", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,8 +11,8 @@ module.exports = {
       },
       category: {
         type: Sequelize.ENUM,
-        values: ['Promosi', 'Notifikasi'],
-        defaultValue: 'Notifikasi',
+        values: ["Promosi", "Notifikasi"],
+        defaultValue: "Notifikasi",
       },
       title: {
         type: Sequelize.STRING,
@@ -31,6 +31,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Notifications');
+    await queryInterface.dropTable("Notifications");
   },
 };

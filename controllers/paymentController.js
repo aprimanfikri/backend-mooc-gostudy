@@ -1,8 +1,8 @@
-const midtransClient = require('midtrans-client');
-const crypto = require('crypto');
-const { Payment, Course, UserCourse, Category, User } = require('../models');
-const ApiError = require('../utils/apiError');
-const midtrans = require('../config/midtrans');
+const midtransClient = require("midtrans-client");
+const crypto = require("crypto");
+const { Payment, Course, UserCourse, Category, User } = require("../models");
+const ApiError = require("../utils/apiError");
+const midtrans = require("../config/midtrans");
 
 const createTransaction = async (req, res, next) => {
   const { courseId } = req.body;
@@ -13,10 +13,10 @@ const createTransaction = async (req, res, next) => {
       where: {
         id: courseId,
       },
-      include: ['Category'],
+      include: ["Category"],
     });
     if (!course) {
-      throw new ApiError('Course not found!', 404);
+      throw new ApiError("Course not found!", 404);
     }
 
     if (course.promoPercentage !== 0) {
@@ -63,8 +63,8 @@ const createTransaction = async (req, res, next) => {
     };
 
     res.status(201).json({
-      status: 'success',
-      message: 'Transaksi dibuat!',
+      status: "success",
+      message: "Transaksi dibuat!",
       data: {
         dataPayment,
         createPayment,
@@ -91,16 +91,16 @@ const paymentCallback = async (req, res, next) => {
   try {
     const serverKey = process.env.MIDTRANS_SERVER_KEY;
     const hashed = crypto
-      .createHash('sha512')
+      .createHash("sha512")
       .update(order_id + status_code + gross_amount + serverKey)
-      .digest('hex');
+      .digest("hex");
 
     if (hashed === signature_key) {
-      if (transaction_status === 'settlement') {
+      if (transaction_status === "settlement") {
         const payment = await Payment.findOne({ where: { orderId: order_id } });
-        if (!payment) throw new ApiError('Transaksi tidak ada', 404);
+        if (!payment) throw new ApiError("Transaksi tidak ada", 404);
 
-        payment.status = 'paid';
+        payment.status = "paid";
         payment.settlementTime = settlement_time;
         payment.paymentType = payment_type;
         await payment.save();
@@ -126,8 +126,8 @@ const paymentCallback = async (req, res, next) => {
     }
 
     res.status(200).json({
-      status: 'success',
-      message: 'Transaksi sukses!',
+      status: "success",
+      message: "Transaksi sukses!",
     });
   } catch (error) {
     next(error);
@@ -141,11 +141,11 @@ const getPaymentDetail = async (req, res, next) => {
   try {
     const payment = await Payment.findByPk(id);
     if (!payment) {
-      throw new ApiError('Payment not found!', 404);
+      throw new ApiError("Payment not found!", 404);
     }
 
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: {
         payment,
       },
@@ -161,20 +161,20 @@ const getAllPayment = async (req, res, next) => {
       include: [
         {
           model: Course,
-          as: 'Course',
+          as: "Course",
           include: {
             model: Category,
-            as: 'Category',
+            as: "Category",
           },
         },
         {
           model: User,
-          as: 'User',
+          as: "User",
         },
       ],
     });
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: {
         payments,
       },
@@ -191,13 +191,13 @@ const createTransactionv2 = async (req, res, next) => {
       where: {
         id: courseId,
       },
-      include: ['Category'],
+      include: ["Category"],
     });
     if (!course) {
-      throw new ApiError('Course not found!', 404);
+      throw new ApiError("Course not found!", 404);
     }
     const transaction = await midtrans.coreApi.charge({
-      payment_type: 'bank_transfer',
+      payment_type: "bank_transfer",
       transaction_details: {
         order_id: `ORDER-${course.classCode}-${req.user.id}-${Date.now()}`,
         gross_amount: course.price,
@@ -226,8 +226,8 @@ const createTransactionv2 = async (req, res, next) => {
     });
 
     res.status(201).json({
-      status: 'success',
-      message: 'Success create transaction!',
+      status: "success",
+      message: "Success create transaction!",
       data: {
         payment,
         transaction,
@@ -249,22 +249,22 @@ const userPaymentHistory = async (req, res, next) => {
         {
           model: Course,
           attributes: [
-            'id',
-            'name',
-            'imageUrl',
-            'price',
-            'promoPercentage',
-            'level',
-            'totalModule',
-            'totalDuration',
-            'courseBy',
-            'rating',
+            "id",
+            "name",
+            "imageUrl",
+            "price",
+            "promoPercentage",
+            "level",
+            "totalModule",
+            "totalDuration",
+            "courseBy",
+            "rating",
           ], // Pilih atribut yang ingin ditampilkan dari Course
           include: [
             {
               model: Category,
-              as: 'Category',
-              attributes: ['name'], // Pilih atribut yang ingin ditampilkan dari Category
+              as: "Category",
+              attributes: ["name"], // Pilih atribut yang ingin ditampilkan dari Category
             },
           ],
         },
@@ -291,8 +291,8 @@ const userPaymentHistory = async (req, res, next) => {
     }));
 
     res.status(200).json({
-      status: 'success',
-      message: 'Get payment history successfully',
+      status: "success",
+      message: "Get payment history successfully",
       data: {
         historyPayment: formattedHistory,
       },

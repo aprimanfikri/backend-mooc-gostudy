@@ -1,33 +1,33 @@
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.bulkInsert(
-      'Categories',
+      "Categories",
       [
         {
-          name: 'Category 1',
+          name: "Category 1",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: 'Category 2',
+          name: "Category 2",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: 'Category 3',
+          name: "Category 3",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: 'Category 4',
+          name: "Category 4",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: 'Category 5',
+          name: "Category 5",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -37,6 +37,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('Categories', null, {});
+    await queryInterface.bulkDelete("Categories", null, {});
   },
 };

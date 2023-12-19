@@ -1,4 +1,4 @@
-const { Model } = require('sequelize');
+const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
   class Chapter extends Model {
@@ -11,13 +11,13 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Chapter.hasMany(models.Module, {
         foreignKey: {
-          name: 'chapterId',
+          name: "chapterId",
         },
       });
 
       Chapter.belongsTo(models.Course, {
         foreignKey: {
-          name: 'courseId',
+          name: "courseId",
         },
       });
     }
@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: 'Chapter',
+      modelName: "Chapter",
     }
   );
   return Chapter;

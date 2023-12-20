@@ -33,6 +33,14 @@
     {
       "name": "Payment",
       "description": "API untuk resources Payment yang terdiri dari beberapa endpoint"
+    },
+    {
+      "name": "Notification",
+      "description": "API untuk resources Notification yang terdiri dari beberapa endpoint"
+    },
+    {
+      "name": "User Course",
+      "description": "API untuk resources melihat course dan module yang terdiri dari beberapa endpoint"
     }
   ],
 
@@ -1636,7 +1644,7 @@
                     "example": "Figma is a tool for design an UI or UX. Figma also can make a prototype for present an UI/UX project"
                   },
                   "benefits": {
-                    "type": "string",
+                    "type": "array",
                     "format": "text",
                     "example": "1. Make prototype app"
                   },
@@ -1655,6 +1663,11 @@
                   "courseBy": {
                     "type": "string",
                     "example": "Halo Designer"
+                  },
+                  "rating": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 4.7
                   }
                 }
               }
@@ -1776,6 +1789,14 @@
             "description": "Query newest data"
           },
           {
+            "name": "promoPercentage",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Query promo data"
+          },
+          {
             "name": "search",
             "in": "query",
             "schema": {
@@ -1873,6 +1894,12 @@
                             "courseBy": {
                               "type": "string",
                               "example": "Jo Xander"
+                            },
+
+                            "rating": {
+                              "type": "number",
+                              "format": "float",
+                              "example": 4.7
                             },
                             "createdBy": {
                               "type": "integer",
@@ -2047,6 +2074,12 @@
                               "type": "string",
                               "example": "Jo Xander"
                             },
+
+                            "rating": {
+                              "type": "number",
+                              "format": "float",
+                              "example": 4.7
+                            },
                             "createdBy": {
                               "type": "integer",
                               "format": "int64"
@@ -2181,6 +2214,11 @@
                   "courseBy": {
                     "type": "string",
                     "example": "Halo Designer"
+                  },
+                  "rating": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 4.7
                   }
                 }
               }
@@ -2467,7 +2505,7 @@
             }
           },
           "5xx": {
-            "description": "Error Create Category",
+            "description": "Error Create Chapter",
             "content": {
               "application/json": {
                 "schema": {
@@ -2532,6 +2570,14 @@
                               "type": "integer",
                               "example": 2
                             },
+                            "totalDuration": {
+                              "type": "integer",
+                              "example": 20
+                            },
+                            "totalModule": {
+                              "type": "integer",
+                              "example": 2
+                            },
                             "createdAt": {
                               "type": "string",
                               "format": "date-time"
@@ -2572,7 +2618,7 @@
             }
           },
           "5xx": {
-            "description": "Error Get Category",
+            "description": "Error Get Chapter",
             "content": {
               "application/json": {
                 "schema": {
@@ -2629,13 +2675,16 @@
                     "message": {
                       "description": "Message of the request",
                       "type": "string",
-                      "example": "Category 1 found!"
+                      "example": "Chapter 1 found!"
                     },
                     "data": {
-                      "description": "category data",
+                      "description": "chapter data",
                       "type": "object",
                       "properties": {
-                        "id": {},
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
                         "noChapter": {
                           "type": "integer",
                           "example": 1
@@ -2645,6 +2694,16 @@
                           "example": "Mengenal Tools di Figma"
                         },
                         "courseId": {
+                          "type": "integer",
+                          "example": 2
+                        },
+
+                        "totalDuration": {
+                          "type": "integer",
+                          "example": 20
+                        },
+
+                        "totalModule": {
                           "type": "integer",
                           "example": 2
                         },
@@ -2686,7 +2745,7 @@
             }
           },
           "5xx": {
-            "description": "Error Get Category Data",
+            "description": "Error Get Chapter Data",
             "content": {
               "application/json": {
                 "schema": {
@@ -2882,7 +2941,7 @@
                     "message": {
                       "type": "string",
                       "description": "Message of the request",
-                      "example": "Course not found"
+                      "example": "Chapter not found"
                     }
                   }
                 }
@@ -2890,7 +2949,7 @@
             }
           },
           "5xx": {
-            "description": "Error Delete Course Data",
+            "description": "Error Delete Chapter Data",
             "content": {
               "application/json": {
                 "schema": {
@@ -2904,7 +2963,7 @@
                     "message": {
                       "type": "string",
                       "description": "Message of the request",
-                      "example": "Error occured during get course data"
+                      "example": "Error occured during get chapter data"
                     }
                   }
                 }
@@ -4240,6 +4299,896 @@
                       "type": "string",
                       "description": "Message of the request",
                       "example": "Error occured during create Transaction"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/view-course/course/{courseId}": {
+      "get": {
+        "tags": ["User Course"],
+        "parameters": [
+          {
+            "name": "courseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID of the course to retrieve"
+          }
+        ],
+        "summary": "Get Course By ID",
+        "description": "Ini adalah API endpoint untuk menampilkan data course sesuai ID",
+        "responses": {
+          "200": {
+            "description": "Course fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "description": "Status of the request",
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "description": "Message of the request",
+                      "type": "string",
+                      "example": "Course 1 found!"
+                    },
+                    "data": {
+                      "description": "Courses data",
+                      "type": "object",
+                      "properties": {
+                        "course": {
+                          "description": "Data of the course",
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "format": "int64",
+                              "example": 1
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "Digital Marketing"
+                            },
+                            "imageUrl": {
+                              "type": "string",
+                              "format": "url",
+                              "example": "https://ik.imagekit.io/cbtfkvupm4/gostudy/course-image/Digital_Marketing_8SwRF29kS.jpg"
+                            },
+                            "imageId": {
+                              "type": "string",
+                              "example": "65649fca88c257da33e1c374"
+                            },
+                            "level": {
+                              "type": "string",
+                              "example": "Beginner"
+                            },
+                            "categoryId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "example": 1
+                            },
+                            "description": {
+                              "type": "string",
+                              "example": "Digital Marketing adalah ilmu untuk memasarkan sesuatu di ranah digital seperti social media."
+                            },
+                            "benefits": {
+                              "type": "string",
+                              "example": "1. Memasarkan suatu produk secara digital"
+                            },
+                            "classCode": {
+                              "type": "string",
+                              "example": "DM001"
+                            },
+                            "totalModule": {
+                              "type": "integer",
+                              "format": "int32",
+                              "example": 8
+                            },
+                            "type": {
+                              "type": "string",
+                              "example": "Free"
+                            },
+                            "price": {
+                              "type": "number",
+                              "format": "float",
+                              "example": 0
+                            },
+                            "totalDuration": {
+                              "type": "integer",
+                              "format": "int32",
+                              "example": "36000"
+                            },
+                            "courseBy": {
+                              "type": "string",
+                              "example": "Jo Xander"
+                            },
+
+                            "rating": {
+                              "type": "number",
+                              "format": "float",
+                              "example": 4.7
+                            },
+                            "createdBy": {
+                              "type": "integer",
+                              "format": "int64"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Get Course Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Course not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Get Course Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during get course data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/view-course/course/{courseId}/modules/{moduleId}": {
+      "get": {
+        "tags": ["User Course"],
+        "parameters": [
+          {
+            "name": "courseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID of the Course to retrieve"
+          },
+          {
+            "name": "moduleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID of the Module to retrieve"
+          }
+        ],
+        "summary": "Get Module By ID",
+        "description": "Ini adalah API endpoint untuk menampilkan data module sesuai ID",
+        "responses": {
+          "200": {
+            "description": "Module fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "description": "Status of the request",
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "description": "Message of the request",
+                      "type": "string",
+                      "example": "Module clicked succesfully"
+                    },
+                    "data": {
+                      "description": "category data",
+                      "type": "object",
+                      "properties": {
+                        "module": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "noModule": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "UI/UX Introduction to Figma"
+                            },
+                            "description": {
+                              "type": "string",
+                              "example": "Figma is a tool for design an UI or UX. Figma also can make a prototype for present an UI/UX project"
+                            },
+                            "chapterId": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "videoUrl": {
+                              "type": "string",
+                              "format": "binary"
+                            },
+                            "videoId": {
+                              "type": "string"
+                            },
+                            "duration": {
+                              "type": "integer"
+                            },
+                            "createdBy": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Get Module Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Module not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Get Module Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during get module data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/notification": {
+      "post": {
+        "tags": ["Notification"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "summary": "Create a new notification",
+        "description": "Ini adalah API endpoint untuk membuat notification",
+        "requestBody": {
+          "description": "Request body untuk membuat notification",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "category": {
+                    "type": "string",
+                    "example": "Notifikasi"
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "Password berhasil diubah"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Password anda berhasil diubah ke password baru, harap diingat!"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Notification created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Notification created successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "newNotif": {
+                          "type": "object",
+                          "description": "Data new notification",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "category": {
+                              "type": "string",
+                              "example": "Notifikasi"
+                            },
+                            "title": {
+                              "type": "string",
+                              "example": "Password berhasil diubah"
+                            },
+                            "description": {
+                              "type": "string",
+                              "example": "Password anda berhasil diubah ke password baru, harap diingat!"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Created New Notification",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "All value fields are required!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Create Notification",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during create notification"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Notification"],
+        "summary": "Get All Notification",
+        "description": "Ini adalah API endpoint untuk menampilkan data notification",
+        "responses": {
+          "200": {
+            "description": "All notification fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "description": "Status of the request",
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "description": "Message of the request",
+                      "type": "string",
+                      "example": "All notifications fetched successfully"
+                    },
+                    "data": {
+                      "description": "Notifications data",
+                      "type": "object",
+                      "properties": {
+                        "chapters": {
+                          "description": "Data of the notification",
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "category": {
+                              "type": "string",
+                              "example": "Notifikasi"
+                            },
+                            "title": {
+                              "type": "string",
+                              "example": "Password berhasil diubah"
+                            },
+                            "description": {
+                              "type": "string",
+                              "example": "Password anda berhasil diubah ke password baru, harap diingat!"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Get Notification",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Notification not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Get Notification",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during get notification data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/notification/{id}": {
+      "get": {
+        "tags": ["Notification"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID of the Notification to retrieve"
+          }
+        ],
+        "summary": "Get Notification By ID",
+        "description": "Ini adalah API endpoint untuk menampilkan data notification sesuai ID",
+        "responses": {
+          "200": {
+            "description": "Notification fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "description": "Status of the request",
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "description": "Message of the request",
+                      "type": "string",
+                      "example": "Notification 1 found!"
+                    },
+                    "data": {
+                      "description": "notification data",
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "category": {
+                          "type": "string",
+                          "example": "Notifikasi"
+                        },
+                        "title": {
+                          "type": "string",
+                          "example": "Password berhasil diubah"
+                        },
+                        "description": {
+                          "type": "string",
+                          "example": "Password anda berhasil diubah ke password baru, harap diingat!"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Get Notification Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Notification 1 not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Get Notification Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during get notification data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Notification"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID of the Notification to retrieve"
+          }
+        ],
+        "summary": "Update Notification By ID",
+        "description": "Ini adalah API endpoint untuk mengupdate notification",
+        "requestBody": {
+          "description": "Request body untuk mengupdate notification",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "category": {
+                    "type": "string",
+                    "example": "Notifikasi"
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "Password berhasil diubah"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Password anda berhasil diubah ke password baru, harap diingat!"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Notification updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Notification updated successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Updated Notification",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "All values are required"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Update Notification",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during update notification"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Notification"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 3
+            },
+            "description": "ID of the notification to retrieve"
+          }
+        ],
+        "summary": "Delete Notification By ID",
+        "description": "Ini adalah API endpoint untuk menghapus data notification",
+        "responses": {
+          "200": {
+            "description": "Delete a notification by ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "description": "Status of the request",
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "description": "Message of the request",
+                      "type": "string",
+                      "example": "Notification deleted"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Delete Notification Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Notification not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Delete Notification Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during get notification data"
                     }
                   }
                 }

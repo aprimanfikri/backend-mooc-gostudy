@@ -49,9 +49,11 @@ const getNotifById = async (req, res, next) => {
     }
     res.status(200).json({
       status: "success",
+      message: `Notification ${notif.id} is found!`,
       data: {
         notif,
       },
+      date: new Date().toISOString,
     });
   } catch (error) {
     next(error);
@@ -67,7 +69,7 @@ const updateNotif = async (req, res, next) => {
     // }
     const notif = await Notification.findByPk(id);
     if (!notif) {
-      throw new ApiError("notif not found", 404);
+      throw new ApiError("Notification not found", 404);
     }
     const updatedNotif = await notif.update({
       category,

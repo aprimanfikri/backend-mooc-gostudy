@@ -16,6 +16,8 @@ router.delete(
   userCourseController.deleteUserCourse
 );
 
+router.get("/course/:courseId", authenticate, userCourseController.openCourse);
+
 router.get(
   "/course/:courseId/modules/:moduleId",
   authenticate,

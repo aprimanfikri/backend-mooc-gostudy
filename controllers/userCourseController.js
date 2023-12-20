@@ -9,6 +9,38 @@ const {
 } = require("../models");
 const ApiError = require("../utils/apiError");
 
+const openCourse = async (req, res, next) => {
+  try {
+    const { courseId } = req.params;
+
+    const course = await Course.findOne({
+      where: {
+        id: courseId,
+      },
+      include: [
+        {
+          model: Chapter,
+          include: Module,
+        },
+      ],
+    });
+
+    if (!course) {
+      throw new ApiError("Course not found", 404);
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: `Course ${courseId} found`,
+      data: {
+        course,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const clickModule = async (req, res, next) => {
   try {
     const { moduleId, courseId } = req.params;
@@ -99,6 +131,11 @@ const clickModule = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: "Module clicked successfully",
+      data: {
+        module: {
+          findModule,
+        },
+      },
     });
   } catch (error) {
     next(error);
@@ -232,6 +269,7 @@ const deleteUserCourse = async (req, res, next) => {
 };
 
 module.exports = {
+  openCourse,
   clickModule,
   getUserCourse,
   createUserCourse,

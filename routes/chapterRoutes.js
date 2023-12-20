@@ -14,4 +14,11 @@ router
   .patch(authenticate, checkRole("admin"), chaptersController.updateChapter)
   .delete(authenticate, checkRole("admin"), chaptersController.deleteChapter);
 
+router.get(
+  '/course/:id',
+  authenticate,
+  checkRole('admin'),
+  chaptersController.getChapterByCourse
+);
+
 module.exports = router;

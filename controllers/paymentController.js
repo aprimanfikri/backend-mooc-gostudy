@@ -85,7 +85,9 @@ const paymentCallback = async (req, res, next) => {
     gross_amount,
     signature_key,
     transaction_status,
+    fraud_status,
     settlement_time,
+    transaction_time,
     payment_type,
   } = req.body;
   try {
@@ -96,7 +98,37 @@ const paymentCallback = async (req, res, next) => {
       .digest("hex");
 
     if (hashed === signature_key) {
-      if (transaction_status === "settlement") {
+      if (transaction_status === "capture") {
+        if (fraud_status === "accept") {
+          const payment = await Payment.findOne({
+            where: { orderId: order_id },
+          });
+          if (!payment) throw new ApiError("Transaksi tidak ada", 404);
+
+          payment.status = "paid";
+          payment.settlementTime = transaction_time;
+          payment.paymentType = payment_type;
+          await payment.save();
+
+          const findUserCourse = await UserCourse.findOne({
+            where: {
+              userId: payment.userId,
+            },
+          });
+
+          if (findUserCourse) {
+            await UserCourse.update({
+              isAccessible: true,
+            });
+          } else {
+            await UserCourse.create({
+              userId: payment.userId,
+              courseId: payment.courseId,
+              isAccessible: true,
+            });
+          }
+        }
+      } else if (transaction_status === "settlement") {
         const payment = await Payment.findOne({ where: { orderId: order_id } });
         if (!payment) throw new ApiError("Transaksi tidak ada", 404);
 

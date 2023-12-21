@@ -1660,6 +1660,10 @@
                     "type": "integer",
                     "example": 150000
                   },
+                  "promoPercentage": {
+                    "type": "integer",
+                    "example": 30
+                  },
                   "courseBy": {
                     "type": "string",
                     "example": "Halo Designer"
@@ -2210,6 +2214,10 @@
                   "price": {
                     "type": "integer",
                     "example": 150000
+                  },
+                  "promoPercentage": {
+                    "type": "integer",
+                    "example": 30
                   },
                   "courseBy": {
                     "type": "string",

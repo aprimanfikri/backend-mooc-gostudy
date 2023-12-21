@@ -189,33 +189,50 @@ const deleteCourse = async (req, res, next) => {
 
 const getAllCourse = async (req, res, next) => {
   try {
-    const { level, type, categoryName, createdAt, promo, search } = req.query;
+    const { level, type, categoryName, createdAt, promo, rating, search } =
+      req.query;
     const searchCriteria = {};
 
     const validLevels = ["Beginner", "Intermediate", "Advanced"];
-    if (level && validLevels.includes(level)) {
-      searchCriteria.level = level;
+    if (level) {
+      const levels = level.split(",").map((l) => l.trim());
+      searchCriteria.level = {
+        [Op.in]: levels.filter((l) => validLevels.includes(l)),
+      };
     }
+
     const validTypes = ["Free", "Premium"];
-    if (type && validTypes.includes(type)) {
-      searchCriteria.type = type;
+    if (type) {
+      const types = type.split(",").map((t) => t.trim());
+      searchCriteria.type = {
+        [Op.in]: types.filter((t) => validTypes.includes(t)),
+      };
     }
+
     if (categoryName) {
       const categoryNames = categoryName.split(",").map((name) => name.trim());
       searchCriteria["$Category.name$"] = {
         [Op.iLike]: { [Op.any]: categoryNames },
       };
     }
+
     if (createdAt && createdAt.trim().toLowerCase() === "true") {
       searchCriteria.createdAt = {
         [Op.lte]: new Date(),
       };
     }
+
     if (promo && promo.toLowerCase() === "true") {
       searchCriteria.promoPercentage = {
         [Op.ne]: 0,
       };
     }
+
+    let ratingOrder = "ASC";
+    if (rating && rating.toLowerCase() === "true") {
+      ratingOrder = "DESC";
+    }
+
     if (search) {
       searchCriteria.name = { [Op.iLike]: `%${search}%` };
     }
@@ -232,7 +249,10 @@ const getAllCourse = async (req, res, next) => {
           include: Module,
         },
       ],
-      order: [["createdAt", orderDirection]],
+      order: [
+        ["rating", ratingOrder],
+        ["createdAt", orderDirection],
+      ],
     });
 
     res.status(200).json({

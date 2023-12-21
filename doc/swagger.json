@@ -1644,7 +1644,7 @@
                     "example": "Figma is a tool for design an UI or UX. Figma also can make a prototype for present an UI/UX project"
                   },
                   "benefits": {
-                    "type": "array",
+                    "type": "string",
                     "format": "text",
                     "example": "1. Make prototype app"
                   },

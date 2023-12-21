@@ -116,10 +116,34 @@ const getChapterById = async (req, res, next) => {
   }
 };
 
+const getChapterByCourse = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const chapters = await Chapter.findAll({
+      where: {
+        courseId: id,
+      },
+    });
+    if (!chapters) {
+      throw new ApiError('Chapter not found', 404);
+    }
+    res.status(200).json({
+      status: 'success',
+      message: 'All chapters fetched successfully',
+      data: {
+        chapters,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createChapter,
   updateChapter,
   deleteChapter,
   getAllChapters,
   getChapterById,
+  getChapterByCourse,
 };

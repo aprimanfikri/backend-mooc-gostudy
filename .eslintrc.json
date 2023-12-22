@@ -15,7 +15,8 @@
     "seeders/",
     "postcss.config.js",
     "server/",
-    "utils/apiError.js"
+    "utils/apiError.js",
+    "utils/yt.js"
   ],
   "rules": {
     "quotes": ["off", "single"],

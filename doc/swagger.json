@@ -3017,6 +3017,10 @@
                   "video": {
                     "type": "string",
                     "format": "binary"
+                  },
+                  "isUnlocked": {
+                    "type": "boolean",
+                    "example": true
                   }
                 }
               }
@@ -3198,6 +3202,10 @@
                             "createdBy": {
                               "type": "integer",
                               "example": 1
+                            },
+                            "isUnlocked": {
+                              "type": "boolean",
+                              "example": true
                             },
                             "createdAt": {
                               "type": "string",
@@ -3494,6 +3502,10 @@
                               "type": "integer",
                               "example": 1
                             },
+                            "isUnlocked": {
+                              "type": "boolean",
+                              "example": true
+                            },
                             "createdAt": {
                               "type": "string",
                               "format": "date-time"
@@ -3604,6 +3616,10 @@
                   "video": {
                     "type": "string",
                     "format": "binary"
+                  },
+                  "isUnlocked": {
+                    "type": "boolean",
+                    "example": true
                   }
                 }
               }

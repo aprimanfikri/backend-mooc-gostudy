@@ -58,19 +58,18 @@ const createTransaction = async (req, res, next) => {
       },
     });
 
-    const dataPayment = {
-      res: JSON.stringify(transaction),
+    const paymentTransaction = {
+      ...createPayment.toJSON(),
+      token: transaction.token,
+      redirect_url: transaction.redirect_url,
     };
 
     res.status(201).json({
       status: "success",
       message: "Transaksi dibuat!",
       data: {
-        dataPayment,
-        createPayment,
+        createPayment: paymentTransaction,
       },
-      token: transaction.token,
-      redirect_url: transaction.redirect_url,
     });
   } catch (error) {
     next(error);
@@ -270,12 +269,17 @@ const createTransactionv2 = async (req, res, next) => {
   }
 };
 
-const userPaymentHistory = async (req, res, next) => {
+const paymentHistory = async (req, res, next) => {
   try {
-    const { id } = req.user;
+    const userId = req.user.id;
+
+    if (!userId) {
+      throw new ApiError("User not found", 404);
+    }
+
     const historyPayments = await Payment.findAll({
       where: {
-        userId: id,
+        userId,
       },
       include: [
         {
@@ -291,12 +295,12 @@ const userPaymentHistory = async (req, res, next) => {
             "totalDuration",
             "courseBy",
             "rating",
-          ], // Pilih atribut yang ingin ditampilkan dari Course
+          ],
           include: [
             {
               model: Category,
               as: "Category",
-              attributes: ["name"], // Pilih atribut yang ingin ditampilkan dari Category
+              attributes: ["name"],
             },
           ],
         },
@@ -340,5 +344,5 @@ module.exports = {
   getPaymentDetail,
   getAllPayment,
   createTransactionv2,
-  userPaymentHistory,
+  paymentHistory,
 };

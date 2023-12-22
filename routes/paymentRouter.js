@@ -10,14 +10,10 @@ router.post(
   denyPayment,
   paymentController.createTransaction
 );
+router.get("/history", authenticate, paymentController.paymentHistory);
 router.post("/v2", authenticate, paymentController.createTransactionv2);
 router.get("/", authenticate, paymentController.getAllPayment);
 router.post("/payment-callback", paymentController.paymentCallback);
 router.get("/:id", paymentController.getPaymentDetail);
-router.get(
-  "/payment-history",
-  authenticate,
-  paymentController.userPaymentHistory
-);
 
 module.exports = router;

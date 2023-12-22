@@ -1801,6 +1801,14 @@
             "description": "Query promo data"
           },
           {
+            "name": "rating",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Query rating descending"
+          },
+          {
             "name": "search",
             "in": "query",
             "schema": {
@@ -4332,9 +4340,255 @@
         }
       }
     },
+    "/api/v1/payment/history": {
+      "get": {
+        "tags": ["Payment"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "summary": "Get Payment by User",
+        "description": "Ini adalah API endpoint untuk menampilkan data payment history user",
+        "responses": {
+          "200": {
+            "description": "Payment fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "description": "Status of the request",
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "description": "Payments data",
+                      "type": "object",
+                      "properties": {
+                        "payments": {
+                          "description": "Data of the payment",
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "userId": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "courseId": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "price": {
+                              "type": "number",
+                              "format": "float",
+                              "example": 300000
+                            },
+                            "status": {
+                              "type": "string",
+                              "example": "paid"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Get Payments Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "No payment data"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Get Payment Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during get payment data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/view-course/": {
+      "get": {
+        "tags": ["User Course"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "in_progress"
+            },
+            "description": "Option: in_progress atau selesai"
+          }
+        ],
+        "summary": "Get all user course and progress",
+        "description": "Ini adalah API endpoint untuk mengambil course dari user yang telah mengklik module pada course tersebut",
+        "responses": {
+          "200": {
+            "description": "Sukses mengambil data course",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "description": "Status request",
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "description": "Message request",
+                      "type": "string",
+                      "example": "Sukses mengambil data course"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "userId": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "courseId": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "isAccessible": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "totalProgress": {
+                          "type": "number",
+                          "format": "float",
+                          "example": 100.0
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed get User Course data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Course not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Get User Course Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during get user course data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/view-course/course/{courseId}": {
       "get": {
         "tags": ["User Course"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
         "parameters": [
           {
             "name": "courseId",
@@ -4347,8 +4601,8 @@
             "description": "ID of the course to retrieve"
           }
         ],
-        "summary": "Get Course By ID",
-        "description": "Ini adalah API endpoint untuk menampilkan data course sesuai ID",
+        "summary": "Open course",
+        "description": "Ini adalah API endpoint untuk membuka course",
         "responses": {
           "200": {
             "description": "Course fetched successfully",
@@ -4514,6 +4768,11 @@
     "/api/v1/view-course/course/{courseId}/modules/{moduleId}": {
       "get": {
         "tags": ["User Course"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
         "parameters": [
           {
             "name": "courseId",

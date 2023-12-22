@@ -144,19 +144,24 @@ const clickModule = async (req, res, next) => {
 
 const getUserCourse = async (req, res, next) => {
   try {
-    const { filterStatus } = req.query;
+    const { status } = req.query;
     const userId = req.user.id;
 
     const whereCondition = { userId };
 
-    if (filterStatus) {
-      whereCondition.filterStatus = filterStatus;
+    if (status === "in_progress") {
+      whereCondition.totalProgress = { [Op.lt]: 100.0 };
+    } else if (status === "selesai") {
+      whereCondition.totalProgress = 100.0;
     }
-
-    whereCondition.totalProgress = { [Op.lt]: 100.0 };
 
     const course = await UserCourse.findAll({
       where: whereCondition,
+      include: [
+        {
+          model: Course,
+        },
+      ],
     });
 
     res.status(200).json({

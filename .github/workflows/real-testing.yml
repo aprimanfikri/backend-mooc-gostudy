@@ -25,6 +25,8 @@ jobs:
       NODE_ENV: test
       MIDTRANS_SERVER_KEY: ${{ secrets.MIDTRANS_SERVER_KEY }}
       MIDTRANS_CLIENT_KEY: ${{ secrets.MIDTRANS_CLIENT_KEY }}
+      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+      GOOGLE_BASE_URL: https://youtube.googleapis.com/youtube/v3/videos
     steps:
       - name: Get code
         uses: actions/checkout@v3

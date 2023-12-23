@@ -40,9 +40,10 @@ const createChapter = async (req, res, next) => {
 
 const updateChapter = async (req, res, next) => {
   try {
-    const { noChapter, name, courseId } = req.body;
+    const { name } = req.body;
+    console.log(req.body);
     const { id } = req.params;
-    if (!noChapter || !name || !courseId) {
+    if (!name) {
       throw new ApiError("All value fields are required", 400);
     }
     const chapter = await Chapter.findByPk(id);
@@ -50,9 +51,7 @@ const updateChapter = async (req, res, next) => {
       throw new ApiError("Chapter not found", 404);
     }
     const updatedChapter = await chapter.update({
-      noChapter,
       name,
-      courseId,
     });
     res.status(200).json({
       status: "success",
@@ -123,13 +122,14 @@ const getChapterByCourse = async (req, res, next) => {
       where: {
         courseId: id,
       },
+      order: [["id", "ASC"]],
     });
     if (!chapters) {
-      throw new ApiError('Chapter not found', 404);
+      throw new ApiError("Chapter not found", 404);
     }
     res.status(200).json({
-      status: 'success',
-      message: 'All chapters fetched successfully',
+      status: "success",
+      message: "All chapters fetched successfully",
       data: {
         chapters,
       },

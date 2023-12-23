@@ -3026,6 +3026,10 @@
                     "type": "string",
                     "format": "binary"
                   },
+                  "videoUrl": {
+                    "type": "string",
+                    "format": "text"
+                  },
                   "isUnlocked": {
                     "type": "boolean",
                     "example": true
@@ -3083,6 +3087,14 @@
                             "video": {
                               "type": "string",
                               "format": "binary"
+                            },
+                            "videoUrl": {
+                              "type": "string",
+                              "format": "text"
+                            },
+                            "isUnlocked": {
+                              "type": "boolean",
+                              "example": true
                             },
                             "createdAt": {
                               "type": "string",
@@ -3315,6 +3327,13 @@
                   "video": {
                     "type": "string",
                     "format": "binary"
+                  },
+                  "videoUrl": {
+                    "type": "string",
+                    "format": "text"
+                  },
+                  "isUnlocked": {
+                    "type": "boolean"
                   }
                 }
               }
@@ -3624,6 +3643,10 @@
                   "video": {
                     "type": "string",
                     "format": "binary"
+                  },
+                  "videoUrl": {
+                    "type": "string",
+                    "format": "text"
                   },
                   "isUnlocked": {
                     "type": "boolean",

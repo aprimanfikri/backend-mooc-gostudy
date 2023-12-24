@@ -3,7 +3,6 @@ const userCourseController = require("../controllers/userCourseController");
 const giveAccess = require("../middlewares/accessCourse");
 const { authenticate } = require("../middlewares/auth");
 
-// router.get("/progressVideo", authenticate, userCourseController.progressVideo);
 router.get("/", authenticate, userCourseController.getUserCourse);
 
 router.post("/:courseId", authenticate, userCourseController.createUserCourse);

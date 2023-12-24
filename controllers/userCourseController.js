@@ -6,6 +6,7 @@ const {
   User,
   Chapter,
   Module,
+  Category,
 } = require("../models");
 const ApiError = require("../utils/apiError");
 
@@ -144,7 +145,7 @@ const clickModule = async (req, res, next) => {
 
 const getUserCourse = async (req, res, next) => {
   try {
-    const { status } = req.query;
+    const { status, search } = req.query;
     const userId = req.user.id;
 
     const whereCondition = { userId };
@@ -155,11 +156,23 @@ const getUserCourse = async (req, res, next) => {
       whereCondition.totalProgress = 100.0;
     }
 
+    if (search) {
+      whereCondition["$Course.name$"] = {
+        [Op.iLike]: `%${search}%`,
+      };
+    }
+
     const course = await UserCourse.findAll({
       where: whereCondition,
       include: [
         {
           model: Course,
+          include: [
+            {
+              model: Category,
+              as: "Category",
+            },
+          ],
         },
       ],
     });

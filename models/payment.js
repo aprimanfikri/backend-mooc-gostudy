@@ -27,9 +27,11 @@ module.exports = (sequelize, DataTypes) => {
       paymentType: DataTypes.STRING,
       settlementTime: DataTypes.DATE,
       status: {
-        type: DataTypes.ENUM(["unpaid", "paid"]),
+        type: DataTypes.ENUM(["unpaid", "paid", "expire"]),
         defaultValue: "unpaid",
       },
+      token: DataTypes.TEXT,
+      redirect_url: DataTypes.TEXT,
     },
     {
       sequelize,

@@ -19,7 +19,13 @@ const denyPayment = async (req, res, next) => {
     });
 
     if (userPayment) {
-      return next(new ApiError("Anda sudah membeli course ini!", 400));
+      if (userPayment.status === "expire") {
+        await userPayment.destroy();
+        return next();
+        // eslint-disable-next-line no-else-return
+      } else {
+        throw new ApiError("Anda sudah membeli course ini!", 400);
+      }
     }
 
     return next();

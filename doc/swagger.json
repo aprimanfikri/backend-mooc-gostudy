@@ -5606,6 +5606,11 @@
     "/api/v1/my-notification/{id}": {
       "get": {
         "tags": ["Notification"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",

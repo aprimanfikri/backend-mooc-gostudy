@@ -5603,6 +5603,122 @@
         }
       }
     },
+    "/api/v1/my-notification": {
+      "get": {
+        "tags": ["Notification"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "summary": "Get All User Notification",
+        "description": "Ini adalah API endpoint untuk mengambil semua notifikasi User",
+        "responses": {
+          "200": {
+            "description": "Notification fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "description": "Status of the request",
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "description": "Message of the request",
+                      "type": "string",
+                      "example": "Berhasil mengambil semua notifikasi"
+                    },
+                    "data": {
+                      "description": "Notification data",
+                      "type": "object",
+                      "properties": {
+                        "notif": {
+                          "type": "object",
+                          "description": "All notification",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "category": {
+                              "type": "string",
+                              "example": "Notifikasi"
+                            },
+                            "title": {
+                              "type": "string",
+                              "example": "Password berhasil diubah"
+                            },
+                            "description": {
+                              "type": "string",
+                              "example": "Password anda berhasil diubah ke password baru, harap diingat!"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4xx": {
+            "description": "Failed Get Notification Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Notification 1 not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "description": "Error Get Notification Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message of the request",
+                      "example": "Error occured during get notification data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/my-notification/{id}": {
       "get": {
         "tags": ["Notification"],
@@ -5648,29 +5764,33 @@
                       "type": "object",
                       "properties": {
                         "notif": {
-                          "id": {
-                            "type": "integer",
-                            "example": 1
-                          },
-                          "category": {
-                            "type": "string",
-                            "example": "Notifikasi"
-                          },
-                          "title": {
-                            "type": "string",
-                            "example": "Password berhasil diubah"
-                          },
-                          "description": {
-                            "type": "string",
-                            "example": "Password anda berhasil diubah ke password baru, harap diingat!"
-                          },
-                          "createdAt": {
-                            "type": "string",
-                            "format": "date-time"
-                          },
-                          "updatedAt": {
-                            "type": "string",
-                            "format": "date-time"
+                          "type": "object",
+                          "description": "User notification",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "category": {
+                              "type": "string",
+                              "example": "Notifikasi"
+                            },
+                            "title": {
+                              "type": "string",
+                              "example": "Password berhasil diubah"
+                            },
+                            "description": {
+                              "type": "string",
+                              "example": "Password anda berhasil diubah ke password baru, harap diingat!"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
                           }
                         }
                       }

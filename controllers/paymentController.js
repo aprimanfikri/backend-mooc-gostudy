@@ -119,7 +119,7 @@ const paymentCallback = async (req, res, next) => {
               isAccessible: true,
             });
           } else {
-            await findUserCourse.create({
+            await UserCourse.create({
               userId: payment.userId,
               courseId: payment.courseId,
               isAccessible: true,
@@ -143,7 +143,7 @@ const paymentCallback = async (req, res, next) => {
             isAccessible: true,
           });
         } else {
-          await findUserCourse.create({
+          await UserCourse.create({
             userId: payment.userId,
             courseId: payment.courseId,
             isAccessible: true,

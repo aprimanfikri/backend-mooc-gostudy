@@ -47,7 +47,7 @@ const createTransaction = async (req, res, next) => {
       },
       item_details: {
         id: course.id,
-        price: course.price,
+        price: totalPrice,
         name: course.name,
         category: course.Category.name,
         quantity: 1,

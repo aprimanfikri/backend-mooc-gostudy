@@ -25,7 +25,7 @@ const createCategory = async (req, res, next) => {
     });
     const newCat = await Category.create({
       name,
-      slug: name.toLowerCase().replace(/\s+/g, "_"),
+      slug: name.toLowerCase().replace(/\s+/g, "_").replace(/\//g, "_"),
       imageUrl: uploadImage.url,
       imageId: uploadImage.fileId,
     });
@@ -73,7 +73,7 @@ const updateCategory = async (req, res, next) => {
     }
     const updatedCategory = await category.update({
       name,
-      slug: name.toLowerCase().replace(/\s+/g, "_"),
+      slug: name.toLowerCase().replace(/\s+/g, "_").replace(/\//g, "_"),
       imageUrl: image.url,
       imageId: image.fileId,
     });

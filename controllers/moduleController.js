@@ -206,7 +206,20 @@ const updateModule = async (req, res, next) => {
       },
     });
 
+    const moduleCount = await Module.count({
+      include: [
+        {
+          model: Chapter,
+          where: {
+            courseId: chapter.courseId,
+          },
+        },
+      ],
+    });
+
     const course = await Course.findByPk(chapter.courseId);
+
+    course.totalModule = moduleCount;
 
     if (video.duration) {
       const total = course.totalDuration - module.duration;
@@ -218,6 +231,14 @@ const updateModule = async (req, res, next) => {
     }
 
     await course.save();
+
+    const updatedModuleCount = await Module.count({
+      where: {
+        chapterId: chapter.id,
+      },
+    });
+
+    chapter.totalModule = updatedModuleCount;
 
     if (video.duration) {
       const total = chapter.totalDuration - module.duration;

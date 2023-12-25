@@ -41,7 +41,6 @@ const createChapter = async (req, res, next) => {
 const updateChapter = async (req, res, next) => {
   try {
     const { name } = req.body;
-    console.log(req.body);
     const { id } = req.params;
     if (!name) {
       throw new ApiError("All value fields are required", 400);

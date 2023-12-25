@@ -7,27 +7,42 @@ module.exports = {
       "Categories",
       [
         {
-          name: "Category 1",
+          name: "UI/UX Design",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: "Category 2",
+          name: "Data Science",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: "Category 3",
+          name: "Android Development",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: "Category 4",
+          name: "IOS Development",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: "Category 5",
+          name: "Front End Web Development",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          name: "Back End Web Development",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          name: "Product Management",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          name: "Data Mining",
           createdAt: new Date(),
           updatedAt: new Date(),
         },

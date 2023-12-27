@@ -87,7 +87,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        name: "Pemrograman Kotlin untuk Android: Dari Pemula hingga Profesional",
+        name: "Pemrograman Kotlin untuk Android",
         level: "Intermediate",
         categoryId: 3,
         description:

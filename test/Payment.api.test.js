@@ -1,13 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const request = require("supertest");
-const {
-  it,
-  expect,
-  beforeAll,
-  describe,
-  beforeEach,
-} = require("@jest/globals");
+const { it, expect, describe, beforeEach } = require("@jest/globals");
 const app = require("../app");
 const { Payment } = require("../models");
 
@@ -18,8 +12,8 @@ let imageBuffer;
 
 let id;
 
-beforeAll(async () => {
-  const user = { email: "admin2@gmail.com", password: "admin1234" };
+beforeEach(async () => {
+  const user = { email: "admin1@gmail.com", password: "admin1234" };
   const login = await request(app).post("/api/v1/auth/login").send(user);
   token = login.body.data.token;
   const filePath = path.join(__dirname, "../public/img/persia.jpg");
@@ -57,6 +51,12 @@ beforeAll(async () => {
 }, 30000);
 
 describe("API create transaction", () => {
+  beforeEach(async () => {
+    const user = { email: "user5@gmail.com", password: "user1234" };
+    const login = await request(app).post("/api/v1/auth/login").send(user);
+    token = login.body.data.token;
+  }, 15000);
+
   it("should return 201 Transaction created successfully", async () => {
     const response = await request(app)
       .post("/api/v1/payment")
@@ -90,16 +90,13 @@ describe("API create transaction", () => {
 
 describe("API Forbidden to buy the same course twice", () => {
   beforeEach(async () => {
-    const userMember = { email: "user3@gmail.com", password: "user1234" };
-    const login = await request(app)
-      .post("/api/v1/auth/login")
-      .send(userMember);
+    const user = { email: "user3@gmail.com", password: "user1234" };
+    const login = await request(app).post("/api/v1/auth/login").send(user);
     token = login.body.data.token;
-
-    courseId = 2;
-  }, 30000);
+  }, 15000);
 
   it("should return 403 Denied double transaction", async () => {
+    courseId = 2;
     const response = await request(app)
       .post("/api/v1/payment")
       .send({ courseId })
@@ -110,6 +107,12 @@ describe("API Forbidden to buy the same course twice", () => {
 });
 
 describe("API get transaction", () => {
+  beforeEach(async () => {
+    const user = { email: "admin1@gmail.com", password: "admin1234" };
+    const login = await request(app).post("/api/v1/auth/login").send(user);
+    token = login.body.data.token;
+  }, 15000);
+
   it("should return 200 Get transaction successfully", async () => {
     const response = await request(app)
       .get("/api/v1/payment")
@@ -128,6 +131,12 @@ describe("API get transaction", () => {
 });
 
 describe("API get transaction by id", () => {
+  beforeEach(async () => {
+    const user = { email: "admin1@gmail.com", password: "admin1234" };
+    const login = await request(app).post("/api/v1/auth/login").send(user);
+    token = login.body.data.token;
+  }, 15000);
+
   it("should return 200 Get transaction by id successfully", async () => {
     const response = await request(app)
       .get(`/api/v1/payment/${id}`)
@@ -144,6 +153,12 @@ describe("API get transaction by id", () => {
 });
 
 describe("API get user transaction history", () => {
+  beforeEach(async () => {
+    const user = { email: "user3@gmail.com", password: "user1234" };
+    const login = await request(app).post("/api/v1/auth/login").send(user);
+    token = login.body.data.token;
+  }, 15000);
+
   it("should return 200 Get payment history successfully", async () => {
     const response = await request(app)
       .get("/api/v1/payment/history")
@@ -163,17 +178,14 @@ describe("API get user transaction history", () => {
 
 describe("API delete payment", () => {
   beforeEach(async () => {
-    const userMember = { email: "user4@gmail.com", password: "user1234" };
-    const login = await request(app)
-      .post("/api/v1/auth/login")
-      .send(userMember);
+    const user = { email: "user4@gmail.com", password: "user1234" };
+    const login = await request(app).post("/api/v1/auth/login").send(user);
     token = login.body.data.token;
-    courseId = 3;
-  }, 30000);
+  }, 15000);
 
   it("should return 200 delete payment", async () => {
     const response = await request(app)
-      .delete(`/api/v1/payment/delete/${courseId}`)
+      .delete("/api/v1/payment/delete/3")
       .set("Authorization", `Bearer ${token}`);
     expect(response.statusCode).toBe(200);
   }, 30000);
@@ -183,5 +195,5 @@ describe("API delete payment", () => {
       .delete("/api/v1/payment/delete/300")
       .set("Authorization", `Bearer ${token}`);
     expect(response.statusCode).toBe(404);
-  });
-}, 15000);
+  }, 15000);
+});

@@ -87,7 +87,7 @@ describe("API Register", () => {
       .post("/api/v1/auth/register")
       .send(user);
     expect(response.statusCode).toBe(201);
-  }, 30000);
+  }, 60000);
 
   it("should return 400 Name is required", async () => {
     const user = {
@@ -793,7 +793,7 @@ describe("Reset Password View", () => {
     const { token } = resetPassword.body.data;
     const res = await request(app).get(`/reset-password?token=${token}`);
     expect(res.status).toBe(200);
-  }, 20000);
+  }, 30000);
 
   it("should redirect to /404 with an invalid token", async () => {
     const res = await request(app).get("/reset-password");

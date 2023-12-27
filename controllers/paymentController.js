@@ -302,6 +302,11 @@ const deletePayment = async (req, res, next) => {
     }
 
     await dataPayment.destroy();
+
+    res.status(200).json({
+      status: "success",
+      message: "Pembelian dibatalkan",
+    });
   } catch (error) {
     next(error);
   }

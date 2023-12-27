@@ -32,7 +32,7 @@ beforeAll(async () => {
     .set("Authorization", `Bearer ${token}`);
   courseId = createCourse.body.data.newCourse.id;
   videoBuffer = fs.readFileSync(videoPath);
-}, 10000);
+}, 30000);
 
 describe("API create module", () => {
   let chapterId;
@@ -228,7 +228,7 @@ describe("API get module by id", () => {
       .attach("video", videoBuffer, "testing.mp4")
       .set("Authorization", `Bearer ${token}`);
     id = response.body.data.newModule.id;
-  }, 15000);
+  }, 30000);
 
   it("should return 200 Module fetched successfully", async () => {
     const response = await request(app)

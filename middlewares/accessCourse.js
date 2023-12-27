@@ -50,14 +50,14 @@ const giveAccess = async (req, res, next) => {
 
     if (!userHasPayment) {
       if (course && course.type === "Free") {
-        return next(); // User can access modules in Free courses
+        return next();
       }
       if (course && course.type === "Premium") {
         if (module.isUnlocked === true) {
           return next();
         }
         return next(
-          new ApiError("You have not purchased access to this course!", 400)
+          new ApiError("You have not purchased access to this course!", 403)
         );
       }
     }

@@ -1,7 +1,13 @@
 const fs = require("fs");
 const path = require("path");
 const request = require("supertest");
-const { it, expect, beforeAll, describe } = require("@jest/globals");
+const {
+  it,
+  expect,
+  beforeAll,
+  describe,
+  beforeEach,
+} = require("@jest/globals");
 const app = require("../app");
 const { Payment } = require("../models");
 
@@ -82,6 +88,27 @@ describe("API create transaction", () => {
   }, 10000);
 });
 
+describe("API Forbidden to buy the same course twice", () => {
+  beforeEach(async () => {
+    const userMember = { email: "user3@gmail.com", password: "user1234" };
+    const login = await request(app)
+      .post("/api/v1/auth/login")
+      .send(userMember);
+    token = login.body.data.token;
+
+    courseId = 2;
+  }, 30000);
+
+  it("should return 403 Denied double transaction", async () => {
+    const response = await request(app)
+      .post("/api/v1/payment")
+      .send({ courseId })
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(response.statusCode).toBe(403);
+  }, 10000);
+});
+
 describe("API get transaction", () => {
   it("should return 200 Get transaction successfully", async () => {
     const response = await request(app)
@@ -116,25 +143,45 @@ describe("API get transaction by id", () => {
   }, 10000);
 });
 
-describe("API create transaction v2", () => {
-  it("should return 201 Transaction created successfully", async () => {
+describe("API get user transaction history", () => {
+  it("should return 200 Get payment history successfully", async () => {
     const response = await request(app)
-      .post("/api/v1/payment/v2")
-      .send({
-        courseId,
-        bank: "bca",
-      })
+      .get("/api/v1/payment/history")
       .set("Authorization", `Bearer ${token}`);
-    expect(response.statusCode).toBe(201);
-  }, 30000);
+    expect(response.statusCode).toBe(200);
+  });
 
-  it("should return 404 Course not found!", async () => {
+  it("should call next with error when an error occurs", async () => {
+    const mockedError = new Error("An example error");
+    jest.spyOn(Payment, "findAll").mockRejectedValueOnce(mockedError); // eslint-disable-line
     const response = await request(app)
-      .post("/api/v1/payment/v2")
-      .send({
-        courseId: 1000,
-      })
+      .get("/api/v1/payment/history")
       .set("Authorization", `Bearer ${token}`);
-    expect(response.statusCode).toBe(404);
+    expect(response.statusCode).toBe(500);
   }, 10000);
 });
+
+describe("API delete payment", () => {
+  beforeEach(async () => {
+    const userMember = { email: "user4@gmail.com", password: "user1234" };
+    const login = await request(app)
+      .post("/api/v1/auth/login")
+      .send(userMember);
+    token = login.body.data.token;
+    courseId = 3;
+  }, 30000);
+
+  it("should return 200 delete payment", async () => {
+    const response = await request(app)
+      .delete(`/api/v1/payment/delete/${courseId}`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(response.statusCode).toBe(200);
+  }, 30000);
+
+  it("should return 404 payment history not found", async () => {
+    const response = await request(app)
+      .delete("/api/v1/payment/delete/300")
+      .set("Authorization", `Bearer ${token}`);
+    expect(response.statusCode).toBe(404);
+  });
+}, 15000);

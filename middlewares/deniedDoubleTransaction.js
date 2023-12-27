@@ -24,7 +24,7 @@ const denyPayment = async (req, res, next) => {
         return next();
         // eslint-disable-next-line no-else-return
       } else {
-        throw new ApiError("Anda sudah membeli course ini!", 400);
+        throw new ApiError("Anda sudah membeli course ini!", 403);
       }
     }
 

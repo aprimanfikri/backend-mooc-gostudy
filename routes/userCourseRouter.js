@@ -4,9 +4,6 @@ const giveAccess = require("../middlewares/accessCourse");
 const { authenticate } = require("../middlewares/auth");
 
 router.get("/", authenticate, userCourseController.getUserCourse);
-
-router.post("/:courseId", authenticate, userCourseController.createUserCourse);
-
 router.put("/:courseId", authenticate, userCourseController.updateUserCourse);
 
 router.delete(

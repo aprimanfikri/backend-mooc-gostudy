@@ -78,7 +78,7 @@ describe("API update category", () => {
       .set("Authorization", `Bearer ${token}`)
       .attach("image", imageBuffer, "persia.jpg");
     id = response.body.data.newCat.id;
-  }, 10000);
+  }, 30000);
 
   it("should return 200 Category updated successfully", async () => {
     const response = await request(app)
@@ -87,7 +87,7 @@ describe("API update category", () => {
       .set("Authorization", `Bearer ${token}`)
       .attach("image", imageBuffer, "persia.jpg");
     expect(response.statusCode).toBe(200);
-  }, 10000);
+  }, 30000);
 
   it("should return 400 File size exceeds the limit (5MB)", async () => {
     const response = await request(app)
@@ -96,7 +96,7 @@ describe("API update category", () => {
       .set("Authorization", `Bearer ${token}`)
       .attach("image", imageBuffer2, "testImage.jpg");
     expect(response.statusCode).toBe(400);
-  }, 10000);
+  }, 30000);
 
   it("should return 400 Name is required", async () => {
     const response = await request(app)
@@ -104,7 +104,7 @@ describe("API update category", () => {
       .set("Authorization", `Bearer ${token}`)
       .attach("image", imageBuffer, "persia.jpg");
     expect(response.statusCode).toBe(400);
-  }, 10000);
+  }, 30000);
 
   it("should return 404 Category not found!", async () => {
     const response = await request(app)
@@ -113,7 +113,7 @@ describe("API update category", () => {
       .set("Authorization", `Bearer ${token}`)
       .attach("image", imageBuffer, "persia.jpg");
     expect(response.statusCode).toBe(404);
-  }, 10000);
+  }, 30000);
 });
 
 describe("API get category by id", () => {

@@ -2,7 +2,6 @@ const midtransClient = require("midtrans-client");
 const crypto = require("crypto");
 const { Payment, Course, UserCourse, Category, User } = require("../models");
 const ApiError = require("../utils/apiError");
-const midtrans = require("../config/midtrans");
 
 const createTransaction = async (req, res, next) => {
   const { courseId } = req.body;
@@ -216,60 +215,6 @@ const getAllPayment = async (req, res, next) => {
   }
 };
 
-const createTransactionv2 = async (req, res, next) => {
-  try {
-    const { bank, courseId } = req.body;
-    const course = await Course.findOne({
-      where: {
-        id: courseId,
-      },
-      include: ["Category"],
-    });
-    if (!course) {
-      throw new ApiError("Course not found!", 404);
-    }
-    const transaction = await midtrans.coreApi.charge({
-      payment_type: "bank_transfer",
-      transaction_details: {
-        order_id: `ORDER-${course.classCode}-${req.user.id}-${Date.now()}`,
-        gross_amount: course.price,
-      },
-      customer_details: {
-        first_name: req.user.name,
-        email: req.user.email,
-        phone: req.user.phoneNumber,
-      },
-      item_details: {
-        id: course.id,
-        price: course.price,
-        name: course.name,
-        category: course.Category.name,
-        quantity: 1,
-      },
-      bank_transfer: {
-        bank,
-      },
-    });
-
-    const payment = await Payment.create({
-      userId: req.user.id,
-      courseId,
-      price: course.price,
-    });
-
-    res.status(201).json({
-      status: "success",
-      message: "Success create transaction!",
-      data: {
-        payment,
-        transaction,
-      },
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
 const paymentHistory = async (req, res, next) => {
   try {
     const userId = req.user.id;
@@ -367,7 +312,6 @@ module.exports = {
   paymentCallback,
   getPaymentDetail,
   getAllPayment,
-  createTransactionv2,
   paymentHistory,
   deletePayment,
 };

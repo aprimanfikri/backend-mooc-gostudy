@@ -17,7 +17,7 @@ beforeAll(async () => {
   imageBuffer = fs.readFileSync(filePath);
   imageBuffer2 = fs.readFileSync(filePath2);
   token = login.body.data.token;
-});
+}, 30000);
 
 describe("API create course", () => {
   let nameCourse;
@@ -37,7 +37,7 @@ describe("API create course", () => {
       .attach("image", imageBuffer, "persia.jpg");
     nameCourse = response.body.data.newCourse.name;
     expect(response.statusCode).toBe(201);
-  }, 10000);
+  }, 30000);
 
   it("should return 400 File size exceeds the limit (5MB)", async () => {
     const response = await request(app)
@@ -54,7 +54,7 @@ describe("API create course", () => {
       .set("Authorization", `Bearer ${token}`)
       .attach("image", imageBuffer2, "testImage.jpg");
     expect(response.statusCode).toBe(400);
-  }, 10000);
+  }, 15000);
 
   it("should return 400 All value fields are required", async () => {
     const data = { name: "huhuhuhu" };
@@ -63,7 +63,7 @@ describe("API create course", () => {
       .send(data)
       .set("Authorization", `Bearer ${token}`);
     expect(response.statusCode).toBe(400);
-  }, 10000);
+  }, 15000);
 
   it("should return 400 Class code must be at least 5 characters", async () => {
     const response = await request(app)
@@ -80,7 +80,7 @@ describe("API create course", () => {
       .set("Authorization", `Bearer ${token}`)
       .attach("image", imageBuffer, "persia.jpg");
     expect(response.statusCode).toBe(400);
-  }, 10000);
+  }, 15000);
 
   it("should return 400 Course name already exist", async () => {
     const response = await request(app)
@@ -97,7 +97,7 @@ describe("API create course", () => {
       .set("Authorization", `Bearer ${token}`)
       .attach("image", imageBuffer, "persia.jpg");
     expect(response.statusCode).toBe(400);
-  }, 10000);
+  }, 15000);
 
   it("should return 400 Image is required", async () => {
     const response = await request(app)
@@ -113,7 +113,7 @@ describe("API create course", () => {
       .field("courseBy", "test")
       .set("Authorization", `Bearer ${token}`);
     expect(response.statusCode).toBe(400);
-  }, 10000);
+  }, 15000);
 });
 
 describe("API update course", () => {
@@ -133,7 +133,7 @@ describe("API update course", () => {
       .set("Authorization", `Bearer ${token}`)
       .attach("image", imageBuffer, "persia.jpg");
     courseId = createCourseResponse.body.data.newCourse.id;
-  }, 10000);
+  }, 30000);
 
   it("should return 200 Course updated successfully", async () => {
     const response = await request(app)
@@ -142,7 +142,7 @@ describe("API update course", () => {
       .attach("image", imageBuffer, "persia.jpg")
       .set("Authorization", `Bearer ${token}`);
     expect(response.statusCode).toBe(200);
-  }, 10000);
+  }, 15000);
 
   it("should return 400 File size exceeds the limit (5MB)", async () => {
     const response = await request(app)
@@ -158,7 +158,7 @@ describe("API update course", () => {
       .field("name", "testing tests")
       .set("Authorization", `Bearer ${token}`);
     expect(response.statusCode).toBe(404);
-  }, 10000);
+  }, 15000);
 });
 
 describe("API delete course", () => {

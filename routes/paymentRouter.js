@@ -11,8 +11,11 @@ router.post(
   paymentController.createTransaction
 );
 router.get("/history", authenticate, paymentController.paymentHistory);
-router.get("/delete/:courseId", authenticate, paymentController.deletePayment);
-router.post("/v2", authenticate, paymentController.createTransactionv2);
+router.delete(
+  "/delete/:courseId",
+  authenticate,
+  paymentController.deletePayment
+);
 router.get("/", authenticate, paymentController.getAllPayment);
 router.post("/payment-callback", paymentController.paymentCallback);
 router.get("/:id", paymentController.getPaymentDetail);

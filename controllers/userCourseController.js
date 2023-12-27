@@ -32,7 +32,7 @@ const openCourse = async (req, res, next) => {
 
     res.status(200).json({
       status: "success",
-      message: `Course ${courseId} found`,
+      message: `Course ${courseId} opened`,
       data: {
         course,
       },
@@ -63,6 +63,10 @@ const clickModule = async (req, res, next) => {
       ],
     });
 
+    if (!course) {
+      throw new ApiError("Course not found", 404);
+    }
+
     const chapterIds = course.Chapters.map((chapter) => chapter.id);
 
     let userModule = await UserModule.findOne({
@@ -74,6 +78,10 @@ const clickModule = async (req, res, next) => {
         id: moduleId,
       },
     });
+
+    if (!findModule) {
+      throw new ApiError("Module not found", 404);
+    }
 
     if (!userModule) {
       userModule = await UserModule.create({
@@ -189,30 +197,6 @@ const getUserCourse = async (req, res, next) => {
   }
 };
 
-const createUserCourse = async (req, res, next) => {
-  try {
-    const { courseId } = req.params;
-    const { id } = req.user;
-    const course = await Course.findByPk(courseId);
-    if (!course) {
-      throw new ApiError("Course ID not found!", 404);
-    }
-    const userCourse = await UserCourse.create({
-      userId: id,
-      courseId,
-    });
-    res.status(201).json({
-      status: "success",
-      message: "User Course created successfully",
-      data: {
-        userCourse,
-      },
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
 const updateUserCourse = async (req, res, next) => {
   try {
     const { courseId } = req.params;
@@ -290,7 +274,6 @@ module.exports = {
   openCourse,
   clickModule,
   getUserCourse,
-  createUserCourse,
   updateUserCourse,
   deleteUserCourse,
 };

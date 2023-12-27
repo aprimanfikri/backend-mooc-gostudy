@@ -25,7 +25,7 @@ beforeEach(async () => {
   };
 
   const loginAdmin = await request(app).post("/api/v1/auth/login").send(admin);
-  console.log(loginAdmin.body.data);
+  console.log(loginAdmin.body.data.token);
   tokenAdmin = loginAdmin.body.data.token;
 }, 30000);
 

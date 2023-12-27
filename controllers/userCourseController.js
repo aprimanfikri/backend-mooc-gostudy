@@ -3,7 +3,6 @@ const {
   UserCourse,
   UserModule,
   Course,
-  User,
   Chapter,
   Module,
   Category,
@@ -199,27 +198,17 @@ const getUserCourse = async (req, res, next) => {
 
 const updateUserCourse = async (req, res, next) => {
   try {
-    const { courseId } = req.params;
-    const { userId } = req.body;
+    const { id } = req.params;
+    const { isAccessible } = req.body;
 
-    if (!courseId || !userId) {
-      throw new ApiError("All value fields are required", 400);
-    }
-    const course = await Course.findByPk(courseId);
-    if (!course) {
-      throw new ApiError("Course ID not found!", 404);
-    }
-    const user = await User.findByPk(userId);
-    if (!user) {
-      throw new ApiError("User ID not found!", 404);
+    const userCourse = await UserCourse.findByPk(id);
+
+    if (!userCourse) {
+      throw new ApiError("History Course Not Found", 404);
     }
 
-    const userCourse = await UserCourse.update({
-      status: true,
-      where: {
-        courseId,
-        userId,
-      },
+    await userCourse.update({
+      isAccessible,
     });
 
     res.status(200).json({
@@ -234,46 +223,9 @@ const updateUserCourse = async (req, res, next) => {
   }
 };
 
-const deleteUserCourse = async (req, res, next) => {
-  try {
-    const { courseId } = req.params;
-    const { userId } = req.body;
-
-    if (!courseId || !userId) {
-      throw new ApiError("All value fields are required", 400);
-    }
-    const course = await Course.findByPk(courseId);
-    if (!course) {
-      throw new ApiError("Course ID not found!", 404);
-    }
-    const user = await User.findByPk(userId);
-    if (!user) {
-      throw new ApiError("User ID not found!", 404);
-    }
-
-    const userCourse = await UserCourse.delete({
-      where: {
-        courseId,
-        userId,
-      },
-    });
-
-    res.status(200).json({
-      status: "success",
-      message: "User Course deleted successfully",
-      data: {
-        userCourse,
-      },
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
 module.exports = {
   openCourse,
   clickModule,
   getUserCourse,
   updateUserCourse,
-  deleteUserCourse,
 };

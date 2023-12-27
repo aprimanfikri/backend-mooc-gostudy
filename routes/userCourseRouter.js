@@ -4,13 +4,7 @@ const giveAccess = require("../middlewares/accessCourse");
 const { authenticate } = require("../middlewares/auth");
 
 router.get("/", authenticate, userCourseController.getUserCourse);
-router.put("/:courseId", authenticate, userCourseController.updateUserCourse);
-
-router.delete(
-  "/:courseId",
-  authenticate,
-  userCourseController.deleteUserCourse
-);
+router.patch("/:id", authenticate, userCourseController.updateUserCourse);
 
 router.get("/course/:courseId", authenticate, userCourseController.openCourse);
 

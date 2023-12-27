@@ -35,12 +35,12 @@
       "description": "API untuk resources Payment yang terdiri dari beberapa endpoint"
     },
     {
-      "name": "Notification",
-      "description": "API untuk resources Notification yang terdiri dari beberapa endpoint"
-    },
-    {
       "name": "User Course",
       "description": "API untuk resources melihat course dan module yang terdiri dari beberapa endpoint"
+    },
+    {
+      "name": "Notification",
+      "description": "API untuk resources Notification yang terdiri dari beberapa endpoint"
     }
   ],
 
@@ -4622,8 +4622,8 @@
             "description": "ID of the Module to retrieve"
           }
         ],
-        "summary": "Get Module By ID",
-        "description": "Ini adalah API endpoint untuk menampilkan data module sesuai ID",
+        "summary": "Click module video",
+        "description": "Ini adalah API endpoint untuk menampilkan module video",
         "responses": {
           "200": {
             "description": "Module fetched successfully",

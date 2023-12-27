@@ -77,3 +77,27 @@ describe("API Get User Course", () => {
     expect(response.statusCode).toBe(500);
   }, 10000);
 });
+
+describe("API update User Course by Admin", () => {
+  it("should return 200 user course updated successfully", async () => {
+    const data = {
+      isAccessible: false,
+    };
+    const response = await request(app)
+      .patch("/api/v1/view-course/1")
+      .send(data)
+      .set("Authorization", `Bearer ${token}`);
+    expect(response.statusCode).toBe(200);
+  }, 15000);
+
+  it("should return 404 Notification not found", async () => {
+    const data = {
+      isAccessible: false,
+    };
+    const response = await request(app)
+      .patch("/api/v1/view-course/1000")
+      .send(data)
+      .set("Authorization", `Bearer ${token}`);
+    expect(response.statusCode).toBe(404);
+  }, 10000);
+});

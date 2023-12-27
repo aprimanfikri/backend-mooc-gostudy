@@ -23,9 +23,7 @@ beforeAll(async () => {
     password: "admin1234",
   };
 
-  const loginAdmin = await request(app)
-    .post("/api/v1/auth/login/admin")
-    .send(admin);
+  const loginAdmin = await request(app).post("/api/v1/auth/login").send(admin);
   tokenAdmin = loginAdmin.body.data.token;
 }, 30000);
 

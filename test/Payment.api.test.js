@@ -3,13 +3,14 @@ const { it, expect, describe, beforeAll } = require("@jest/globals");
 const app = require("../app");
 const { Payment } = require("../models");
 
-describe("API create transaction", () => {
-  let tokenUser;
-  let tokenAdmin;
-  let courseId;
-  let courseId2;
+let tokenUser;
+let tokenAdmin;
+let courseId;
+let courseId2;
 
-  let id;
+let id;
+
+describe("API create transaction", () => {
   beforeAll(async () => {
     const user = {
       email: "user3@gmail.com",

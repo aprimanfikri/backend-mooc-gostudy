@@ -3,33 +3,32 @@ const { it, expect, describe, beforeAll } = require("@jest/globals");
 const app = require("../app");
 const { Payment } = require("../models");
 
-let tokenUser;
-let tokenAdmin;
-let courseId;
-let courseId2;
-
-let id;
-
-beforeEach(async () => {
-  const user = {
-    email: "user3@gmail.com",
-    password: "user1234",
-  };
-  const login = await request(app).post("/api/v1/auth/login").send(user);
-  console.log(login.body.data);
-  tokenUser = login.body.data.token;
-
-  const admin = {
-    email: "admin1@gmail.com",
-    password: "admin1234",
-  };
-
-  const loginAdmin = await request(app).post("/api/v1/auth/login").send(admin);
-  console.log(loginAdmin.body.data.token);
-  tokenAdmin = loginAdmin.body.data.token;
-}, 30000);
-
 describe("API create transaction", () => {
+  let tokenUser;
+  let tokenAdmin;
+  let courseId;
+  let courseId2;
+
+  let id;
+  beforeAll(async () => {
+    const user = {
+      email: "user3@gmail.com",
+      password: "user1234",
+    };
+    const login = await request(app).post("/api/v1/auth/login").send(user);
+    tokenUser = login.body?.data?.token;
+
+    const admin = {
+      email: "admin1@gmail.com",
+      password: "admin1234",
+    };
+
+    const loginAdmin = await request(app)
+      .post("/api/v1/auth/login")
+      .send(admin);
+    tokenAdmin = loginAdmin.body?.data?.token;
+  }, 30000);
+
   it("should return 201 Transaction created successfully", async () => {
     courseId = 7;
     const response = await request(app)

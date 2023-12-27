@@ -16,7 +16,7 @@ beforeEach(async () => {
     password: "user1234",
   };
   const login = await request(app).post("/api/v1/auth/login").send(user);
-  console.log(login);
+  console.log(login.body.data);
   tokenUser = login.body.data.token;
 
   const admin = {
@@ -25,7 +25,7 @@ beforeEach(async () => {
   };
 
   const loginAdmin = await request(app).post("/api/v1/auth/login").send(admin);
-  console.log(loginAdmin);
+  console.log(loginAdmin.body.data);
   tokenAdmin = loginAdmin.body.data.token;
 }, 30000);
 

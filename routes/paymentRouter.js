@@ -3,6 +3,7 @@ const { authenticate } = require("../middlewares/auth");
 
 const paymentController = require("../controllers/paymentController");
 const denyPayment = require("../middlewares/deniedDoubleTransaction");
+const checkRole = require("../middlewares/checkRole");
 
 router.post(
   "/",

@@ -6,6 +6,7 @@ const ApiError = require("../utils/apiError");
 const createTransaction = async (req, res, next) => {
   const { courseId } = req.body;
   let totalPrice;
+  let pricePlusPPN;
 
   try {
     const course = await Course.findOne({
@@ -19,11 +20,13 @@ const createTransaction = async (req, res, next) => {
       throw new ApiError("Course not found!", 404);
     }
 
+    pricePlusPPN = course.price + course.price * 0.11;
+
     if (course.promoPercentage !== 0) {
       const discountPrice = course.price * (course.promoPercentage / 100);
-      totalPrice = course.price - discountPrice;
+      totalPrice = pricePlusPPN - discountPrice;
     } else {
-      totalPrice = course.price;
+      totalPrice = pricePlusPPN;
     }
 
     const orderId = `ORDER-${course.classCode}-${req.user.id}-${Date.now()}`;

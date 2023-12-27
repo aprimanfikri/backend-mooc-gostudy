@@ -20,7 +20,7 @@ describe("API create transaction", () => {
     tokenUser = login.body?.data?.token;
 
     const admin = {
-      email: "admin1@gmail.com",
+      email: "admin2@gmail.com",
       password: "admin1234",
     };
 

@@ -1,5 +1,3 @@
-// const fs = require("fs");
-// const path = require("path");
 const request = require("supertest");
 const { it, expect, describe, beforeAll } = require("@jest/globals");
 const app = require("../app");
@@ -9,47 +7,8 @@ let tokenUser;
 let tokenAdmin;
 let courseId;
 let courseId2;
-// let imageBuffer;
 
 let id;
-
-// beforeAll(async () => {
-//   const user = { email: "admin1@gmail.com", password: "admin1234" };
-//   const login = await request(app).post("/api/v1/auth/login").send(user);
-//   token = login.body.data.token;
-//   const filePath = path.join(__dirname, "../public/img/persia.jpg");
-//   imageBuffer = fs.readFileSync(filePath);
-//   const createCourse1 = await request(app)
-//     .post("/api/v1/course")
-//     .field("name", `test_${new Date().getTime()}`)
-//     .field("level", "Beginner")
-//     .field("categoryId", 1)
-//     .field("description", "Test description")
-//     .field("benefits", "Test benefits")
-//     .field("classCode", "test123")
-//     .field("type", "Premium")
-//     .field("promoPercentage", 10)
-//     .field("price", 100000)
-//     .field("courseBy", "test")
-//     .set("Authorization", `Bearer ${token}`)
-//     .attach("image", imageBuffer, "persia.jpg");
-//   courseId = createCourse1.body.data.newCourse.id;
-
-//   const createCourse2 = await request(app)
-//     .post("/api/v1/course")
-//     .field("name", `test_${new Date().getTime()}`)
-//     .field("level", "Beginner")
-//     .field("categoryId", 1)
-//     .field("description", "Test description")
-//     .field("benefits", "Test benefits")
-//     .field("classCode", "test123")
-//     .field("type", "Premium")
-//     .field("price", 100000)
-//     .field("courseBy", "test")
-//     .set("Authorization", `Bearer ${token}`)
-//     .attach("image", imageBuffer, "persia.jpg");
-//   courseId2 = createCourse2.body.data.newCourse.id;
-// }, 30000);
 
 beforeAll(async () => {
   const user = {
@@ -71,12 +30,6 @@ beforeAll(async () => {
 }, 30000);
 
 describe("API create transaction", () => {
-  // beforeEach(async () => {
-  //   const user = { email: "user5@gmail.com", password: "user1234" };
-  //   const login = await request(app).post("/api/v1/auth/login").send(user);
-  //   token = login.body.data.token;
-  // }, 15000);
-
   it("should return 201 Transaction created successfully", async () => {
     courseId = 7;
     const response = await request(app)
@@ -111,12 +64,6 @@ describe("API create transaction", () => {
 });
 
 describe("API Forbidden to buy the same course twice", () => {
-  // beforeEach(async () => {
-  //   const user = { email: "user3@gmail.com", password: "user1234" };
-  //   const login = await request(app).post("/api/v1/auth/login").send(user);
-  //   token = login.body.data.token;
-  // }, 15000);
-
   it("should return 403 Denied double transaction", async () => {
     courseId = 2;
     const response = await request(app)
@@ -129,12 +76,6 @@ describe("API Forbidden to buy the same course twice", () => {
 });
 
 describe("API get transaction", () => {
-  // beforeEach(async () => {
-  //   const user = { email: "admin1@gmail.com", password: "admin1234" };
-  //   const login = await request(app).post("/api/v1/auth/login").send(user);
-  //   const tokenAdmin = login.body.data.token;
-  // });
-
   it("should return 200 Get transaction successfully", async () => {
     const response = await request(app)
       .get("/api/v1/payment")
@@ -153,12 +94,6 @@ describe("API get transaction", () => {
 });
 
 describe("API get transaction by id", () => {
-  // beforeEach(async () => {
-  //   const user = { email: "admin1@gmail.com", password: "admin1234" };
-  //   const login = await request(app).post("/api/v1/auth/login").send(user);
-  //   const tokenAdmin = login.body.data.token;
-  // });
-
   it("should return 200 Get transaction by id successfully", async () => {
     const response = await request(app)
       .get("/api/v1/payment/1")
@@ -175,12 +110,6 @@ describe("API get transaction by id", () => {
 });
 
 describe("API get user transaction history", () => {
-  // beforeEach(async () => {
-  //   const user = { email: "user3@gmail.com", password: "user1234" };
-  //   const login = await request(app).post("/api/v1/auth/login").send(user);
-  //   token = login.body.data.token;
-  // }, 15000);
-
   it("should return 200 Get payment history successfully", async () => {
     const response = await request(app)
       .get("/api/v1/payment/history")

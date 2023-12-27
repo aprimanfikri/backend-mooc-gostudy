@@ -50,8 +50,7 @@ jobs:
         run: npm run db:seed
       - name: Test code
         id: run-tests
-        # run: npm run test
-        run: npm test -- Payment.api.test.js
+        run: npm run test
   lint:
     needs: test
     environment: test

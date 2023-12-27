@@ -10,12 +10,13 @@ let courseId2;
 
 let id;
 
-beforeAll(async () => {
+beforeEach(async () => {
   const user = {
     email: "user3@gmail.com",
     password: "user1234",
   };
   const login = await request(app).post("/api/v1/auth/login").send(user);
+  console.log(login);
   tokenUser = login.body.data.token;
 
   const admin = {
@@ -24,6 +25,7 @@ beforeAll(async () => {
   };
 
   const loginAdmin = await request(app).post("/api/v1/auth/login").send(admin);
+  console.log(loginAdmin);
   tokenAdmin = loginAdmin.body.data.token;
 }, 30000);
 

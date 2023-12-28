@@ -9,6 +9,7 @@ let courseId;
 let courseId2;
 
 let id;
+let id2;
 
 describe("API create transaction", () => {
   beforeAll(async () => {
@@ -48,7 +49,7 @@ describe("API create transaction", () => {
       .send({ courseId: courseId2 })
       .set("Authorization", `Bearer ${tokenUser}`);
 
-    // id = response.body.data.createPayment.id;
+    id2 = response.body.data.createPayment.id;
     expect(response.statusCode).toBe(201);
   }, 30000);
 
@@ -125,6 +126,30 @@ describe("API get user transaction history", () => {
       .set("Authorization", `Bearer ${tokenUser}`);
     expect(response.statusCode).toBe(500);
   }, 10000);
+});
+
+describe("API for verify status payment", () => {
+  it("should return 200 status updated successfully", async () => {
+    const data = {
+      status: "paid",
+    };
+    const response = await request(app)
+      .patch(`/api/v1/payment/${id2}`)
+      .send(data)
+      .set("Authorization", `Bearer ${tokenAdmin}`);
+    expect(response.statusCode).toBe(200);
+  }, 30000);
+
+  it("should return 404 payment not found", async () => {
+    const data = {
+      status: "paid",
+    };
+    const response = await request(app)
+      .patch("/api/v1/payment/300")
+      .send(data)
+      .set("Authorization", `Bearer ${tokenAdmin}`);
+    expect(response.statusCode).toBe(404);
+  }, 15000);
 });
 
 describe("API delete payment", () => {

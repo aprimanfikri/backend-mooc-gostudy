@@ -17,8 +17,24 @@ router.delete(
   authenticate,
   paymentController.deletePayment
 );
-router.get("/", authenticate, paymentController.getAllPayment);
+router.get(
+  "/",
+  authenticate,
+  checkRole("admin"),
+  paymentController.getAllPayment
+);
 router.post("/payment-callback", paymentController.paymentCallback);
-router.get("/:id", paymentController.getPaymentDetail);
-router.patch("/:id", authenticate, paymentController.updatePaymentStatus);
+router.get(
+  "/:id",
+  authenticate,
+  checkRole("admin"),
+  paymentController.getPaymentDetail
+);
+
+router.patch(
+  "/:id",
+  authenticate,
+  checkRole("admin"),
+  paymentController.updatePaymentStatus
+);
 module.exports = router;

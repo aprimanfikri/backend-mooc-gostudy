@@ -32,7 +32,7 @@ describe("API create category", () => {
       .attach("image", imageBuffer, "persia.jpg");
     categoryId = response.body.data.newCat.id;
     expect(response.statusCode).toBe(201);
-  }, 10000);
+  }, 15000);
 
   it("should return 400 Only .png, .jpg, .jpeg, and .mp4 format allowed!", async () => {
     const response = await request(app)

@@ -171,7 +171,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        name: "Menguasai Node.js untuk Pengembangan Server-Side: Dari Dasar hingga Lanjutan",
+        name: "Menguasai Node.js: Dari Dasar hingga Lanjutan",
         level: "Intermediate",
         categoryId: 6,
         description:
@@ -192,7 +192,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        name: "Manajemen Produk 101: Fondasi dan Praktik Terbaik dalam Dunia Bisnis Digital",
+        name: "Manajemen Produk 101: Fondasi Dunia Bisnis Digital",
         level: "Beginner",
         categoryId: 7,
         description:
@@ -213,7 +213,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        name: "Introduction to Data Mining for Beginners: Unveiling Insights from Raw Data",
+        name: "Introduction to Data Mining for Beginners",
         level: "Beginner",
         categoryId: 7,
         description:

@@ -1,4 +1,4 @@
-const { Chapter, Course } = require("../models");
+const { Chapter, Course, Module } = require("../models");
 const ApiError = require("../utils/apiError");
 
 const createChapter = async (req, res, next) => {
@@ -99,7 +99,13 @@ const getAllChapters = async (req, res, next) => {
 const getChapterById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const chapter = await Chapter.findByPk(id);
+    const chapter = await Chapter.findByPk(id, {
+      include: [
+        {
+          model: Module,
+        },
+      ],
+    });
     if (!chapter) {
       throw new ApiError("Chapter not found", 404);
     }

@@ -315,6 +315,31 @@ const deletePayment = async (req, res, next) => {
   }
 };
 
+const updatePaymentStatus = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const payment = await Payment.findByPk(id);
+    if (!payment) {
+      throw new ApiError("Chapter not found!", 404);
+    }
+
+    const updatedPayment = await payment.update({
+      status,
+    });
+    res.status(200).json({
+      status: "success",
+      message: "Payment status updated successfully",
+      data: {
+        updatedPayment,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createTransaction,
   paymentCallback,
@@ -322,4 +347,5 @@ module.exports = {
   getAllPayment,
   paymentHistory,
   deletePayment,
+  updatePaymentStatus,
 };

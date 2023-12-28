@@ -38,7 +38,10 @@ const createCourse = async (req, res, next) => {
       throw new ApiError("Class code must be at least 5 characters", 400);
     }
     if (name.length > 50) {
-      throw new ApiError("Course name should be at most 50 characters long.");
+      throw new ApiError(
+        "Course name should be at most 50 characters long.",
+        400
+      );
     }
 
     const course = await Course.findOne({ where: { name } });

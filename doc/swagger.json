@@ -3837,6 +3837,11 @@
       },
       "get": {
         "tags": ["Payment"],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
         "summary": "Get All Payment",
         "description": "Ini adalah API endpoint untuk menampilkan data payment",
         "responses": {
@@ -3958,6 +3963,11 @@
               "example": 1
             },
             "description": "ID of the payment to retrieve"
+          }
+        ],
+        "security": [
+          {
+            "bearerToken": []
           }
         ],
         "summary": "Get Payment by ID",

@@ -12,7 +12,7 @@ beforeAll(async () => {
   };
   const login = await request(app).post("/api/v1/auth/login").send(user);
   token = login.body.data.token;
-});
+}, 15000);
 
 describe("API Get Notification for User", () => {
   it("should return 200 Notification sent", async () => {

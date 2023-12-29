@@ -15,7 +15,7 @@ module.exports = {
       notifId: {
         type: Sequelize.INTEGER,
       },
-      date: {
+      dateSent: {
         type: Sequelize.STRING,
       },
       isRead: {

@@ -6,6 +6,6 @@ const app = require('../app');
 describe('should return 404', () => {
   it('should return 404', async () => {
     const res = await request(app).get('/api/v1/other');
-    expect(res.statusCode).toEqual(500);
+    expect(res.statusCode).toEqual(404);
   });
 });

@@ -1,10 +1,11 @@
 const imagekit = require("../lib/imagekit");
-const { User, Verified } = require("../models");
+const { User, Verified, UserNotification } = require("../models");
 const ApiError = require("../utils/apiError");
 const { hash, compare } = require("../utils/bcrypt");
 const { sendOtpVerification } = require("./otpController");
 const transporter = require("../config/nodemailer");
 const { generateToken } = require("../utils/jwt");
+const { formatTime, formatDate } = require("../utils/dateTime");
 
 const register = async (req, res, next) => {
   try {
@@ -126,6 +127,16 @@ const verifyOtp = async (req, res, next) => {
     }
     await verifiedOtp.destroy();
     await user.update({ verify: true });
+
+    const formattedDate = formatDate(new Date());
+    const formattedTime = formatTime(new Date());
+    const date = `${formattedDate}, ${formattedTime}`;
+    await UserNotification.create({
+      userId: id,
+      notifId: 2,
+      dateSent: date,
+    });
+
     const token = generateToken(user);
     res.status(200).json({
       status: "success",
@@ -216,6 +227,16 @@ const resetPassword = async (req, res, next) => {
     }
     // res.clearCookie("token");
     await user.update({ password: await hash(password) });
+
+    const formattedDate = formatDate(new Date());
+    const formattedTime = formatTime(new Date());
+    const date = `${formattedDate}, ${formattedTime}`;
+    await UserNotification.create({
+      userId: id,
+      notifId: 1,
+      dateSent: date,
+    });
+
     res.status(200).json({
       status: "success",
       message: "Password successfully reset",
@@ -256,6 +277,16 @@ const updateProfile = async (req, res, next) => {
       imageUrl: imgUrl,
       imageId: imgId,
     });
+
+    const formattedDate = formatDate(new Date());
+    const formattedTime = formatTime(new Date());
+    const date = `${formattedDate}, ${formattedTime}`;
+    await UserNotification.create({
+      userId: id,
+      notifId: 3,
+      dateSent: date,
+    });
+
     res.status(200).json({
       status: "success",
       message: "Profile updated successfully",
@@ -299,6 +330,16 @@ const updatePassword = async (req, res, next) => {
       );
     }
     await user.update({ password: await hash(newPassword) });
+
+    const formattedDate = formatDate(new Date());
+    const formattedTime = formatTime(new Date());
+    const date = `${formattedDate}, ${formattedTime}`;
+    await UserNotification.create({
+      userId: id,
+      notifId: 1,
+      dateSent: date,
+    });
+
     res.status(200).json({
       status: "success",
       message: "Password updated successfully",

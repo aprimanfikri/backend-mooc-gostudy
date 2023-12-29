@@ -1,6 +1,8 @@
 "use strict";
 
 /** @type {import('sequelize-cli').Migration} */
+const { formatTime, formatDate } = require("../utils/dateTime");
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     /**
@@ -12,15 +14,17 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
      */
+    const formattedDate = formatDate(new Date());
+    const formattedTime = formatTime(new Date());
+    const date = `${formattedDate}, ${formattedTime}`;
 
     await queryInterface.bulkInsert(
-      "UserModules",
+      "UserNotifications",
       [
         {
-          userId: 5,
-          moduleId: 41,
-          chapterId: 21,
-          isStudied: true,
+          userId: 1,
+          notifId: 2,
+          dateSent: date,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -36,7 +40,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-
-    await queryInterface.bulkDelete("UserModules", null, {});
+    await queryInterface.bulkDelete("UserNotifications", null, {});
   },
 };

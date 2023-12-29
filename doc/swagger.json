@@ -5455,7 +5455,7 @@
           }
         ],
         "summary": "Get Notification For User",
-        "description": "Ini adalah API endpoint untuk mengirim notifikasi ke User",
+        "description": "Ini adalah API endpoint untuk membuka notifikasi untuk User",
         "responses": {
           "200": {
             "description": "Notification fetched successfully",

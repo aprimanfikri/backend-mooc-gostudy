@@ -47,13 +47,13 @@ const getNotifById = async (req, res, next) => {
     if (!notif) {
       throw new ApiError("Notification not found", 404);
     }
+
     res.status(200).json({
       status: "success",
       message: `Notification ${notif.id} is found!`,
       data: {
         notif,
       },
-      date: new Date().toISOString,
     });
   } catch (error) {
     next(error);

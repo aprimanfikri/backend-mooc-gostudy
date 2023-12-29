@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       userId: DataTypes.INTEGER,
       notifId: DataTypes.INTEGER,
+      dateSent: DataTypes.STRING,
       isRead: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,

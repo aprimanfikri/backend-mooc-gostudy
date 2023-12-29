@@ -15,6 +15,9 @@ module.exports = {
       notifId: {
         type: Sequelize.INTEGER,
       },
+      date: {
+        type: Sequelize.STRING,
+      },
       isRead: {
         type: Sequelize.BOOLEAN,
         defaultValue: false,

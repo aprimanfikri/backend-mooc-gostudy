@@ -14,6 +14,27 @@ const getNotifForUser = async (req, res, next) => {
 
     if (!notif) throw new ApiError("Notifikasi tidak ditemukan", 404);
 
+    const formatDate = (date) => {
+      const options = {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      };
+      return new Intl.DateTimeFormat("id-ID", options).format(date);
+    };
+
+    const formatTime = (time) => {
+      const options = {
+        hour: "numeric",
+        minute: "numeric",
+      };
+      return new Intl.DateTimeFormat("id-ID", options).format(time);
+    };
+
+    const formattedDate = formatDate(new Date());
+    const formattedTime = formatTime(new Date());
+    const date = `${formattedDate}, ${formattedTime}`;
+
     let userNotif = await UserNotification.findOne({
       where: { userId, notifId: id },
     });
@@ -22,6 +43,7 @@ const getNotifForUser = async (req, res, next) => {
       userNotif = await UserNotification.create({
         userId,
         notifId: id,
+        dateSent: date.toString(),
       });
     } else {
       await userNotif.update({ isRead: true });

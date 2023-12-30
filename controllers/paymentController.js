@@ -113,17 +113,18 @@ const paymentCallback = async (req, res, next) => {
           const findUserCourse = await UserCourse.findOne({
             where: {
               userId: payment.userId,
+              courseId: payment.courseId,
             },
           });
 
-          if (findUserCourse) {
-            await findUserCourse.update({
-              isAccessible: true,
-            });
-          } else {
+          if (!findUserCourse) {
             await UserCourse.create({
               userId: payment.userId,
               courseId: payment.courseId,
+              isAccessible: true,
+            });
+          } else {
+            await findUserCourse.update({
               isAccessible: true,
             });
           }
@@ -137,17 +138,18 @@ const paymentCallback = async (req, res, next) => {
         const findUserCourse = await UserCourse.findOne({
           where: {
             userId: payment.userId,
+            courseId: payment.courseId,
           },
         });
 
-        if (findUserCourse) {
-          await findUserCourse.update({
-            isAccessible: true,
-          });
-        } else {
+        if (!findUserCourse) {
           await UserCourse.create({
             userId: payment.userId,
             courseId: payment.courseId,
+            isAccessible: true,
+          });
+        } else {
+          await findUserCourse.update({
             isAccessible: true,
           });
         }

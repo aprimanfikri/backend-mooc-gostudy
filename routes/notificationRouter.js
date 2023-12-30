@@ -8,6 +8,13 @@ router
   .get(notificationController.getAllNotif)
   .post(authenticate, checkRole("admin"), notificationController.createNotif);
 
+router.post(
+  "/send-all/:id",
+  authenticate,
+  checkRole("admin"),
+  notificationController.sendPromoNotification
+);
+
 router
   .route("/:id")
   .get(notificationController.getNotifById)

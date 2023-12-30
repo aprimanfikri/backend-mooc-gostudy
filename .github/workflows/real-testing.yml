@@ -1,5 +1,9 @@
 name: Lint and Test Before Merge
-on: push
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
 jobs:
   test:
     environment: test

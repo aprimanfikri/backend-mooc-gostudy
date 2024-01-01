@@ -11,12 +11,11 @@ const ApiError = require("../utils/apiError");
 
 const openCourse = async (req, res, next) => {
   try {
+    const userId = req.user.id;
     const { courseId } = req.params;
 
     const course = await Course.findOne({
-      where: {
-        id: courseId,
-      },
+      where: { id: courseId },
       include: [
         {
           model: Chapter,
@@ -27,6 +26,23 @@ const openCourse = async (req, res, next) => {
 
     if (!course) {
       throw new ApiError("Course not found", 404);
+    }
+
+    const findUserCourse = await UserCourse.findOne({
+      where: { userId, courseId },
+    });
+
+    if (
+      findUserCourse &&
+      findUserCourse.isAccessible === true &&
+      course.type === "Premium"
+    ) {
+      course.Chapters.forEach((chapter) => {
+        chapter.Modules.forEach((module) => {
+          // eslint-disable-next-line no-param-reassign
+          module.isUnlocked = true;
+        });
+      });
     }
 
     res.status(200).json({

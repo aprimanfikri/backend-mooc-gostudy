@@ -24,12 +24,7 @@ router.get(
   paymentController.getAllPayment
 );
 router.post("/payment-callback", paymentController.paymentCallback);
-router.get(
-  "/:id",
-  authenticate,
-  checkRole("admin"),
-  paymentController.getPaymentDetail
-);
+router.get("/:id", authenticate, paymentController.getPaymentDetail);
 
 router.patch(
   "/:id",

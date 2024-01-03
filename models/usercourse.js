@@ -1,4 +1,4 @@
-const { Model } = require("sequelize");
+const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class UserCourse extends Model {
@@ -11,12 +11,12 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       UserCourse.belongsTo(models.User, {
         foreignKey: {
-          name: "userId",
+          name: 'userId',
         },
       });
       UserCourse.belongsTo(models.Course, {
         foreignKey: {
-          name: "courseId",
+          name: 'courseId',
         },
       });
     }
@@ -30,10 +30,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.FLOAT,
         defaultValue: 0.0,
       },
+      certificateSent: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
     },
     {
       sequelize,
-      modelName: "UserCourse",
+      modelName: 'UserCourse',
     }
   );
   return UserCourse;

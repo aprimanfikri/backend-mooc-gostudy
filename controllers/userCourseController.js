@@ -158,7 +158,7 @@ const clickModule = async (req, res, next) => {
         );
         const fileName = `${req.user.name}-${course.name}.pdf`;
         const mailOptions = {
-          from: "your_email@gmail.com",
+          from: process.env.NODEMAILER_EMAIL,
           to: req.user.email,
           subject: "Certificate of Completion",
           text: `Dear ${req.user.name},\n\nCongratulations! You have successfully completed the course: ${course.name}.\n\nPlease find your certificate attached.\n\nBest regards,\nGoStudy`,

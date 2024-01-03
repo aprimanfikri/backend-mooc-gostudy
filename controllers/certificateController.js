@@ -1,10 +1,11 @@
-const { PDFDocument } = require('pdf-lib');
-const fs = require('fs');
-const fontkit = require('@pdf-lib/fontkit');
+/* eslint-disable import/no-extraneous-dependencies */
+const { PDFDocument } = require("pdf-lib");
+const fs = require("fs");
+const fontkit = require("@pdf-lib/fontkit");
 
 const generateCertificate = async (userName, courseName) => {
   const templatedCertificate = fs.readFileSync(
-    'public/doc/template-certificate.pdf'
+    "public/doc/template-certificate.pdf"
   );
 
   const pdfDoc = await PDFDocument.load(templatedCertificate);
@@ -12,17 +13,17 @@ const generateCertificate = async (userName, courseName) => {
 
   const page = pdfDoc.getPages()[0];
 
-  const fontBytes = fs.readFileSync('public/fonts/Sacramento.ttf');
+  const fontBytes = fs.readFileSync("public/fonts/Sacramento.ttf");
   const Sacramento = await pdfDoc.embedFont(fontBytes);
 
-  const fontBytes2 = fs.readFileSync('public/fonts/Montserrat.ttf');
+  const fontBytes2 = fs.readFileSync("public/fonts/Montserrat.ttf");
   const Montserrat = await pdfDoc.embedFont(fontBytes2);
 
-  const thisMonth = new Date().toLocaleString('default', { month: 'long' });
+  const thisMonth = new Date().toLocaleString("default", { month: "long" });
   const thisYear = new Date().getFullYear();
 
   page.drawText(userName, { x: 86, y: 285, font: Sacramento, size: 56 });
-  page.drawText('Has successfully completed', {
+  page.drawText("Has successfully completed", {
     x: 86,
     y: 220,
     font: Montserrat,

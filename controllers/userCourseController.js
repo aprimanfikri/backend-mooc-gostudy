@@ -1,4 +1,4 @@
-const { Op } = require('sequelize');
+const { Op } = require("sequelize");
 const {
   UserCourse,
   UserModule,
@@ -6,10 +6,10 @@ const {
   Chapter,
   Module,
   Category,
-} = require('../models');
-const ApiError = require('../utils/apiError');
-const transporter = require('../config/nodemailer');
-const generateCertificate = require('./certificateController');
+} = require("../models");
+const ApiError = require("../utils/apiError");
+const transporter = require("../config/nodemailer");
+const generateCertificate = require("./certificateController");
 
 const openCourse = async (req, res, next) => {
   try {
@@ -27,7 +27,7 @@ const openCourse = async (req, res, next) => {
     });
 
     if (!course) {
-      throw new ApiError('Course not found', 404);
+      throw new ApiError("Course not found", 404);
     }
 
     const findUserCourse = await UserCourse.findOne({
@@ -37,7 +37,7 @@ const openCourse = async (req, res, next) => {
     if (
       findUserCourse &&
       findUserCourse.isAccessible === true &&
-      course.type === 'Premium'
+      course.type === "Premium"
     ) {
       course.Chapters.forEach((chapter) => {
         chapter.Modules.forEach((module) => {
@@ -48,7 +48,7 @@ const openCourse = async (req, res, next) => {
     }
 
     res.status(200).json({
-      status: 'success',
+      status: "success",
       message: `Course ${courseId} opened`,
       data: {
         course,
@@ -65,7 +65,7 @@ const clickModule = async (req, res, next) => {
     const userId = req.user.id;
 
     if (!userId) {
-      throw new ApiError('ID user tidak ada', 404);
+      throw new ApiError("ID user tidak ada", 404);
     }
 
     const course = await Course.findOne({
@@ -81,7 +81,7 @@ const clickModule = async (req, res, next) => {
     });
 
     if (!course) {
-      throw new ApiError('Course not found', 404);
+      throw new ApiError("Course not found", 404);
     }
 
     const chapterIds = course.Chapters.map((chapter) => chapter.id);
@@ -97,7 +97,7 @@ const clickModule = async (req, res, next) => {
     });
 
     if (!findModule) {
-      throw new ApiError('Module not found', 404);
+      throw new ApiError("Module not found", 404);
     }
 
     if (!userModule) {
@@ -141,7 +141,11 @@ const clickModule = async (req, res, next) => {
 
     if (userCourseRelation) {
       await UserCourse.update(
-        { totalProgress },
+        {
+          totalProgress,
+          isAccessible:
+            course.type === "Free" ? true : userCourseRelation.isAccessible,
+        },
         {
           where: { userId, courseId },
         }
@@ -154,15 +158,15 @@ const clickModule = async (req, res, next) => {
         );
         const fileName = `${req.user.name}-${course.name}.pdf`;
         const mailOptions = {
-          from: 'your_email@gmail.com',
+          from: "your_email@gmail.com",
           to: req.user.email,
-          subject: 'Certificate of Completion',
+          subject: "Certificate of Completion",
           text: `Dear ${req.user.name},\n\nCongratulations! You have successfully completed the course: ${course.name}.\n\nPlease find your certificate attached.\n\nBest regards,\nGoStudy`,
           attachments: [
             {
               filename: fileName,
               content: modifiedPdfBytes,
-              encoding: 'base64',
+              encoding: "base64",
             },
           ],
         };
@@ -176,12 +180,13 @@ const clickModule = async (req, res, next) => {
         userId,
         courseId,
         totalProgress,
+        isAccessible: course.type === "Free",
       });
     }
 
     res.status(200).json({
       success: true,
-      message: 'Module clicked successfully',
+      message: "Module clicked successfully",
       data: {
         module: {
           findModule,
@@ -200,14 +205,14 @@ const getUserCourse = async (req, res, next) => {
 
     const whereCondition = { userId };
 
-    if (status === 'in_progress') {
+    if (status === "in_progress") {
       whereCondition.totalProgress = { [Op.lt]: 100.0 };
-    } else if (status === 'selesai') {
+    } else if (status === "selesai") {
       whereCondition.totalProgress = 100.0;
     }
 
     if (search) {
-      whereCondition['$Course.name$'] = {
+      whereCondition["$Course.name$"] = {
         [Op.iLike]: `%${search}%`,
       };
     }
@@ -220,7 +225,7 @@ const getUserCourse = async (req, res, next) => {
           include: [
             {
               model: Category,
-              as: 'Category',
+              as: "Category",
             },
           ],
         },
@@ -228,8 +233,8 @@ const getUserCourse = async (req, res, next) => {
     });
 
     res.status(200).json({
-      status: 'success',
-      message: 'Sukses mengambil data course',
+      status: "success",
+      message: "Sukses mengambil data course",
       data: {
         course,
       },
@@ -247,7 +252,7 @@ const updateUserCourse = async (req, res, next) => {
     const userCourse = await UserCourse.findByPk(id);
 
     if (!userCourse) {
-      throw new ApiError('History Course Not Found', 404);
+      throw new ApiError("History Course Not Found", 404);
     }
 
     await userCourse.update({
@@ -255,8 +260,8 @@ const updateUserCourse = async (req, res, next) => {
     });
 
     res.status(200).json({
-      status: 'success',
-      message: 'User Course updated successfully',
+      status: "success",
+      message: "User Course updated successfully",
       data: {
         userCourse,
       },
